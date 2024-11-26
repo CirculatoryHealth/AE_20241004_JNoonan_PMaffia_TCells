@@ -1,6 +1,6 @@
 ---
 title: "Mapping targets to single cells in plaques."
-subtitle: Accompanying 'AE_TEMPLATE'
+subtitle: Accompanying 'AE_20241004_JNoonan_PMaffia_TCells'
 author: '[Sander W. van der Laan, PhD](https://vanderlaanand.science) | s.w.vanderlaan[at]gmail[dot]com'
 date: '`r Sys.Date()`'
 output:
@@ -369,6 +369,115 @@ write.xlsx(file = paste0(BASELINE_loc, "/",Today,".",PROJECTNAME,".AESCRNA.CEA.3
 
 ```
 
+
+# Subset scRNAseq data
+
+List of samples to be included based on informed consent (see above).
+
+```{r}
+samples_of_interest <- unlist(scRNAseqDataMetaAE.all$Patient)
+samples_of_interest
+```
+
+Just make sure to keep the rows (`patientid`.`plateid`.`cellid`) in the data, so we will create a new column for that.
+
+```{r}
+scRNAseqData$cell.ident <- rownames(scRNAseqData[[]])
+```
+
+Subsetting the samples of interest based on `samples_of_interest`.
+
+```{r}
+scRNAseqDataCEA39 <- subset(scRNAseqData, subset = Patient %in% samples_of_interest)
+```
+
+
+Selecting the clinical data of interest.
+
+```{r}
+variables_of_interest <- c("Hospital", "ORyear", "Artery_summary",
+                           "Age", "Gender",
+                           "TC_final", "LDL_final", "HDL_final", "TG_final",
+                           "systolic", "diastoli", "GFR_MDRD", "BMI",
+                           "KDOQI", "BMI_WHO",
+                           "SmokerStatus", "AlcoholUse",
+                           "DiabetesStatus",
+                           "Hypertension.selfreport", "Hypertension.selfreportdrug", "Hypertension.composite", "Hypertension.drugs",
+                           "Med.anticoagulants", "Med.all.antiplatelet", "Med.Statin.LLD",
+                           "Stroke_Dx",
+                           "sympt", "Symptoms.5G", "AsymptSympt", "AsymptSympt2G",
+                           "Symptoms.Update2G", "Symptoms.Update3G", "indexsymptoms_latest_4g",
+                           "restenos", "stenose",
+                           "CAD_history", "PAOD", "Peripheral.interv",
+                           "EP_composite", "EP_composite_time", "EP_major", "EP_major_time")
+
+temp <- subset(scRNAseqDataMetaAE.all, select = c("Patient", variables_of_interest))
+```
+
+Now we are merging in the clinical data of interest.
+
+```{r}
+# Step 1: Extract original metadata from Seurat object
+original_metadata_df <- scRNAseqDataCEA39@meta.data
+
+# Step 2: Merge with dataframe (temp) with select variables based on 'Patient' column
+merged_metadata_df <- merge(original_metadata_df, temp, by = "Patient", all.x = TRUE, sort = FALSE)
+
+# Step 3: Exclude already existing columns to avoid duplication
+new_metadata_columns <- setdiff(colnames(temp), colnames(original_metadata_df))
+new_meta_info_df <- merged_metadata_df[, new_metadata_columns, drop = FALSE]
+
+# Step 4: Add the new metadata to the Seurat object
+scRNAseqDataCEA39 <- AddMetaData(scRNAseqDataCEA39, metadata = new_meta_info_df)
+
+# Step 5: Rename `Patient` to `STUDY_NUMBER` to match the clinical data
+scRNAseqDataCEA39@meta.data <- dplyr::rename(scRNAseqDataCEA39@meta.data, "STUDY_NUMBER" = "Patient")
+
+# Verify that the new metadata was added correctly
+head(scRNAseqDataCEA39@meta.data)
+
+```
+
+## Saving new dataset
+
+```{r}
+temp2 <- as_tibble(subset(scRNAseqDataCEA39@meta.data, select = c("STUDY_NUMBER", "orig.ident", "nCount_RNA", "nFeature_RNA",
+                                                                 "Plate", "Batch", "C.H", "Type", "percent.mt",
+                                                                 "nCount_SCT", "nFeature_SCT", "seurat_clusters")))
+
+# fwrite(temp2,
+#        file = paste0(OUT_loc, "/", Today, ".AESCRNA.CEA.39pts.samplelist.after_qc.IC_commercial.csv"),
+#        sep = ",", row.names = FALSE, col.names = TRUE,
+#        showProgress = TRUE)
+# rm(temp2)
+# 
+# temp <- dplyr::rename(temp, "STUDY_NUMBER" = "Patient")
+# fwrite(temp,
+#        file = paste0(OUT_loc, "/", Today, ".AESCRNA.CEA.39pts.clinicaldata.after_qc.IC_commercial.csv"),
+#        sep = ",", row.names = FALSE, col.names = TRUE,
+#        showProgress = TRUE)
+# rm(temp)
+# 
+# saveRDS(scRNAseqDataCEA39, file = paste0(OUT_loc, "/", Today, ".AESCRNA.CEA.39pts.Seurat.after_qc.IC_commercial.RDS"))
+
+fwrite(temp2,
+       file = paste0(OUT_loc, "/", Today, ".AESCRNA.CEA.39pts.samplelist.after_qc.IC_academic.csv"),
+       sep = ",", row.names = FALSE, col.names = TRUE,
+       showProgress = TRUE)
+rm(temp2)
+
+temp <- dplyr::rename(temp, "STUDY_NUMBER" = "Patient")
+fwrite(temp,
+       file = paste0(OUT_loc, "/", Today, ".AESCRNA.CEA.39pts.clinicaldata.after_qc.IC_academic.csv"),
+       sep = ",", row.names = FALSE, col.names = TRUE,
+       showProgress = TRUE)
+rm(temp)
+
+saveRDS(scRNAseqDataCEA39, file = paste0(OUT_loc, "/", Today, ".AESCRNA.CEA.39pts.Seurat.after_qc.IC_academic.RDS"))
+
+```
+
+
 # AESCRNA
 
 ## Quality control
@@ -379,77 +488,76 @@ ratio's per sample and study number.
 ```{r QualityControl}
 ## check stuff
 cat("\nHow many cells per type ...?")
-sort(table(scRNAseqData@meta.data$SCT_snn_res.0.8))
+sort(table(scRNAseqDataCEA39@meta.data$SCT_snn_res.1.25))
 
 # cat("\n\nHow many cells per plate ...?")
-# sort(table(scRNAseqData@meta.data$ID))
+# sort(table(scRNAseqDataCEA39@meta.data$ID))
 
 # cat("\n\nHow many cells per type per plate ...?")
-# table(scRNAseqData@meta.data$SCT_snn_res.0.8, scRNAseqData@meta.data$ID)
+# table(scRNAseqDataCEA39@meta.data$SCT_snn_res.0.8, scRNAseqDataCEA39@meta.data$ID)
 
 cat("\n\nHow many cells per patient ...?")
-sort(table(scRNAseqData@meta.data$Patient))
+sort(table(scRNAseqDataCEA39@meta.data$STUDY_NUMBER))
 
 cat("\n\nVisualizing these ratio's per study number and sample ...?")
-UMAPPlot(scRNAseqData, label = TRUE, pt.size = 1.25, label.size = 4, group.by = "ident",
+UMAPPlot(scRNAseqDataCEA39, label = TRUE, pt.size = 1.25, label.size = 4, group.by = "ident",
          repel = TRUE)
 ggsave(paste0(PLOT_loc, "/", Today, ".UMAP.png"), plot = last_plot())
 ggsave(paste0(PLOT_loc, "/", Today, ".UMAP.ps"), plot = last_plot())
 
 
-# barplot(prop.table(x = table(scRNAseqData@active.ident, scRNAseqData@meta.data$Patient)), 
+# barplot(prop.table(x = table(scRNAseqDataCEA39@active.ident, scRNAseqDataCEA39@meta.data$Patient)), 
 #         cex.axis = 1.0, cex.names = 0.5, las = 1,
 #         col = uithof_color, xlab = "study number", legend.text = FALSE, args.legend = list(x = "bottom"))
 # dev.copy(pdf, paste0(QC_loc, "/", Today, ".cell_ratios_per_sample.pdf"))
 # dev.off()
 
-# barplot(prop.table(x = table(scRNAseqData@active.ident, scRNAseqData@meta.data$ID)), 
+# barplot(prop.table(x = table(scRNAseqDataCEA39@active.ident, scRNAseqDataCEA39@meta.data$ID)), 
 #         cex.axis = 1.0, cex.names = 0.5, las = 2,
 #         col = uithof_color, xlab = "sample ID", legend.text = FALSE, args.legend = list(x = "bottom"))
 # dev.copy(pdf, paste0(QC_loc, "/", Today, ".cell_ratios_per_sample_per_plate.pdf"))
 # dev.off()
 
-
-
 ```
 
 ## Visualisations
 
+### Feature plots of known cellular markers
+
 Let's project known cellular markers.
 
 ```{r Visualisation: tSNE Exploration}
-
-UMAPPlot(scRNAseqData, label = FALSE, pt.size = 1.25, label.size = 4, group.by = "ident",
+UMAPPlot(scRNAseqDataCEA39, label = FALSE, pt.size = 1.25, label.size = 4, group.by = "ident",
          repel = TRUE)
 
 # endothelial cells
-FeaturePlot(scRNAseqData, features = c("CD34"), cols =  c("#ECECEC", "#DB003F"))
-FeaturePlot(scRNAseqData, features = c("EDN1"), cols =  c("#ECECEC", "#DB003F"))
-FeaturePlot(scRNAseqData, features = c("EDNRA", "EDNRB"), cols =  c("#ECECEC", "#DB003F"))
-FeaturePlot(scRNAseqData, features = c("CDH5", "PECAM1"), cols =  c("#ECECEC", "#DB003F"))
-FeaturePlot(scRNAseqData, features = c("ACKR1"), cols =  c("#ECECEC", "#DB003F"))
+FeaturePlot(scRNAseqDataCEA39, features = c("CD34"), cols =  c("#ECECEC", "#DB003F"))
+FeaturePlot(scRNAseqDataCEA39, features = c("EDN1"), cols =  c("#ECECEC", "#DB003F"))
+FeaturePlot(scRNAseqDataCEA39, features = c("EDNRA", "EDNRB"), cols =  c("#ECECEC", "#DB003F"))
+FeaturePlot(scRNAseqDataCEA39, features = c("CDH5", "PECAM1"), cols =  c("#ECECEC", "#DB003F"))
+FeaturePlot(scRNAseqDataCEA39, features = c("ACKR1"), cols =  c("#ECECEC", "#DB003F"))
 
 # SMC
-FeaturePlot(scRNAseqData, features = c("MYH11"), cols =  c("#ECECEC", "#DB003F"))
-FeaturePlot(scRNAseqData, features = c("LGALS3", "ACTA2"), cols =  c("#ECECEC", "#DB003F"))
+FeaturePlot(scRNAseqDataCEA39, features = c("MYH11"), cols =  c("#ECECEC", "#DB003F"))
+FeaturePlot(scRNAseqDataCEA39, features = c("LGALS3", "ACTA2"), cols =  c("#ECECEC", "#DB003F"))
 
 # macrophages
-FeaturePlot(scRNAseqData, features = c("CD14", "CD68"), cols =  c("#ECECEC", "#DB003F"))
-FeaturePlot(scRNAseqData, features = c("CD36"), cols =  c("#ECECEC", "#DB003F"))
+FeaturePlot(scRNAseqDataCEA39, features = c("CD14", "CD68"), cols =  c("#ECECEC", "#DB003F"))
+FeaturePlot(scRNAseqDataCEA39, features = c("CD36"), cols =  c("#ECECEC", "#DB003F"))
 
 # t-cells
-FeaturePlot(scRNAseqData, features = c("CD3E"), cols =  c("#ECECEC", "#DB003F"))
-FeaturePlot(scRNAseqData, features = c("CD4"), cols =  c("#ECECEC", "#DB003F"))
-# FeaturePlot(scRNAseqData, features = c("CD8"), cols =  c("#ECECEC", "#DB003F"))
+FeaturePlot(scRNAseqDataCEA39, features = c("CD3E"), cols =  c("#ECECEC", "#DB003F"))
+FeaturePlot(scRNAseqDataCEA39, features = c("CD4"), cols =  c("#ECECEC", "#DB003F"))
+# FeaturePlot(scRNAseqDataCEA39, features = c("CD8"), cols =  c("#ECECEC", "#DB003F"))
 
 # b-cells
-FeaturePlot(scRNAseqData, features = c("CD79A"), cols =  c("#ECECEC", "#DB003F"))
+FeaturePlot(scRNAseqDataCEA39, features = c("CD79A"), cols =  c("#ECECEC", "#DB003F"))
 
 # mast cells
-FeaturePlot(scRNAseqData, features = c("KIT"), cols =  c("#ECECEC", "#DB003F"))
+FeaturePlot(scRNAseqDataCEA39, features = c("KIT"), cols =  c("#ECECEC", "#DB003F"))
 
 # NK cells
-FeaturePlot(scRNAseqData, features = c("NCAM1"), cols =  c("#ECECEC", "#DB003F"))
+FeaturePlot(scRNAseqDataCEA39, features = c("NCAM1"), cols =  c("#ECECEC", "#DB003F"))
 
 ```
 
@@ -460,14 +568,10 @@ We check whether the targets genes were sequenced using our method. In case some
 ```{r list target genes}
 target_genes <- gene_list
 target_genes
-
 ```
 
 
-This code is just an example to filter the list from genes that are not in the data.
-
-- _COL3A_ ==> not found
-- _COL2A_ ==> not found
+We checked the presence of the target genes in the single-cell RNAseq data; all target genes are accounted for. 
 
 ```{r Visualisation: preparation}
 
@@ -490,32 +594,161 @@ target_genes_qc
 
 ### Expression in cell communities
 
-```{r Visualisation: Targets Feature and Dot Plots, message=FALSE, warning=FALSE}
+```{r Visualisation: Targets Dot Plots, message=FALSE, warning=FALSE}
 library(RColorBrewer)
 
-p1 <- DotPlot(scRNAseqData, features = target_genes_qc,
-        cols = "RdBu")
+p1 <- DotPlot(scRNAseqDataCEA39, 
+              features = target_genes_qc,
+              cols = "RdBu") + 
+  theme(axis.text.x = element_text(angle = 45, hjust=1, size = 8)) +
+  theme(axis.title.x = element_blank(), axis.title.y = element_blank()) # remove the y- and x-axis labels
 
-p1 + theme(axis.text.x = element_text(angle = 45, hjust=1, size = 5))
+p1
 
 ggsave(paste0(PLOT_loc, "/", Today, ".DotPlot.Targets.png"), plot = last_plot())
 ggsave(paste0(PLOT_loc, "/", Today, ".DotPlot.Targets.ps"), plot = last_plot())
 ggsave(paste0(PLOT_loc, "/", Today, ".DotPlot.Targets.pdf"), plot = last_plot())
 
 rm(p1)
+```
 
-# FeaturePlot(scRNAseqData, features = c(target_genes_qc),
-#             cols =  c("#ECECEC", "#DB003F", "#9A3480","#1290D9"),
-#             combine = TRUE)
-# 
-# ggsave(paste0(PLOT_loc, "/", Today, ".FeaturePlot.Targets.png"), plot = last_plot())
-# ggsave(paste0(PLOT_loc, "/", Today, ".FeaturePlot.Targets.ps"), plot = last_plot())
+Let's group this dotplot based on some grouping.
 
+If we want we can also filter the genes that are not found in the data.
+
+```{r}
+# Assuming 'gene_list_df' is your data.frame with the relevant columns loaded
+gene_list_df_filtered <- subset(gene_list_df, Comments != "not found" | is.na(Comments))
+gene_list_df_filtered
+```
+
+### Expression in cell communities grouped
+
+```{r}
+# Separate genes by significance
+gene_list_df_filtered_cd8tcells <- gene_list_df_filtered$GeneSymbol[gene_list_df_filtered$Comments == "Presence of CD8+ T cells"]
+gene_list_df_filtered_cytotoxic <- gene_list_df_filtered$GeneSymbol[gene_list_df_filtered$Comments == "Cytotoxic genes"]
+gene_list_df_filtered_tcr <- gene_list_df_filtered$GeneSymbol[gene_list_df_filtered$Comments == "TCR signaling"]
+gene_list_df_filtered_tissueres <- gene_list_df_filtered$GeneSymbol[gene_list_df_filtered$Comments == "Tissue residency"]
+
+# Combine the genes, first DOWN then UP (or vice versa based on preference)
+ordered_genes_qc <- c(gene_list_df_filtered_cd8tcells, gene_list_df_filtered_cytotoxic, gene_list_df_filtered_tcr, gene_list_df_filtered_tissueres)
+```
+
+
+```{r}
+library(RColorBrewer)
+# Create DotPlot ordered
+p1_group <- DotPlot(scRNAseqData, 
+              features = ordered_genes_qc, 
+              cols = "RdBu") + 
+  theme(axis.text.x = element_text(angle = 45, hjust=1, size = 8)) +
+  theme(axis.title.x = element_blank(), axis.title.y = element_blank()) # remove the y- and x-axis labels
+
+p1_group
+
+# Save the plots
+ggsave(paste0(PLOT_loc, "/", Today, ".DotPlot.Targets.Grouped.png"), plot = p1_group)
+ggsave(paste0(PLOT_loc, "/", Today, ".DotPlot.Targets.Grouped.ps"), plot = p1_group)
+ggsave(paste0(PLOT_loc, "/", Today, ".DotPlot.Targets.Grouped.pdf"), plot = p1_group)
+
+```
+
+#### Plotting gender
+
+We should also plot these data stratified by gender smooth muscle cells.
+
+##### Create subsets
+
+```{r}
+unique(scRNAseqDataCEA39$Gender)
+```
+
+```{r}
+# Subset Seurat object for Males
+male_cells <- WhichCells(scRNAseqDataCEA39, expression = Gender == "male")
+scRNAseqDataCEA39_males <- subset(scRNAseqDataCEA39, cells = male_cells)
+
+# Subset Seurat object for Females
+female_cells <- WhichCells(scRNAseqDataCEA39, expression = Gender == "female")
+scRNAseqDataCEA39_females <- subset(scRNAseqDataCEA39, cells = female_cells)
+```
+
+##### T-cells
+
+```{r}
+# Define the cell identities you want to include in the plot
+selected_idents_cells <- c("CD3+ TC I",
+                         "CD3+ TC II", 
+                         "CD3+ TC III", 
+                         "CD3+ TC IV", 
+                         "CD3+ TC V", 
+                         "CD3+ TC VI", 
+                         "FOXP3+ TC")
+```
+
+```{r}
+library(RColorBrewer)
+library(cowplot)  # For combining plots
+
+# Create DotPlot for males
+p1_males_cells <- DotPlot(scRNAseqDataCEA39_males,
+                       features = ordered_genes_qc,
+                       idents = selected_idents_cells, 
+                       
+                       cols = "RdBu") + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 8)) +
+  theme(axis.title.x = element_blank(), axis.title.y = element_blank()) + 
+  ggtitle("Males")
+
+# Create DotPlot for females
+p2_females_cells <- DotPlot(scRNAseqDataCEA39_females,
+                           features = ordered_genes_qc,
+                           idents = selected_idents_cells,
+                           
+                           cols = "RdBu") + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 8)) +
+  theme(axis.title.x = element_blank(), axis.title.y = element_blank()) + 
+  # theme(axis.title.x = element_blank(),
+  #       axis.title.y = element_blank(),
+  #       axis.text.y = element_blank(),  # Remove y-axis text
+  #       axis.ticks.y = element_blank()) +  # Remove y-axis ticks 
+  ggtitle("Females")
+
+# Combine the two plots into one panel using cowplot
+combined_plot_cells <- plot_grid(p1_males_cells, p2_females_cells, ncol = 2)
+
+# Display the combined plot
+print(combined_plot_cells)
+
+
+# Save the plots
+ggsave(paste0(PLOT_loc, "/", Today, ".DotPlot.Targets.ColocGrouped.TCellonly.GenderMales.png"), plot = p1_males_cells)
+ggsave(paste0(PLOT_loc, "/", Today, ".DotPlot.Targets.ColocGrouped.TCellonly.GenderMales.ps"), plot = p1_males_cells)
+ggsave(paste0(PLOT_loc, "/", Today, ".DotPlot.Targets.ColocGrouped.TCellonly.GenderMales.pdf"), plot = p1_males_cells)
+
+ggsave(paste0(PLOT_loc, "/", Today, ".DotPlot.Targets.ColocGrouped.TCellonly.GenderFemales.png"), plot = p2_females_cells)
+ggsave(paste0(PLOT_loc, "/", Today, ".DotPlot.Targets.ColocGrouped.TCellonly.GenderFemales.ps"), plot = p2_females_cells)
+ggsave(paste0(PLOT_loc, "/", Today, ".DotPlot.Targets.ColocGrouped.TCellonly.GenderFemales.pdf"), plot = p2_females_cells)
+
+# ggsave(paste0(PLOT_loc, "/", Today, ".DotPlot.Targets.ColocGrouped.TCellonly.Gender.png"), plot = combined_plot_cells)
+# ggsave(paste0(PLOT_loc, "/", Today, ".DotPlot.Targets.ColocGrouped.TCellonly.Gender.ps"), plot = combined_plot_cells)
+# ggsave(paste0(PLOT_loc, "/", Today, ".DotPlot.Targets.ColocGrouped.TCellonly.Gender.pdf"), plot = combined_plot_cells)
+
+```
+
+```{r Visualisation: Targets Feature Plots, message=FALSE, warning=FALSE}
+FeaturePlot(scRNAseqDataCEA39, features = c(target_genes_qc),
+            cols =  c("#ECECEC", "#DB003F", "#9A3480","#1290D9"),
+            combine = TRUE)
+
+ggsave(paste0(PLOT_loc, "/", Today, ".FeaturePlot.Targets.png"), plot = last_plot())
+ggsave(paste0(PLOT_loc, "/", Today, ".FeaturePlot.Targets.ps"), plot = last_plot())
 
 ```
 
 ```{r Visualisation: Targets}
-# VlnPlot(scRNAseqData, features = "DUSP27")
+# VlnPlot(scRNAseqDataCEA39, features = "DUSP27")
 
 # VlnPlot files
 ifelse(!dir.exists(file.path(PLOT_loc, "/VlnPlot")), 
@@ -527,7 +760,7 @@ VlnPlot_loc = paste0(PLOT_loc, "/VlnPlot")
 for (GENE in target_genes_qc){
   print(paste0("Projecting the expression of ", GENE, "."))
 
-  vp1 <-  VlnPlot(scRNAseqData, features = GENE) + 
+  vp1 <-  VlnPlot(scRNAseqDataCEA39, features = GENE) + 
     xlab("cell communities") + 
     ylab(bquote("normalized expression")) +
     theme(axis.title.x = element_text(color = "#000000", size = 14, face = "bold"), 
@@ -559,7 +792,7 @@ Here we project genes to only the broad cell communities:
 #### Macrophages
 
 ```{r}
-unique(scRNAseqData@active.ident)
+unique(scRNAseqDataCEA39@active.ident)
 ```
 
 Comparison between the macrophages cell communities (*CD14/CD68*<sup>+</sup>),
@@ -567,7 +800,7 @@ and all other communities.
 
 ```{r Visualisation: Volcano MAC calculate}
 
-MAC.markers <- FindMarkers(object = scRNAseqData, 
+MAC.markers <- FindMarkers(object = scRNAseqDataCEA39, 
                           ident.1 = c("CD68+CASP1+IL1B+SELL MInf", 
                                       "CD68+CD1C+ DC", 
                                       "CD68+CD4+ Mono",
@@ -651,7 +884,7 @@ all other communities.
 
 ```{r Visualisation: Volcano SMC calculate}
 
-SMC.markers <- FindMarkers(object = scRNAseqData, 
+SMC.markers <- FindMarkers(object = scRNAseqDataCEA39, 
                           ident.1 = c("ACTA2+ SMC"), 
                           ident.2 = c("CD68+CASP1+IL1B+SELL MInf", 
                                       "CD68+CD1C+ DC", 
@@ -731,7 +964,7 @@ all other communities.
 
 ```{r Visualisation: Volcano EC calculate}
 
-EC.markers <- FindMarkers(object = scRNAseqData, 
+EC.markers <- FindMarkers(object = scRNAseqDataCEA39, 
                           ident.1 = c("CD34+ EC I", 
                                       "CD34+ EC II"), 
                           ident.2 = c("CD68+CASP1+IL1B+SELL MInf", 
@@ -812,7 +1045,7 @@ other communities.
 
 ```{r Visualisation: Volcano Tcell calculate}
 
-TC.markers <- FindMarkers(object = scRNAseqData, 
+TC.markers <- FindMarkers(object = scRNAseqDataCEA39, 
                           ident.1 = c("CD3+ TC I",
                                       "CD3+ TC II", 
                                       "CD3+ TC III", 
@@ -898,7 +1131,7 @@ communities.
 
 ```{r Visualisation: Volcano Bcell calculate}
 
-BC.markers <- FindMarkers(object = scRNAseqData, 
+BC.markers <- FindMarkers(object = scRNAseqDataCEA39, 
                           ident.1 = c("CD79+ BCplasma", 
                                       "CD79A+ BCmem"), 
                           ident.2 = c("CD68+CASP1+IL1B+SELL MInf", 
@@ -980,7 +1213,7 @@ communities.
 
 ```{r Visualisation: Volcano Mast calculate}
 
-MC.markers <- FindMarkers(object = scRNAseqData, 
+MC.markers <- FindMarkers(object = scRNAseqDataCEA39, 
                           ident.1 = c("CD68+KIT+ MC"), 
                           ident.2 = c("CD68+CASP1+IL1B+SELL MInf", 
                                       "CD68+CD1C+ DC", 
@@ -1060,7 +1293,7 @@ and all other communities.
 
 ```{r Visualisation: Volcano NK calculate}
 
-NK.markers <- FindMarkers(object = scRNAseqData, 
+NK.markers <- FindMarkers(object = scRNAseqDataCEA39, 
                           ident.1 = c("CD3+CD56+ NK I",
                                       "CD3+CD56+ NK II"), 
                           ident.2 = c("CD68+CASP1+IL1B+SELL MInf", 
@@ -1134,95 +1367,14 @@ fwrite(temp, file = paste0(OUT_loc, "/", Today, ".NK.DEG.Targets.txt"),
        showProgress = FALSE, verbose = FALSE)
 ```
 
-# Subset scRNAseq data
-
-List of samples to be included based on informed consent (see above).
-
-```{r}
-samples_of_interest <- unlist(scRNAseqDataMetaAE.all$Patient)
-
-```
-
-```{r}
-scRNAseqDataCEA39 <- subset(scRNAseqData, subset = Patient %in% samples_of_interest)
-```
-
-```{r}
-variables_of_interest <- c("Hospital", "ORyear", "Artery_summary",
-                           "Age", "Gender",
-                           "TC_final", "LDL_final", "HDL_final", "TG_final",
-                           "systolic", "diastoli", "GFR_MDRD", "BMI",
-                           "KDOQI", "BMI_WHO",
-                           "SmokerStatus", "AlcoholUse",
-                           "DiabetesStatus",
-                           "Hypertension.selfreport", "Hypertension.selfreportdrug", "Hypertension.composite", "Hypertension.drugs",
-                           "Med.anticoagulants", "Med.all.antiplatelet", "Med.Statin.LLD",
-                           "Stroke_Dx",
-                           "sympt", "Symptoms.5G", "AsymptSympt", "AsymptSympt2G",
-                           "Symptoms.Update2G", "Symptoms.Update3G", "indexsymptoms_latest_4g",
-                           "restenos", "stenose",
-                           "CAD_history", "PAOD", "Peripheral.interv",
-                           "EP_composite", "EP_composite_time", "EP_major", "EP_major_time")
-
-temp <- subset(scRNAseqDataMetaAE.all, select = c("Patient", variables_of_interest))
-# str(temp)
-
-```
-
-```{r}
-scRNAseqDataCEA39@meta.data <- merge(scRNAseqDataCEA39@meta.data, temp, by.x = "Patient", by.y = "Patient")
-scRNAseqDataCEA39@meta.data <- dplyr::rename(scRNAseqDataCEA39@meta.data, "STUDY_NUMBER" = "Patient")
-
-# str(scRNAseqDataCEA39@meta.data)
-
-```
-
-## Saving new dataset
-
-```{r}
-temp2 <- as_tibble(subset(scRNAseqDataCEA39@meta.data, select = c("STUDY_NUMBER", "orig.ident", "nCount_RNA", "nFeature_RNA",
-                                                                 "Plate", "Batch", "C.H", "Type", "percent.mt",
-                                                                 "nCount_SCT", "nFeature_SCT", "seurat_clusters")))
-
-# fwrite(temp2,
-#        file = paste0(OUT_loc, "/", Today, ".AESCRNA.CEA.39pts.samplelist.after_qc.IC_commercial.csv"),
-#        sep = ",", row.names = FALSE, col.names = TRUE,
-#        showProgress = TRUE)
-# rm(temp2)
-# 
-# temp <- dplyr::rename(temp, "STUDY_NUMBER" = "Patient")
-# fwrite(temp,
-#        file = paste0(OUT_loc, "/", Today, ".AESCRNA.CEA.39pts.clinicaldata.after_qc.IC_commercial.csv"),
-#        sep = ",", row.names = FALSE, col.names = TRUE,
-#        showProgress = TRUE)
-# rm(temp)
-# 
-# saveRDS(scRNAseqDataCEA39, file = paste0(OUT_loc, "/", Today, ".AESCRNA.CEA.39pts.Seurat.after_qc.IC_commercial.RDS"))
-
-fwrite(temp2,
-       file = paste0(OUT_loc, "/", Today, ".AESCRNA.CEA.39pts.samplelist.after_qc.IC_academic.csv"),
-       sep = ",", row.names = FALSE, col.names = TRUE,
-       showProgress = TRUE)
-rm(temp2)
-
-temp <- dplyr::rename(temp, "STUDY_NUMBER" = "Patient")
-fwrite(temp,
-       file = paste0(OUT_loc, "/", Today, ".AESCRNA.CEA.39pts.clinicaldata.after_qc.IC_academic.csv"),
-       sep = ",", row.names = FALSE, col.names = TRUE,
-       showProgress = TRUE)
-rm(temp)
-
-saveRDS(scRNAseqDataCEA39, file = paste0(OUT_loc, "/", Today, ".AESCRNA.CEA.39pts.Seurat.after_qc.IC_academic.RDS"))
-
-```
 
 
 # Session information
 
 --------------------------------------------------------------------------------
 
-    Version:      v1.1.2
-    Last update:  2024-01-09
+    Version:      v1.2.1
+    Last update:  2024-11-26
     Written by:   Sander W. van der Laan (s.w.vanderlaan-2[at]umcutrecht.nl).
     Description:  Script to load single-cell RNA sequencing (scRNAseq) data, and perform quality control (QC), and initial mapping to cells.
     Minimum requirements: R version 3.5.2 (2018-12-20) -- 'Eggshell Igloo', macOS Mojave (10.14.2).
@@ -1238,6 +1390,8 @@ saveRDS(scRNAseqDataCEA39, file = paste0(OUT_loc, "/", Today, ".AESCRNA.CEA.39pt
     _W_
 
     **Changes log**
+    * v1.2.1 Some fixes to the subsetting of a cell community and the visualization by group of target genes. 
+    * v1.2.0 Fixed an issue where the subset of scRNAseq was loosing cell-identities.
     * v1.1.1 Textual fixes.
     * v1.1.1 Fix writing baseline table.
     * v1.1.0 Update to study database.
@@ -1264,3 +1418,4 @@ save.image(paste0(PROJECT_loc, "/",Today,".",PROJECTNAME,".AESCRNA.results.RData
 +-----------------------------------------------------------------------------------------------------------------------------------------+
 | <sup>© 1979-2024 Sander W. van der Laan | s.w.vanderlaan[at]gmail[dot]com | [vanderlaanand.science](https://vanderlaanand.science).</sup> |
 +-----------------------------------------------------------------------------------------------------------------------------------------+
+

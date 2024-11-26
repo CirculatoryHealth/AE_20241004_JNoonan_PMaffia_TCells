@@ -1,6 +1,6 @@
 ---
 title: "Preparation bulkRNAseq"
-subtitle: Accompanying 'AE_TEMPLATE'
+subtitle: Accompanying 'AE_20241004_JNoonan_PMaffia_TCells'
 author: '[Sander W. van der Laan, PhD](https://vanderlaanand.science) | s.w.vanderlaan[at]gmail[dot]com'
 date: '`r Sys.Date()`'
 output:
@@ -1895,7 +1895,7 @@ saveRDS(AERNAScomboSEvst, file = paste0(OUT_loc, "/", Today, ".AERNAScomboSEvst.
 --------------------------------------------------------------------------------
 
     Version:      v1.2.0
-    Last update:  2024-01-09
+    Last update:  2024-11-26
     Written by:   Sander W. van der Laan (s.w.vanderlaan-2[at]umcutrecht.nl).
     Description:  Script to load bulk RNA sequencing data, and perform gene expression analyses, and visualisations.
     Minimum requirements: R version 3.5.2 (2018-12-20) -- 'Eggshell Igloo', macOS Mojave (10.14.2).
@@ -1944,7 +1944,6 @@ rm(AERNAScombovsd,AERNAScombodds,
 
 
 ```{r Saving}
-
 save.image(paste0(PROJECT_loc, "/",Today,".",PROJECTNAME,".bulkRNAseq.preparation.RData"))
 ```
 

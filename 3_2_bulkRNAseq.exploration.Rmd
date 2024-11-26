@@ -1,6 +1,6 @@
 ---
 title: "Exploration bulkRNAseq analyses"
-subtitle: Accompanying 'AE_TEMPLATE'
+subtitle: Accompanying 'AE_20241004_JNoonan_PMaffia_TCells'
 author: '[Sander W. van der Laan, PhD](https://vanderlaanand.science) | s.w.vanderlaan[at]gmail[dot]com'
 date: '`r Sys.Date()`'
 output:
@@ -736,9 +736,9 @@ saveRDS(AERNAScomboSE_target, file = paste0(OUT_loc, "/", Today, ".AERNAScomboSE
 
 Here we just do a sanity check and compare the expression for a favorite gene.
 ```{r}
-ggpubr::gghistogram(as.tibble(t(subset(assay(AERNAScomboSE_target), AERNAScomboSE_target@rowRanges$symbol == "PCSK9"))),
-                    x = "ENSG00000169174", 
-                    xlab = "PCSK9 (ENSG00000169174) expression\nlog-transformed, size corrected counts",
+ggpubr::gghistogram(as.tibble(t(subset(assay(AERNAScomboSE_target), AERNAScomboSE_target@rowRanges$symbol == "PRDM1"))),
+                    x = "ENSG00000057657", 
+                    xlab = "PRDM1 (ENSG00000057657) expression\nlog-transformed, size corrected counts",
                     color = "white", fill =  uithof_color[20],
                     rug = F, add_density = F,
                     add = c("median"),
@@ -752,7 +752,7 @@ ggpubr::gghistogram(as.tibble(t(subset(assay(AERNAScomboSE_target), AERNAScomboS
 --------------------------------------------------------------------------------
 
     Version:      v1.0.0
-    Last update:  2024-01-09
+    Last update:  2024-11-26
     Written by:   Sander W. van der Laan (s.w.vanderlaan-2[at]umcutrecht.nl).
     Description:  Script to load bulk RNA sequencing data, and perform gene expression analyses, and visualisations.
     Minimum requirements: R version 3.5.2 (2018-12-20) -- 'Eggshell Igloo', macOS Mojave (10.14.2).

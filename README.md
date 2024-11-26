@@ -1,25 +1,12 @@
-<!--  ## AE_TEMPLATE -->
-<!--   -->
-<!--  This is a "Lookup request" template.  -->
-<!--  The naming of the repository should follow the convention we use in > Trello, _etc._, _e.g._  "AE_20190910_008_JHILLEBRANDS_SDEJAGER_TEMS_TIE2". -->
-<!--   -->
-<!--  This template includes some (standard) codes/scripts for: -->
-<!--   -->
-<!--  - baseline tables, sample selections -->
-<!--  - SNP lookups, GWAS, or gene-based lookups -->
-<!--  - bulk RNAseq analyses -->
-<!--  - scRNAseq projections and lookups -->
-
 <!--  Provide a title.         -->
-[AE_TEMPLATE](https://github.com/CirculatoryHealth/AE_TEMPLATE)<img align="right" height="200" src=images/AE_Genomics_2010.png>
+[AE_20241004_JNoonan_PMaffia_TCells](https://github.com/CirculatoryHealth/AE_20241004_JNoonan_PMaffia_TCells)<img align="right" height="200" src=images/AE_Genomics_2010.png>
 ============
 
 <!--  Provide details on the people involved in the project.         -->
 *Collaborators*
 
-[First name] [Initials] [Last name]
-[First name] [Initials] [Last name]
-[First name] [Initials] [Last name]
+Jonathan Noonan, 
+Pasquale Maffia, 
 
 *Athero-Express Team*
 
@@ -32,7 +19,7 @@ Gert Jan de Borst,
 Gerard Pasterkamp.
 
 <!--  Provide the project ID.         -->
-**Project ID** [`AE_[YYYYMMDD]_[PROJECTNUMBER]_[LEADCOLLABORATOR]_[PROJECTNAME]`]
+**Project ID** [`AE_20241004_JNoonan_PMaffia_TCells`]
 
 # Background
 <!--  Provide some background, study design, results, etc.         -->
@@ -276,7 +263,7 @@ Dr. Sander W. van der Laan has received Roche funding for unrelated work.
 #### Changes log
     
     _Version:_      v1.4.5</br>
-    _Last update:_  2024-10-04</br>
+    _Last update:_  2024-11-26</br>
     _Written by:_   Sander W. van der Laan (s.w.vanderlaan [at] gmail [dot] com).
     
     **MoSCoW To-Do List**

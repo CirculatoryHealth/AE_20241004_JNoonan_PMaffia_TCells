@@ -1,6 +1,6 @@
 ---
 title: "Baseline characteristics"
-subtitle: Accompanying 'AE_TEMPLATE'
+subtitle: Accompanying 'AE_20241004_JNoonan_PMaffia_TCells'
 author: '[Sander W. van der Laan, PhD](https://vanderlaanand.science) | s.w.vanderlaan[at]gmail[dot]com'
 date: '`r Sys.Date()`'
 output:
@@ -1287,7 +1287,7 @@ saveRDS(AEDB, file = paste0(OUT_loc, "/",Today,".",PROJECTNAME,".AEDB.raw.RDS"))
 ------------------------------------------------------------------------------------------------------------------------
 
     Version:      v1.3.0
-    Last update:  2024-05-31
+    Last update:  2024-11-26
     Written by:   Sander W. van der Laan (s.w.vanderlaan[at]gmail[dot]com).
     Description:  Script to get some Athero-Express Biobank Study baseline characteristics in the whole cohort and the CEA subset.
     Minimum requirements: R version 3.4.3 (2017-06-30) -- 'Single Candle', Mac OS X El Capitan
