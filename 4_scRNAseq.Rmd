@@ -395,12 +395,14 @@ scRNAseqDataCEA39 <- subset(scRNAseqData, subset = Patient %in% samples_of_inter
 Selecting the clinical data of interest.
 
 ```{r}
+
 variables_of_interest <- c("Hospital", "ORyear", "Artery_summary",
                            "Age", "Gender",
                            "TC_final", "LDL_final", "HDL_final", "TG_final",
                            "systolic", "diastoli", "GFR_MDRD", "BMI",
                            "KDOQI", "BMI_WHO",
-                           "SmokerStatus", "AlcoholUse",
+                           "SmokerStatus", 
+                           "AutoImDrug",
                            "DiabetesStatus",
                            "Hypertension.selfreport", "Hypertension.selfreportdrug", "Hypertension.composite", "Hypertension.drugs",
                            "Med.anticoagulants", "Med.all.antiplatelet", "Med.Statin.LLD",
@@ -409,7 +411,13 @@ variables_of_interest <- c("Hospital", "ORyear", "Artery_summary",
                            "Symptoms.Update2G", "Symptoms.Update3G", "indexsymptoms_latest_4g",
                            "restenos", "stenose",
                            "CAD_history", "PAOD", "Peripheral.interv",
-                           "EP_composite", "EP_composite_time", "EP_major", "EP_major_time")
+                           "EP_composite", "EP_composite_time", "EP_major", "EP_major_time",
+                           "MAC_rankNorm", "SMC_rankNorm", "Macrophages.bin", "SMC.bin",
+                           "Neutrophils_rankNorm", "MastCells_rankNorm",
+                           "IPH.bin", "VesselDensity_rankNorm",
+                           "Calc.bin", "Collagen.bin", 
+                           "Fat.bin_10", "Fat.bin_40", 
+                           "OverallPlaquePhenotype", "Plaque_Vulnerability_Index")
 
 temp <- subset(scRNAseqDataMetaAE.all, select = c("Patient", variables_of_interest))
 ```

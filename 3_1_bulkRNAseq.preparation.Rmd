@@ -566,7 +566,7 @@ basetable_vars = c("Hospital", "ORyear", "Artery_summary",
                    "SmokerStatus", "AlcoholUse",
                    "DiabetesStatus", 
                    "Hypertension.selfreport", "Hypertension.selfreportdrug", "Hypertension.composite", "Hypertension.drugs", 
-                   "Med.anticoagulants", "Med.all.antiplatelet", "Med.Statin.LLD", 
+                   "Med.anticoagulants", "Med.all.antiplatelet", "Med.Statin.LLD", "aid",
                    "Stroke_Dx", "sympt", "Symptoms.5G", "AsymptSympt", "AsymptSympt2G",
                    "Symptoms.Update2G", "Symptoms.Update3G",
                    "restenos", "stenose",
@@ -882,6 +882,78 @@ cat("\nAthero-Express RNAseq Study Combined\n")
 
 ## Baseline
 
+### Check existence of autoimmunity
+
+Using drug usage data check whether there are patients with autoimmune disease.
+
+```{r}
+# Inventory 'raw' data
+table(AEDB.CEA$aid)
+
+# Create a new variable and change -999 to NA, 0 to 'no', 1 to 'yes'
+AEDB.CEA$AutoImDrug <- ifelse(AEDB.CEA$aid == -999, NA, ifelse(AEDB.CEA$aid == 0, "no", "yes"))
+table(AEDB.CEA$AutoImDrug)
+
+# Create a new variable and change -999 to NA, 0 to 'no', 1 to 'yes'
+AEDB.CEA$AutoImDrug <- ifelse(AEDB.CEA$aid == -999, NA, ifelse(AEDB.CEA$aid == 0, "no", "yes"))
+
+```
+
+### Update variables of interest
+
+```{r}
+# Baseline table variables
+basetable_vars_update = c("Age", "Gender", 
+                          "TC_final", "LDL_final", "HDL_final", "TG_final", 
+                          "systolic", "diastoli", 
+                          "GFR_MDRD", 
+                          "KDOQI", 
+                          "BMI", 
+                          "BMI_WHO",
+                          "SmokerStatus", 
+                          "DiabetesStatus", 
+                          "Hypertension.composite", 
+                          "AutoImDrug",
+                          "Hypertension.drugs", "Med.anticoagulants", "Med.all.antiplatelet", "Med.Statin.LLD", 
+                          "Symptoms.5G", "AsymptSympt", "AsymptSympt2G",
+                          "CAD_history", "PAOD", 
+                          "restenos", 
+                          "EP_composite", "EP_composite_time", 
+                          "EP_major", "EP_major_time",
+                          "MAC_rankNorm", "SMC_rankNorm", "Macrophages.bin", "SMC.bin",
+                          "Neutrophils_rankNorm", "MastCells_rankNorm",
+                          "IPH.bin", "VesselDensity_rankNorm",
+                          "Calc.bin", "Collagen.bin", 
+                          "Fat.bin_10", "Fat.bin_40", 
+                          "OverallPlaquePhenotype", "Plaque_Vulnerability_Index"
+                          ) # this is for a sanity check
+
+basetable_bin_update = c("Gender", 
+                         "KDOQI", 
+                         "BMI_WHO",
+                         "SmokerStatus", 
+                         "DiabetesStatus", 
+                         "Hypertension.composite", 
+                         "AutoImDrug",
+                         "Hypertension.drugs", "Med.anticoagulants", "Med.all.antiplatelet", "Med.Statin.LLD", 
+                         "Symptoms.5G", "AsymptSympt", "AsymptSympt2G",
+                         "CAD_history", "PAOD", 
+                         "restenos", 
+                         "EP_composite", 
+                         "EP_major", 
+                         "Macrophages.bin", "SMC.bin",
+                         "IPH.bin", 
+                         "Calc.bin", "Collagen.bin", 
+                         "Fat.bin_10", "Fat.bin_40", 
+                         "OverallPlaquePhenotype",
+                         "Plaque_Vulnerability_Index")
+# basetable_bin
+
+basetable_con_update = basetable_vars_update[!basetable_vars_update %in% basetable_bin_update]
+# basetable_con
+```
+
+
 ### AERNAS1
 
 Showing the baseline table for the RNAseq data in 622 CEA patients with informed consent.
@@ -889,8 +961,13 @@ Showing the baseline table for the RNAseq data in 622 CEA patients with informed
 ```{r }
 cat("====================================================================================================\n")
 cat("SELECTION THE SHIZZLE\n")
-AERNAS1SEClinData <- as.tibble(colData(AERNAS1SE))
-
+temp <- as.tibble(colData(AERNAS1SE))
+temp2 <- AEDB.CEA %>% dplyr::select(STUDY_NUMBER, AutoImDrug)
+AERNAS1SEClinData <- merge(temp, 
+                           temp2, 
+                           by.x = "STUDY_NUMBER", by.y = "STUDY_NUMBER",
+                           sort = FALSE, all.x = TRUE)
+rm(temp, temp2)
 cat("- sanity checking PRIOR to selection")
 library(data.table)
 require(labelled)
@@ -916,14 +993,16 @@ cat("CREATE BASELINE TABLE\n")
 
 # Create baseline tables
 # http://rstudio-pubs-static.s3.amazonaws.com/13321_da314633db924dc78986a850813a50d5.html
-AERNAS1SEClinData.CEA.tableOne = print(CreateTableOne(vars = basetable_vars, 
-                                                  # factorVars = basetable_bin,
+AERNAS1SEClinData.CEA.tableOne = print(CreateTableOne(vars = c(basetable_vars_update),
+                                                  factorVars = basetable_bin_update,
                                                   # strata = "Gender",
                                                   data = AERNAS1SEClinData, includeNA = TRUE), 
                                    nonnormal = c(), 
                                    quote = FALSE, showAllLevels = TRUE,
                                    format = "p", 
-                                   contDigits = 3)[,1:2]
+                                   contDigits = 3) %>%
+                as.data.frame() %>%
+                tibble::rownames_to_column(var = "Variable")  # Add variable names
 
 ```
 
@@ -935,8 +1014,13 @@ Showing the baseline table for the RNAseq data in 471 CEA patients with informed
 ```{r }
 cat("====================================================================================================\n")
 cat("SELECTION THE SHIZZLE\n")
-AERNAS2SEClinData <- as.tibble(colData(AERNAS2SE))
-
+temp <- as.tibble(colData(AERNAS2SE))
+temp2 <- AEDB.CEA %>% dplyr::select(STUDY_NUMBER, AutoImDrug)
+AERNAS2SEClinData <- merge(temp, 
+                           temp2, 
+                           by.x = "STUDY_NUMBER", by.y = "STUDY_NUMBER",
+                           sort = FALSE, all.x = TRUE)
+rm(temp, temp2)
 cat("- sanity checking PRIOR to selection")
 library(data.table)
 require(labelled)
@@ -962,14 +1046,16 @@ cat("CREATE BASELINE TABLE\n")
 
 # Create baseline tables
 # http://rstudio-pubs-static.s3.amazonaws.com/13321_da314633db924dc78986a850813a50d5.html
-AERNAS2SEClinData.CEA.tableOne = print(CreateTableOne(vars = basetable_vars, 
-                                                  # factorVars = basetable_bin,
+AERNAS2SEClinData.CEA.tableOne = print(CreateTableOne(vars = c(basetable_vars_update),
+                                                  factorVars = basetable_bin_update,
                                                   # strata = "Gender",
                                                   data = AERNAS2SEClinData, includeNA = TRUE), 
                                    nonnormal = c(), 
                                    quote = FALSE, showAllLevels = TRUE,
                                    format = "p", 
-                                   contDigits = 3)[,1:2]
+                                   contDigits = 3) %>%
+                as.data.frame() %>%
+                tibble::rownames_to_column(var = "Variable")  # Add variable names
 
 ```
 
@@ -981,7 +1067,13 @@ Showing the baseline table for the RNAseq data in 1,093 CEA patients in AERNAS1 
 ```{r }
 cat("====================================================================================================\n")
 cat("SELECTION THE SHIZZLE\n")
-AERNAScomboSEClinData <- as.tibble(colData(AERNAScomboSE))
+temp <- as.tibble(colData(AERNAScomboSE))
+temp2 <- AEDB.CEA %>% dplyr::select(STUDY_NUMBER, AutoImDrug)
+AERNAScomboSEClinData <- merge(temp, 
+                           temp2, 
+                           by.x = "STUDY_NUMBER", by.y = "STUDY_NUMBER",
+                           sort = FALSE, all.x = TRUE)
+rm(temp, temp2)
 
 cat("- sanity checking PRIOR to selection")
 library(data.table)
@@ -1016,65 +1108,123 @@ AERNAScomboSEClinData$StudyName <- to_factor(AERNAScomboSEClinData$StudyName)
 AERNAScomboSEClinData$StudyBiobank <- to_factor(AERNAScomboSEClinData$StudyBiobank)
 AERNAScomboSEClinData$SampleSize <- to_factor(AERNAScomboSEClinData$SampleSize)
 AERNAScomboSEClinData$InformedConsent <- to_factor(AERNAScomboSEClinData$InformedConsent)
+AERNAScomboSEClinData$AutoImDis <- to_factor(AERNAScomboSEClinData$AutoImDrug)
 
 # http://rstudio-pubs-static.s3.amazonaws.com/13321_da314633db924dc78986a850813a50d5.html
 AERNAScomboSEClinData.CEA.tableOne = print(CreateTableOne(vars =  
-                                                          basetable_vars, 
-                                                  factorVars = basetable_bin, 
+                                                          c(basetable_vars_update),
+                                                  factorVars = basetable_bin_update,
                                                   strata = "StudyName",
                                                   data = AERNAScomboSEClinData, includeNA = TRUE), 
                                    nonnormal = c(), 
                                    quote = FALSE, showAllLevels = TRUE,
                                    format = "p", 
-                                   contDigits = 3)[,1:5]
+                                   contDigits = 3) %>%
+                as.data.frame() %>%
+                tibble::rownames_to_column(var = "Variable")  # Add variable names
 
 ```
 
 ### Baseline writing
 
-Writing the baseline tables to Excel format.
+Writing the baseline tables to Excel-format.
+
+<!-- ```{r } -->
+<!-- # Write basetable -->
+<!-- require(openxlsx) -->
+<!-- # write.xlsx(file = paste0(BASELINE_loc, "/",Today,".",PROJECTNAME,".AERNAS1.CEA.608pts.after_qc.IC_commercial.BaselineTable.xlsx"), -->
+<!-- #            format(AERNAS1SEClinData.CEA.tableOne, digits = 5, scientific = FALSE) , -->
+<!-- #            rowNames = TRUE, colNames = TRUE, overwrite = TRUE) -->
+<!-- # -->
+
+<!-- write.xlsx(file = paste0(BASELINE_loc, "/",Today,".",PROJECTNAME,".AERNAS1.CEA.622pts.after_qc.IC_academic.BaselineTable.xlsx"), -->
+<!--            format(as.data.frame(AERNAS1SEClinData.CEA.tableOne), digits = 5, scientific = FALSE) , -->
+<!--            rowNames = FALSE, colNames = TRUE, overwrite = TRUE) -->
+<!-- ``` -->
+
+
+<!-- ```{r } -->
+<!-- # Write basetable -->
+<!-- require(openxlsx) -->
+<!-- # write.xlsx(file = paste0(BASELINE_loc, "/",Today,".",PROJECTNAME,".AERNAS2.CEA.608pts.after_qc.IC_commercial.BaselineTable.xlsx"), -->
+<!-- #            format(AERNAS2SEClinData.CEA.tableOne, digits = 5, scientific = FALSE) , -->
+<!-- #            rowNames = TRUE, colNames = TRUE, overwrite = TRUE) -->
+<!-- # -->
+<!-- write.xlsx(file = paste0(BASELINE_loc, "/",Today,".",PROJECTNAME,".AERNAS2.CEA.471pts.after_qc.IC_academic.BaselineTable.xlsx"), -->
+<!--            format(as.data.frame(AERNAS2SEClinData.CEA.tableOne), digits = 5, scientific = FALSE) , -->
+<!--            rowNames = FALSE, colNames = TRUE, overwrite = TRUE) -->
+<!-- ``` -->
 
 ```{r }
 # Write basetable
 require(openxlsx)
-# write.xlsx(file = paste0(BASELINE_loc, "/",Today,".",PROJECTNAME,".AERNAS1.CEA.608pts.after_qc.IC_commercial.BaselineTable.xlsx"), 
-#            format(AERNAS1SEClinData.CEA.tableOne, digits = 5, scientific = FALSE) , 
-#            rowNames = TRUE, colNames = TRUE, overwrite = TRUE)
-# 
 
-write.xlsx(file = paste0(BASELINE_loc, "/",Today,".",PROJECTNAME,".AERNAS1.CEA.622pts.after_qc.IC_academic.BaselineTable.xlsx"), 
-           format(as.data.frame(AERNAS1SEClinData.CEA.tableOne), digits = 5, scientific = FALSE) , 
-           rowNames = TRUE, colNames = TRUE, overwrite = TRUE)
-
-```
-
-
-```{r }
-# Write basetable
-require(openxlsx)
-# write.xlsx(file = paste0(BASELINE_loc, "/",Today,".",PROJECTNAME,".AERNAS2.CEA.608pts.after_qc.IC_commercial.BaselineTable.xlsx"), 
-#            format(AERNAS2SEClinData.CEA.tableOne, digits = 5, scientific = FALSE) , 
-#            rowNames = TRUE, colNames = TRUE, overwrite = TRUE)
-# 
-write.xlsx(file = paste0(BASELINE_loc, "/",Today,".",PROJECTNAME,".AERNAS2.CEA.622pts.after_qc.IC_academic.BaselineTable.xlsx"), 
-           format(as.data.frame(AERNAS2SEClinData.CEA.tableOne), digits = 5, scientific = FALSE) , 
-           rowNames = TRUE, colNames = TRUE, overwrite = TRUE)
-
-```
-
-
-```{r }
-# Write basetable
-require(openxlsx)
-# write.xlsx(file = paste0(BASELINE_loc, "/",Today,".",PROJECTNAME,".AERNASCombo.CEA.1093pts.after_qc.IC_commercial.BaselineTable.xlsx"), 
-#            format(AERNAScomboSEClinData.CEA.tableOne, digits = 5, scientific = FALSE) , 
-#            rowNames = TRUE, colNames = TRUE, overwrite = TRUE)
-# 
 write.xlsx(file = paste0(BASELINE_loc, "/",Today,".",PROJECTNAME,".AERNASCombo.CEA.1093pts.after_qc.IC_academic.BaselineTable.xlsx"), 
            format(as.data.frame(AERNAScomboSEClinData.CEA.tableOne), digits = 5, scientific = FALSE) , 
-           rowNames = TRUE, colNames = TRUE, overwrite = TRUE)
-
+           rowNames = FALSE, colNames = TRUE, overwrite = TRUE)
 ```
+
+Let's also save the files in Word-format.
+
+<!-- ```{r} -->
+<!-- # Format for Word output -->
+<!-- ft <- flextable(AERNAS1SEClinData.CEA.tableOne) %>% -->
+<!--   theme_vanilla() %>% -->
+<!--   autofit() %>% -->
+<!--   set_table_properties(layout = "autofit") %>% -->
+<!--   font(fontname = "Calibri", part = "all") %>%  # Set font to Calibri -->
+<!--   fontsize(size = 9, part = "all")  # Set font size to 9 -->
+
+<!-- # Save to Word -->
+<!-- doc <- read_docx() -->
+<!-- doc <- body_add_flextable(doc, ft) -->
+<!-- print(doc, target = paste0(BASELINE_loc, "/",Today,".",PROJECTNAME,".AERNAS1.CEA.622pts.after_qc.IC_academic.BaselineTable.docx")) -->
+
+<!-- # remove intermediates -->
+<!-- rm(ft, doc) -->
+<!-- ``` -->
+
+<!-- ```{r} -->
+<!-- # Format for Word output -->
+<!-- ft <- flextable(AERNAS2SEClinData.CEA.tableOne) %>% -->
+<!--   theme_vanilla() %>% -->
+<!--   autofit() %>% -->
+<!--   set_table_properties(layout = "autofit") %>% -->
+<!--   font(fontname = "Calibri", part = "all") %>%  # Set font to Calibri -->
+<!--   fontsize(size = 9, part = "all")  # Set font size to 9 -->
+
+<!-- # Save to Word -->
+<!-- doc <- read_docx() -->
+<!-- doc <- body_add_flextable(doc, ft) -->
+<!-- print(doc, target = paste0(BASELINE_loc, "/",Today,".",PROJECTNAME,".AERNAS2.CEA.471pts.after_qc.IC_academic.BaselineTable.docx")) -->
+
+<!-- # remove intermediates -->
+<!-- rm(ft, doc) -->
+<!-- ``` -->
+
+```{r}
+# Load required libraries
+library(tableone)
+library(writexl)
+library(flextable)
+library(officer)
+# Format for Word output
+ft <- flextable(AERNAScomboSEClinData.CEA.tableOne) %>%
+  theme_vanilla() %>%
+  autofit() %>%
+  set_table_properties(layout = "autofit") %>%
+  font(fontname = "Calibri", part = "all") %>%  # Set font to Calibri
+  fontsize(size = 9, part = "all")  # Set font size to 9
+
+# Save to Word
+doc <- read_docx()
+doc <- body_add_flextable(doc, ft)
+print(doc, target = paste0(BASELINE_loc, "/",Today,".",PROJECTNAME,".AERNASCombo.CEA.1093pts.after_qc.IC_academic.BaselineTable.docx"))
+
+# remove intermediates
+rm(ft, doc)
+```
+
 
 
 # Prepare DDS and VSD
@@ -1894,8 +2044,8 @@ saveRDS(AERNAScomboSEvst, file = paste0(OUT_loc, "/", Today, ".AERNAScomboSEvst.
 
 --------------------------------------------------------------------------------
 
-    Version:      v1.2.0
-    Last update:  2024-11-26
+    Version:      v1.2.1
+    Last update:  2025-03-12
     Written by:   Sander W. van der Laan (s.w.vanderlaan-2[at]umcutrecht.nl).
     Description:  Script to load bulk RNA sequencing data, and perform gene expression analyses, and visualisations.
     Minimum requirements: R version 3.5.2 (2018-12-20) -- 'Eggshell Igloo', macOS Mojave (10.14.2).
@@ -1911,6 +2061,7 @@ saveRDS(AERNAScomboSEvst, file = paste0(OUT_loc, "/", Today, ".AERNAScomboSEvst.
     _W_
 
     **Changes log**
+    * v1.2.1 Update to target list.
     * v1.2.0 Major overhaul to prepare bulkRNAseq with new data. 
     * v1.1.1 Fixed baseline table writing. Additional versions of saved data. Added example to 'melt' data using `mia`.
     * v1.1.0 Update to bulk RNAseq data - deeper sequencing data is now available. Update to the study database.
@@ -1948,5 +2099,5 @@ save.image(paste0(PROJECT_loc, "/",Today,".",PROJECTNAME,".bulkRNAseq.preparatio
 ```
 
 +-----------------------------------------------------------------------------------------------------------------------------------------+
-| <sup>© 1979-2024 Sander W. van der Laan | s.w.vanderlaan[at]gmail[dot]com | [vanderlaanand.science](https://vanderlaanand.science).</sup> |
+| <sup>© 1979-2025 Sander W. van der Laan | s.w.vanderlaan[at]gmail[dot]com | [vanderlaanand.science](https://vanderlaanand.science).</sup> |
 +-----------------------------------------------------------------------------------------------------------------------------------------+

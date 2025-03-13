@@ -78,12 +78,13 @@ pander::panderOptions("table.split.table", Inf)
 
 *Collaborators*
 
-[First name] [Initials] [Last name], 
-[First name] [Initials] [Last name], 
-[First name] [Initials] [Last name]
+Jonathan Noonan, 
+Pasquale Maffia, 
+Michal M. Mokry, 
+Sander W. van der Laan
 
 *Project ID* 
-AE_TEMPLATE
+`AE_20241004_JNoonan_PMaffia_TCells`
 
 
 ## Background
@@ -131,7 +132,7 @@ require(haven)
 # Data used for the AEGS QC as of 2022-10-10; this should NOT be used anymore as there are some UPID-issues
 # AEDB <- haven::read_sav(paste0(AEDB_loc, "/2022_3_NEW_AtheroExpressDatabase_ScientificAE_withNewSymptoms_10-10-2022.sav"))
 # Data to be used for all analyses as of 2024-03-20
-AEDB <- haven::read_sav(paste0(AEDB_loc, "/AEdata20240320.sav"))
+AEDB <- haven::read_sav(paste0(AEDB_loc, "/AEdata20241219.sav"))
 # writing off the SPSS data to an Excel.
 # fwrite(AEdata, file = paste0(INP_loc,"/2017-1NEW_AtheroExpressDatabase_ScientificAE_20171306_v1.0.values.xlsx"), 
 #        sep = ";", na = "NA", dec = ".", col.names = TRUE, row.names = FALSE,
@@ -1286,8 +1287,8 @@ saveRDS(AEDB, file = paste0(OUT_loc, "/",Today,".",PROJECTNAME,".AEDB.raw.RDS"))
 
 ------------------------------------------------------------------------------------------------------------------------
 
-    Version:      v1.3.0
-    Last update:  2024-11-26
+    Version:      v1.3.1
+    Last update:  2025-03-12
     Written by:   Sander W. van der Laan (s.w.vanderlaan[at]gmail[dot]com).
     Description:  Script to get some Athero-Express Biobank Study baseline characteristics in the whole cohort and the CEA subset.
     Minimum requirements: R version 3.4.3 (2017-06-30) -- 'Single Candle', Mac OS X El Capitan
@@ -1303,6 +1304,7 @@ saveRDS(AEDB, file = paste0(OUT_loc, "/",Today,".",PROJECTNAME,".AEDB.raw.RDS"))
     _W_
 
     **Changes log**
+    * v1.3.1 Small update to the AEDB.
     * v1.3.0 Major update to the AEDB.
     * v1.2.2 Project updates. Fixes to links and date.
     * v1.2.1 Small fix to the baseline table creation.
@@ -1325,5 +1327,5 @@ save.image(paste0(PROJECT_loc, "/",Today,".",PROJECTNAME,".AEDB.CEA.baseline.RDa
 ```
 
 +-----------------------------------------------------------------------------------------------------------------------------------------+
-| <sup>© 1979-2024 Sander W. van der Laan | s.w.vanderlaan[at]gmail[dot]com | [vanderlaanand.science](https://vanderlaanand.science).</sup> |
+| <sup>© 1979-2025 Sander W. van der Laan | s.w.vanderlaan[at]gmail[dot]com | [vanderlaanand.science](https://vanderlaanand.science).</sup> |
 +-----------------------------------------------------------------------------------------------------------------------------------------+

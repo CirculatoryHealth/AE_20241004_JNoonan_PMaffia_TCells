@@ -100,10 +100,7 @@ In case some genes are not available in our data we could filter them here.
 gene_list
 ```
 
-This code is just an example to filter the list from genes that are not in the data.
-
-- _COL3A_ ==> not found
-- _COL2A_ ==> not found
+We check whether any of the target genes were missing in our data; none are. 
 
 ```{r filter target genes}
 gene_list_rm <- c("COL3A", "COL2A") 
@@ -455,7 +452,10 @@ ggpubr::ggbarplot(df, x = "IPH", y = "counts",
                     xlab = "intraplaque hemorrhage", 
                     ggtheme = theme_minimal())
 rm(df)
+```
 
+
+```{r CrossSec: plaques - transformations and visualisations symptoms}
 # Symptoms
 cat("Summary of data.\n")
 summary(AERNASE.clin.targets$AsymptSympt)
@@ -611,7 +611,7 @@ TRAITS.BIN = c("CalcificationPlaque", "CollagenPlaque", "Fat10Perc", "IPH",
 
 AERNASE.clin.targets$ORdate_epoch <- as.numeric(AERNASE.clin.targets$dateok)
 AERNASE.clin.targets$ORdate_year <- AERNASE.clin.targets$ORyear
-AERNASE.clin.targets$StudyName <- to_factor(AERNASE.clin.targets$StudyName)
+AERNASE.clin.targets$StudyName <- labelled::to_factor(AERNASE.clin.targets$StudyName)
 
 cat("Summary of 'year of surgery' in 'epoch' (); coded as `numeric()`\n")
 summary(AERNASE.clin.targets$ORdate_epoch)
@@ -1178,13 +1178,14 @@ AERNASE.clin.targets <- merge(AERNASE.clin.targets,
 ```{r Calculate new FU cut-offs: maximum FU}
 
 
-AERNASE.clin.targets.temp <- subset(AERNASE.clin.targets,  select = c("study_number", "Age", "Gender", "Hospital", "Artery_summary", 
-                                      "max.followup", 
-                                      "FU.cutt.off.3years"))
+AERNASE.clin.targets.temp <- subset(AERNASE.clin.targets,  select = c("study_number", "Age", "Gender", 
+                                                                      # "Hospital", "Artery_summary", 
+                                                                      "max.followup", 
+                                                                      "FU.cutt.off.3years"))
 require(labelled)
 AERNASE.clin.targets.temp$Gender <- to_factor(AERNASE.clin.targets.temp$Gender)
-AERNASE.clin.targets.temp$Hospital <- to_factor(AERNASE.clin.targets.temp$Hospital)
-AERNASE.clin.targets.temp$Artery_summary <- to_factor(AERNASE.clin.targets.temp$Artery_summary)
+# AERNASE.clin.targets.temp$Hospital <- to_factor(AERNASE.clin.targets.temp$Hospital)
+# AERNASE.clin.targets.temp$Artery_summary <- to_factor(AERNASE.clin.targets.temp$Artery_summary)
 
 DT::datatable(AERNASE.clin.targets.temp[1:10,], caption = "Excerpt of the whole AERNASE.clin.targets.", rownames = FALSE)
 
@@ -1241,11 +1242,9 @@ COX.STAT <- function(coxfit, DATASET, OUTCOME, target_of_interest){
   print(output)
 } 
 
-times = c("ep_major_t_3years", 
-          "ep_stroke_t_3years", "ep_coronary_t_3years", "ep_cvdeath_t_3years")
+times = c("ep_major_t_3years") #, "ep_stroke_t_3years", "ep_coronary_t_3years", "ep_cvdeath_t_3years")
 
-endpoints = c("epmajor.3years", 
-              "epstroke.3years", "epcoronary.3years", "epcvdeath.3years")
+endpoints = c("epmajor.3years") #, "epstroke.3years", "epcoronary.3years", "epcvdeath.3years")
 
 cat("* Check the cases per event type - for sanity.")
 for (events in endpoints){
@@ -1718,8 +1717,8 @@ saveRDS(AERNASE.targets.genedata, file = paste0(OUT_loc, "/", Today, ".",TRAIT_O
 
 --------------------------------------------------------------------------------
 
-    Version:      v1.2.2
-    Last update:  2024-11-26
+    Version:      v1.2.3
+    Last update:  2025-03-13
     Written by:   Sander W. van der Laan (s.w.vanderlaan-2[at]umcutrecht.nl).
     Description:  Script to analyse targets from the Ather-Express Biobank Study.
     Minimum requirements: R version 3.5.2 (2018-12-20) -- 'Eggshell Igloo', macOS Mojave (10.14.2).
@@ -1735,6 +1734,7 @@ saveRDS(AERNASE.targets.genedata, file = paste0(OUT_loc, "/", Today, ".",TRAIT_O
     _W_
 
     **Changes log**
+    * v1.2.3 Updates to the list of genes. Re-organization efficient for the paper. 
     * v1.2.2 Textual fixes.
     * v1.2.1 Fixed saveRDS to save targets, SE, genedata and clinical data.
     * v1.2.0 Update to study database; update to bulk RNAseq data (deeper sequenced).

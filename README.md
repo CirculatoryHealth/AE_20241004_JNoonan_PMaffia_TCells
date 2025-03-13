@@ -23,87 +23,69 @@ Gerard Pasterkamp.
 
 # Background
 <!--  Provide some background, study design, results, etc.         -->
-Collaboration to study common variants and (single-cell) gene expression in relation to atherosclerotic plaques characteristics. 
+Collaboration to study the association of gene expression of T-cell related genes with atherosclerotic plaques characteristics. 
 
 
 ## Study design
 
-We will test the hypothesis that common variants in and expression of (a) gene(s)-of-interest are associated with plaque characteristics. We will use data from the **Athero-Express Biobank Study**.
+We will test the hypothesis the gene expression these genes-of-interest is associated with plaque characteristics. We will use data from the **Athero-Express Biobank Study**.
 
 These are the questions we will address: 
 
-- Are any of the _variants_ associated to plaque characteristics?
 - Is the _gene expression_ correlated to characteristics of plaques?
 - In which _cell types_ are the target genes expressed? 
 
 
 ## Athero-Express Biobank Study
 
-We have bulk RNAseq (n ± 1,100 samples) and single-cell RNAseq data (n ± 46), genome-wide methylation (Illumina 450K) in n ± 600, as well as overlapping genetic data for ±2,000 individuals with extensive histological plaque characterisation. 
+We have bulk RNAseq (n ± 1,100 samples) and single-cell RNAseq data (n ± 46) with extensive histological plaque characterisation. 
 
+The primary plaque phenotypes are:
 
-### Genetic analyses
-
-For the genetic analyses we will perform regression analyses adjusted for age, sex (where applicable) and principal components. So, we will apply the following model:
-
-We will perform regression analyses adjusted for age, sex (where applicable) and principal components. 
-
-- model 1: `phenotype ~ age + sex + chip-used + PC1 + PC2 + year-of-surgery`
-
-Optionally, we can also run sex-stratified analyses:
-
-- model 1m: `phenotype ~ age + chip-used + PC1 + PC2 + year-of-surgery` males only
-- model 1f: `phenotype ~ age + chip-used + PC1 + PC2 + year-of-surgery` females only
-
-The phenotypes are:
-
-- `calcification`, coded `Calc.bin` no/minor vs. moderate/heavy staining
-- `collagen`, coded `Collagen.bin` no/minor vs. moderate/heavy staining
 - `fat10`, coded `Fat.bin_10` no/<10% fat vs. >10% fat
 - `fat40`, coded `Fat.bin_40` no/<40% fat vs. >40% fat
 - `intraplaque hemorrhage`, coded `IPH.bin` no vs. yes
-- `macrophages (CD68)`, coded `macmean0` mean of computer-assisted calculation CD68<sup>+</sup> region of interest
 - `smooth muscle cells (alpha-actin)`, coded `smcmean0` mean of computer-assisted calculation SMA<sup>+</sup> region of interest
+- `smooth muscle cells (alpha-actin)`, coded as no/minor vs. moderate/heavy staining
+- `plaque vulnerability index`, scaled from 0 to 4, where 0 is most stable, and 4 is least stable plaque phenotype.
+
+
+The secondary plaque phenotypes are:
+
+- `calcification`, coded `Calc.bin` no/minor vs. moderate/heavy staining
+- `collagen`, coded `Collagen.bin` no/minor vs. moderate/heavy staining
+- `macrophages (CD68)`, coded `macmean0` mean of computer-assisted calculation CD68<sup>+</sup> region of interest
+- `macrophages (CD68)`, coded as no/minor vs. moderate/heavy staining
 - `intraplaque vessel density (CD34)`, coded `vessel_density` manually counted CD34<sup>+</sup> cells per 3-4 hotspots
 - `mast cells`, coded `Mast_cells_plaque` manually counted mast cell tryptase<sup>+</sup> cells (https://academic.oup.com/eurheartj/article/34/48/3699/484981) [Note: low sample size]
 - `neutrophils (CD66b)`, coded `neutrophils` manually counted CD66b<sup>+</sup> cells (https://pubmed.ncbi.nlm.nih.gov/20595650/) [Note: low sample size]
-- `plaque vulnerability index`, scaled from 0 to 4, where 0 is most stable, and 4 is least stable plaque phenotype.
 
 Continuous variables were inverse-rank normal transformated, indicated by `_rankNorm`. 
-
-`slideToolKit` derived histological plaque phenotypes are not yet available. 
-
-**Figure 1: Genotyped individuals in the Athero-Express Biobank Study**
-![Genotyped individuals in the Athero-Express Biobank Study](PLOTS/20240611.overlap.AEDB_AEGS123.UpSetR.png)
-
 
 ### Whole-plaque RNAseq
 
 For the expression analysis we used carotid plaque-derived bulk RNAseq data and queried it for the gene list. Below a graph showing the overall expression of the genes (not all are in the data) compared to the mean expression of 1,000 randomly picked genes. 
 
-**Figure 2A: Overall expression of target genes in carotid plaques from the Athero-Express Biobank Study**
-![Overall expression of target genes in carotid plaques from the Athero-Express Biobank Study](PLOTS/20240611.TargetExpression_vs_1000genes.png)
+**Figure 1A: Overall expression of target genes in carotid plaques from the Athero-Express Biobank Study**
+![Overall expression of target genes in carotid plaques from the Athero-Express Biobank Study](PLOTS/20250313.TargetExpression_vs_1000genes.png)
 
-**Figure 2B: Overall expression of target genes by experiment in carotid plaques from the Athero-Express Biobank Study**
-![Overall expression of target genes by experiment in carotid plaques from the Athero-Express Biobank Study](PLOTS/20240611.TargetExpression_vs_1000genes_by_AERNAStudy.png)
-
-We assessed the correlation with plaque characteristics (mentioned above) and secondary major adverse cardiovascular events (MACE [major]) at 30 days and 3 years after CEA. 
-
+**Figure 1B: Overall expression of target genes by experiment in carotid plaques from the Athero-Express Biobank Study**
+![Overall expression of target genes by experiment in carotid plaques from the Athero-Express Biobank Study](PLOTS/20250313.TargetExpression_vs_1000genes_by_AERNAStudy.png)
 
 ### Single cell RNAseq
 
 We projected target genes to the single-cell RNAseq data derived from 46 carotid plaque samples. We identified cell communities (Figure 2), mapped and projected target gene expression to the cell communities (Figure 3). 
 
-**Figure 3: Cell communities identified in carotid plaques from the Athero-Express Biobank Study**
-![Cell communities identified in carotid plaques from the Athero-Express Biobank Study](PLOTS/20240611.UMAP.png)
+**Figure 2: Cell communities identified in carotid plaques from the Athero-Express Biobank Study**
+![Cell communities identified in carotid plaques from the Athero-Express Biobank Study](PLOTS/20250313.UMAP.png)
 
-**Figure 4: Dotplot showing expression of target genes per cell type in carotid plaques from the Athero-Express Biobank Study**
-![Dotplot showing expression of target genes per cell type in carotid plaques from the Athero-Express Biobank Study](PLOTS/20240611.DotPlot.Targets.png)
+**Figure 3: Dotplot showing expression of target genes per cell type in carotid plaques from the Athero-Express Biobank Study**
+![Dotplot showing expression of target genes per cell type in carotid plaques from the Athero-Express Biobank Study](PLOTS/20250313.DotPlot.Targets.png)
 
 
 # Where do I start?
 
-You can load this project in RStudio by opening the file called 'AE_TEMPLATE.Rproj'.
+You can load this project in RStudio by opening the file called 'AE_20241004_JNoonan_PMaffia_TCells.Rproj'.
 
 ## Project structure
 
@@ -111,7 +93,7 @@ You can load this project in RStudio by opening the file called 'AE_TEMPLATE.Rpr
 File                                    | Description                          | Usage         
 --------------------------------------- | ------------------------------------ | --------------
 README.md                               | Description of project               | Human editable
-AE_TEMPLATE.Rproj                       | Project file                         | Loads project
+AE_20241004_JNoonan_PMaffia_TCells.Rproj                       | Project file                         | Loads project
 LICENSE                                 | User permissions                     | Read only
 .worcs                                  | WORCS metadata YAML                  | Read only
 renv.lock                               | Reproducible R environment           | Read only
@@ -122,21 +104,14 @@ PLOTS                                   | Some results                         |
 SNP                                     | SNP analysis directory               | Human editable
 scripts                                 | Scripts directory                    | Human editable
 targets                                 | Directory containing list of targets | Human editable
-manuscript                              | Source code for paper                | Human editable
-manuscript/references.bib               | Manuscript BibTex references         | Human editable
 packages.bib                            | BibTex references for packages used  | Human editable
 references.bib                          | BibTex references                    | Human editable
-preregistration                         | Preregistered hypotheses             | Human editable
-preregistration/preregistration.rmd     | Preregistered document.              | Human editable
 1_AEDB.CEA.baseline.Rmd                | Preparing data, baseline table       | Human editable
-2_SNP_analyses.Rmd                     | Preparing SNP analyses, b38               | Human editable
-2_SNP_analyses_b37.Rmd                     | Preparing SNP analyses, b37               | Human editable
 3_1_bulkRNAseq.preparation.Rmd          | Preparing bulk RNAseq analyses       | Human editable
 3_2_bulkRNAseq.exploration.Rmd          | Exploration RNAseq.                  | Human editable
 3_3_bulkRNAseq.main_analysis.Rmd        | Main RNAseq analyses                 | Human editable
 3_4_bulkRNAseq.additional_figures.Rmd   | Additional RNAseq figures            | Human editable
 4_scRNAseq.Rmd                          | Single-cell RNAseq analyses          | Human editable
-5_DNAm_AEMS450K_preparation.Rmd         | Prepare dataset for DNAm analyses          | Human editable
 
 <!--  You can consider adding the following to this file:                    -->
 <!--  * A citation reference for your project                                -->
@@ -146,31 +121,15 @@ preregistration/preregistration.rmd     | Preregistered document.              |
 
 ## Create a target list
 
-You should use targets.xlsx to create a list of target genes and variants. This list will be used in the analyses. 
-
-### Variants
-
-The genetic variants should be b37 (legacy HRC r1.1 merge with 1000G p3v5 imputed data) or b38 (TOPMed release 3, freeze 10) formatted. For b37 you only need the rsID (optional), chromosome and position. For b38 you need the chromosome and position, and reference and alternate alleles. The per-variant lookup is done using the `VariantID` which is a combination of chromosome and position (b37) or chromosome, position, reference allele, and alternate allele (b38).
-
-For example, for b37 you could have: rs1234567 1 1234567 where `VariantID` will automatically be coded as `1:1234567`. For b38 you could have: rs1234567 1 1234567 A T where `VariantID` will automatically be coded as `chr1:1234567:A:T`.
-
-To check the reference allele use Bravo: https://bravo.sph.umich.edu. 
+The list of genes-of-interest are in `targets.xlsx`. 
 
 ### Genes
 
-The bulk RNAseq and scRNAseq are mapped against b38 and Ensembl 86, so genes should match these versions. In 9 out of 10 of the cases all genes are found. When a gene is not found this is likely due to a different gene name or a gene that is not in the data. In the former case you can use the `biomaRt` package to find the correct gene name, or simply use [www.genecards.org](https://www.genecards.org) to check out synonyms.
+The bulk RNAseq and scRNAseq are mapped against b38 and Ensembl 86; all genes were found in our data.
 
 ### 1. AEDB.CEA.baseline.Rmd
 
 This notebook is used to create a `RDS`-formatted datasets with the selection of samples.
-
-### 2. SNP_analyses.Rmd
-
-This notebook is used to prepare the SNP analyses using the output of the `1_AEDB.CEA.baseline.Rmd` notebook.
-
-A few notes on the SNP analyses. These make use of `GWASToolKit` which is a collection of scripts to make analyses with `SNPTEST` (currently `v2.5.4-beta3`) easier and streamline a lot of default and bottersome steps in the process. 
-
-We are using `vcf.gz` files; these are bgzipped and tabix indexed. Since we are using `vcf`-files we have to indicate the genotype-field to have `SNPTEST` handle genotype probabilities instead of hardcoded genotypes. At the moment this is hardcoded in `GWASToolKit`. A future release of `GWASToolKit`, dubbed `GWASToolKit2`, will enable using `SNPTEST 2.5.6`, `plink2` and `regenie` (as each have their practical or theoretical statistical pro's and cons), and make the genotype-field and many new options a parameter while providing an easier commandline interface.
 
 ### 3.1 bulkRNAseq.preparation.Rmd
 
@@ -190,41 +149,8 @@ Here the output from `3_3_bulkRNAseq.main_analysis.Rmd` is used to create additi
 
 ### 4. scRNAseq.Rmd
 
-Here the expression of the target gene(s) is inspected and visualised in the single-cell RNAseq dataset using output from `1_AEDB.CEA.baseline.Rmd`. 
+Here the expression of the target gene(s) is inspected and visualized in the single-cell RNAseq dataset using output from `1_AEDB.CEA.baseline.Rmd`. 
 
-### Additional utility scripts
-
-A few key utility `python3` scripts are available. Please refer to `python3 scripts/[given_script].py --help` for more information of the respective functions.
-
-#### parse_molqtl.py
-
-The target variant(s) are inspected and looked up in the molQTL results (version 1/preliminary, n±600) using `parse_molqtl.py`. The following molQTL analyses results are queried.
-
-- _cis_-acting expression QTL (eQTL) nominal results
-- _trans_-acting expression QTL (eQTL) permuted (100-10,000x) results
-- _cis_-acting methylation QTL (mQTL) permuted (100-10,000x) results
-- _trans_-acting mQTL permuted (100-10,000x) results
-
-> Note that this is currently limited to b37 based results. In the near future this will be updated to b38 with deeper sequenced RNAseq data. Sex- and smoking-interaction and stratified analyses will also be added, in addition to other stratified analyses for type 2 diabetes, kidney function, BMI, and medication use.
-
-#### liftover.py
-
-This script converts genomic coordinates between genome builds using the `pyliftover` package.
-
-#### alt_models.py
-
-This script runs logistic (`--logistic`) or linear regression (`--linear`) in PLINK v1.9 for a given SNP (`--snp`) and chromosome (`--chr`) and a given list of phenotypes (`--phenotypes`) and covariates (`--covariates`). Includes option for interaction analyses (`--interaction`). Can be run locally or on the Utrecht high-performance compute cluster.
-
-#### alt_models_summarize.py
-
-This script will concatenate the results of the logistic or linear regression models (`--glm`) for a given SNP (`--snp`) and a list of phenotypes (`--phenotypes`). Should be run directly on the data - there is no job-submission.
-
-
-### manuscript & preregistration
-
-In the spirit of Open Science you could opt to preregister your work, for instance through [OSF](https://osf.io). Alternatively, you can simply preregister your work by making this repository public and add the `preregistration.Rmd` filled in to the best of your knowledge and abilities. It is a document to register your intend. Research is at times intractable, and so don't worry too much about changes in the future. This is exactly the point: the research process is iterative and you may (have to) adapt your methods and/or your approach. Through this document you can document these thoughts and changes. 
-
-Likewise, you can opt to write your manuscript - at least the draft - in `markdown` or `LaTeX` using `manuscript.Rmd`. 
 
 # Reproducibility
 
@@ -262,33 +188,22 @@ Dr. Sander W. van der Laan has received Roche funding for unrelated work.
 
 #### Changes log
     
-    _Version:_      v1.4.5</br>
-    _Last update:_  2024-11-26</br>
+    _Version:_      v1.4.7</br>
+    _Last update:_  2025-03-13</br>
     _Written by:_   Sander W. van der Laan (s.w.vanderlaan [at] gmail [dot] com).
     
     **MoSCoW To-Do List**
     The things we Must, Should, Could, and Would have given the time we have.
     _M_
     
-    - [] merge datasets for variants on chromosome Y and MT in vcf.gz format, bgzipped and tabix indexed
-    - [x] add methylation data preparation workflow
-    - [] add methylation data analysis workflow for target gene(s)
-    - [] add OLINK (and other protein measurement techniques) workflow for target gene(s)
-    - [x] add proper molQTL lookup script to automatically add molQTL lookup
-    - [] streamlining standard steps and functions to reduce lines of code
-    
     _S_
 
-    - [] update the workflow to churn out reports
-    - [x] edit molQTL lookup script to include gene-to-variant and variant-to-gene lookups
-    - [x] edit molQTL lookup script to annotate target-list
-    - [x] edit molQTL lookup script include variant-to-gene-to-cpg and gene-to-cpg-to-variants lookups
-    
     _C_
 
     _W_
 
     **Changes log**
+    * v1.4.7 Updates to the scripts. Project specific re-organization.
     * v1.4.6 Updates to molQTL lookup script; accordingly the `targets.xlsx` file changed. Dropped all output to reduce size. Updates to the readme.me. Added wiki-pages with further explanations.
     * v1.4.5 Fixed an issue with the selection variable in KeyTable to fix the SNP_analyses.Rmd downstream script-steps.
     * v1.4.4 Added correct reference to KeyTable for b38 data. Added 2_SNP_analyses_b37.Rmd for b37 analyses. Added DNAM preparation analysis notebook.
@@ -316,4 +231,4 @@ Dr. Sander W. van der Laan has received Roche funding for unrelated work.
 --------------
 
 #### Creative Commons BY-NC-ND 4.0
-##### Copyright (c) 1979-2024 Sander W. van der Laan | s.w.vanderlaan [at] gmail [dot] com.
+##### Copyright (c) 1979-2025 Sander W. van der Laan | s.w.vanderlaan [at] gmail [dot] com.

@@ -1,0 +1,189 @@
+---
+title: "Vis_Sander"
+output: html_document
+date: "2024-12-02"
+---
+# Code for Sander
+Hi Sander,
+
+What I would like to do is try to visualize the data stratified by metrics of instability. For example, IPH <10% vs IPH > 10%. This may be horrible, but I think its worth a try. You did this nicely in your NatCVR paper but separated instead by plaque cluster. 
+
+I think we should define the metrics as "associated with stability" or "instability". e.g., those <10% SMC would be associated with instability; >10% with stability. for lipid and IPH >10% = instability. We can then label the groups this way
+
+Data should be binned as per your analysis for IPH, Lipid and SMC content. 
+
+In terms of specific genes to look at, based on your first look the most interesting would be:
+
+CD3E
+GZMB
+RUNX3
+PRDM1
+ZAP70
+GNLY
+
+## Violin Plot Approach
+```{r}
+# Generate test dataset
+data <- data.frame(
+  Gene = rep(c("CD3E", "GZMB", "RUNX3", "PRDM1", "ZAP70", "GNLY"), each = 300), # 3 genes, 300 rows each (100 per condition)
+  Condition = rep(c("IPH Content", "Fat Content", "SMC Content"), each = 100, times = 3), # 3 conditions per gene
+  Group = rep(rep(c("Stable", "Unstable"), each = 50), times = 9), # High and Low for each condition
+  expression = c(
+    rnorm(50, mean = 0.25, sd = 0.06), rnorm(50, mean = 0.4, sd = 0.05),  # Gene1
+    rnorm(50, mean = 0.45, sd = 0.05), rnorm(50, mean = 0.6, sd = 0.07),   # Gene2
+    rnorm(50, mean = 0.6, sd = 0.03), rnorm(50, mean = 0.5, sd = 0.04),   # Gene3
+    
+    rnorm(50, mean = 0.2, sd = 0.06), rnorm(50, mean = 0.5, sd = 0.05),  # Gene1
+    rnorm(50, mean = 0.28, sd = 0.05), rnorm(50, mean = 0.55, sd = 0.07), # Gene2
+    rnorm(50, mean = 0.9, sd = 0.03), rnorm(50, mean = 0.38, sd = 0.04),  # Gene 3
+    
+    rnorm(50, mean = 0.24, sd = 0.05), rnorm(50, mean = 0.83, sd = 0.06), # Gene1
+    rnorm(50, mean = 0.62, sd = 0.07), rnorm(50, mean = 0.92, sd = 0.05), # Gene2
+    rnorm(50, mean = 0.42, sd = 0.04), rnorm(50, mean = 0.42, sd = 0.03),  # Gene3
+     rnorm(50, mean = 0.25, sd = 0.06), rnorm(50, mean = 0.4, sd = 0.05),  # Gene1
+    rnorm(50, mean = 0.45, sd = 0.05), rnorm(50, mean = 0.6, sd = 0.07),   # Gene2
+    rnorm(50, mean = 0.6, sd = 0.03), rnorm(50, mean = 0.5, sd = 0.04),   # Gene3
+    
+    rnorm(50, mean = 0.2, sd = 0.06), rnorm(50, mean = 0.5, sd = 0.05),  # Gene1
+    rnorm(50, mean = 0.28, sd = 0.05), rnorm(50, mean = 0.55, sd = 0.07), # Gene2
+    rnorm(50, mean = 0.9, sd = 0.03), rnorm(50, mean = 0.38, sd = 0.04),  # Gene 3
+    
+    rnorm(50, mean = 0.24, sd = 0.05), rnorm(50, mean = 0.83, sd = 0.06), # Gene1
+    rnorm(50, mean = 0.62, sd = 0.07), rnorm(50, mean = 0.92, sd = 0.05), # Gene2
+    rnorm(50, mean = 0.42, sd = 0.04), rnorm(50, mean = 0.42, sd = 0.03)  # Gene3
+  )
+)
+
+
+data$Group <- factor(data$Group, levels = c("Stable", "Unstable"))
+
+
+# Define colors for groups
+col <- list(
+  Group = c("Stable" = "#00C7CC", "Unstable" = "#FA7F74")
+)
+```
+
+```{r, fig.height=30, fig.width=10}
+plots <- list()
+
+
+for (gene in unique(data$Gene)) {
+  for (condition in unique(data$Condition)) {
+ 
+    subset_data <- subset(data, Gene == gene & Condition == condition)
+
+    p <- ggplot(subset_data, aes(x = Group, y = expression, fill = Group)) +
+      geom_violin(trim = FALSE, scale = "width") +
+      geom_jitter(shape = 16, position = position_jitter(width = 0.2), size = 1, color = "black") + 
+      geom_boxplot(width = 0.1, outlier.shape = NA) + 
+      scale_fill_manual(values = col$Group) +         # Use color mapping
+      theme_pubr() +
+      labs(y = paste0(gene, " Expression"), x = "", title = paste(condition)) +
+      theme(
+        aspect.ratio = 1,
+        axis.text.x = element_text(size = 15),
+        axis.text.y = element_text(size = 12),
+        axis.title.x = element_text(size = 15),
+        axis.title.y = element_text(size = 15),
+        plot.title = element_text(hjust = 0.5, size = 20),
+        legend.position = "none"                      # Remove legend
+      )
+    
+    plots[[paste(gene, condition, sep = "_")]] <- p
+  }
+}
+
+
+# Arrange plots in a grid
+plot_grid(
+  plotlist = plots,        # Use the list of plots
+  ncol = 3,                # Arrange in 3 columns
+  align = "v",             # Align vertically
+  axis = "tb"              # Align top and bottom axes
+)
+
+```
+
+## Heatmap Approach
+### IPH
+```{r}
+library(ComplexHeatmap)
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+
+data$ID <- rep(1:100, 18)
+
+
+hm_list <- list()
+
+for (condition in unique(data$Condition)) {
+  
+Heatmap_Genes <- subset(data, data$Condition == condition)
+mtx <- Heatmap_Genes
+mtx$Group <- NULL
+mtx <- mtx %>% pivot_wider(names_from = ID, values_from = expression)
+mtx$Gene <- NULL
+mtx$Condition <- NULL
+mtx <- as.matrix(mtx)
+
+meta <- Heatmap_Genes[1:100, ]
+meta$Condition <- factor(meta$Condition, levels = c("Stable", "Unstable"))
+
+cluster_anno <- HeatmapAnnotation(
+  cluster = meta$Group,
+  show_annotation_name = FALSE,
+  annotation_label = FALSE,
+  annotation_name_rot = 5,
+  show_legend = FALSE,
+  annotation_legend_param = list(labels_gp = gpar(fontsize = 0)),
+  col = list(cluster = col$Group))
+
+gene <- unique(data$Gene)
+
+# Create the row annotation for genes
+gene_anno <- rowAnnotation(
+  Gene = anno_text(gene, rot = 0, gp = gpar(fontsize = 10)))
+
+# Set up heatmap colors and legend
+col_fun <- colorRamp2(c(0, 0.25, 0.75), c("blue", "#EEEEEE", "red"))
+heatmap_legend_params <- list(
+  legend_direction = "vertical",
+  legend_width = unit(3, "cm"),
+  labels_gp = gpar(fontsize = 15),
+  labels_rot = -90,
+  title = "",
+  title_gp = gpar(box_fill = "grey"),
+  at = c(0, 0.25, 0.75)
+)
+
+# Draw heatmap
+
+hm_list[[condition]] <- Heatmap(
+  mtx,
+  top_annotation = cluster_anno,
+  left_annotation = gene_anno,
+  height = nrow(mtx)*unit(5, "mm"),
+  width = ncol(mtx)*unit(0.5, "mm"),
+  border = TRUE,
+  row_names_gp = gpar(fontsize = 5),
+  col = col_fun,
+  cluster_rows = F,
+  cluster_columns = F,
+  show_row_dend = FALSE,
+  cluster_row_slices = FALSE,
+  show_column_names = FALSE,
+  cluster_column_slices = FALSE,
+  column_names_side = NULL,
+  row_title = " ",
+  column_title = condition,
+  heatmap_legend_param = heatmap_legend_params
+)
+
+
+}
+
+
+hm_list
+```

@@ -34,6 +34,8 @@ install.packages.auto("eeptools")
 install.packages.auto("haven")
 install.packages.auto("openxlsx")
 install.packages.auto("tableone")
+install.packages.auto("flextable")
+install.packages.auto("officer")
 
 install.packages.auto("BlandAltmanLeh")
 

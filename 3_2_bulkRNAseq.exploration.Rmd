@@ -133,7 +133,7 @@ Now you need to choose which of the datasets you will use for the downstream ana
 ## Log-transformed normalized data
 ```{r}
 AERNAScomboSE <- readRDS(file = paste0(OUT_loc, "/",Today,".AERNAScomboSEvst.CEA.1093pts.SE.after_qc.IC_academic.RDS"))
-# AERNAScomboSE <- readRDS(file = paste0(OUT_loc, "/20240109.AERNAScomboSEvst.CEA.1093pts.SE.after_qc.IC_academic.RDS"))
+# AERNAScomboSE <- readRDS(file = paste0(OUT_loc, "/20250310.AERNAScomboSEvst.CEA.1093pts.SE.after_qc.IC_academic.RDS"))
 
 ```
 
@@ -166,44 +166,51 @@ Second, we define the variables we need.
 
 # Baseline table variables
 basetable_vars = c("Hospital", "ORyear", "Artery_summary",
-                   "Age", "Gender",
-                   # "TC_finalCU", "LDL_finalCU", "HDL_finalCU", "TG_finalCU",
-                   "TC_final", "LDL_final", "HDL_final", "TG_final",
-                   # "hsCRP_plasma",
-                   "systolic", "diastoli", "GFR_MDRD", "BMI",
-                   "KDOQI", "BMI_WHO",
-                   "SmokerStatus", "AlcoholUse",
-                   "DiabetesStatus",
-                   "Hypertension.selfreport", "Hypertension.selfreportdrug", "Hypertension.composite", "Hypertension.drugs",
-                   "Med.anticoagulants", "Med.all.antiplatelet", "Med.Statin.LLD",
-                   "Stroke_Dx", "sympt", "Symptoms.5G", "AsymptSympt", "AsymptSympt2G",
-                   "Symptoms.Update2G", "Symptoms.Update3G",
-                   "restenos", "stenose", "Artery_summary",
-                   "CAD_history", "PAOD", "Peripheral.interv",
+                   "Age", "Gender", 
+                   "TC_final", "LDL_final", "HDL_final", "TG_final", 
+                   "systolic", "diastoli", 
+                   "GFR_MDRD", 
+                   "KDOQI", 
+                   "BMI", 
+                   "BMI_WHO",
+                   "SmokerStatus", 
+                   "DiabetesStatus", 
+                   "Hypertension.composite", 
+                   "AutoImDrug",
+                   "Hypertension.drugs", "Med.anticoagulants", "Med.all.antiplatelet", "Med.Statin.LLD", 
+                   "Symptoms.5G", "AsymptSympt", "AsymptSympt2G",
+                   "CAD_history", "PAOD", 
+                   "restenos", "stenose",
                    "EP_composite", "EP_composite_time", "epcom.3years", 
                    "EP_major", "EP_major_time","epmajor.3years",
                    "MAC_rankNorm", "SMC_rankNorm", "Macrophages.bin", "SMC.bin",
                    "Neutrophils_rankNorm", "MastCells_rankNorm",
                    "IPH.bin", "VesselDensity_rankNorm",
-                   "Calc.bin", "Collagen.bin",
-                   "Fat.bin_10", "Fat.bin_40",
-                   "OverallPlaquePhenotype", "Plaque_Vulnerability_Index")
+                   "Calc.bin", "Collagen.bin", 
+                   "Fat.bin_10", "Fat.bin_40", 
+                   "OverallPlaquePhenotype", "Plaque_Vulnerability_Index"
+                   ) # this is for a sanity check
 
-basetable_bin = c("Gender", "Artery_summary",
-                  "KDOQI", "BMI_WHO",
-                  "SmokerStatus", "AlcoholUse",
-                  "DiabetesStatus",
-                  "Hypertension.selfreport", "Hypertension.selfreportdrug", "Hypertension.composite", "Hypertension.drugs",
-                  "Med.anticoagulants", "Med.all.antiplatelet", "Med.Statin.LLD",
-                  "Stroke_Dx", "sympt", "Symptoms.5G", "AsymptSympt", "AsymptSympt2G",
-                  "Symptoms.Update2G", "Symptoms.Update3G",
-                  "restenos", "stenose", "Artery_summary",
-                  "CAD_history", "PAOD", "Peripheral.interv",
-                  "EP_composite", "Macrophages.bin", "SMC.bin",
-                  "IPH.bin",
-                  "Calc.bin", "Collagen.bin",
-                  "Fat.bin_10", "Fat.bin_40",
-                  "OverallPlaquePhenotype", "Plaque_Vulnerability_Index")
+basetable_bin = c("Gender", 
+                  "KDOQI", 
+                  "BMI_WHO",
+                  "SmokerStatus", 
+                  "DiabetesStatus", 
+                  "Hypertension.composite", 
+                  "AutoImDrug",
+                  "Hypertension.drugs", "Med.anticoagulants", "Med.all.antiplatelet", "Med.Statin.LLD", 
+                  "Symptoms.5G", "AsymptSympt", "AsymptSympt2G",
+                  "CAD_history", "PAOD", 
+                  "restenos", "stenose",
+                  "EP_composite", 
+                  "EP_major", 
+                  "Macrophages.bin", "SMC.bin",
+                  "IPH.bin", 
+                  "Calc.bin", "Collagen.bin", 
+                  "Fat.bin_10", "Fat.bin_40", 
+                  "OverallPlaquePhenotype",
+                  "Plaque_Vulnerability_Index")
+
 # basetable_bin
 
 basetable_con = basetable_vars[!basetable_vars %in% basetable_bin]
@@ -282,7 +289,9 @@ plaque_phenotypes_cat <- c("Macrophages.bin",
                            "Collagen.bin",
                            "Fat.bin_10", 
                            # "Fat.bin_40",
-                           "IPH.bin")
+                           "IPH.bin", 
+                           "OverallPlaquePhenotype",
+                           "Plaque_Vulnerability_Index")
 
 plaque_phenotypes_num <- c("MAC_rankNorm", #"macmean0",
                            "SMC_rankNorm", #"smcmean0",
@@ -319,13 +328,10 @@ In case some genes are not available in our data we could filter them here.
 gene_list
 ```
 
-This code is just an example to filter the list from genes that are not in the data.
-
-- _COL3A_ ==> not found
-- _COL2A_ ==> not found
+We check whether any of the target genes were missing in our data; none are. 
 
 ```{r filter target genes}
-gene_list_rm <- c("COL3A", "COL2A") 
+gene_list_rm <- c("") 
 
 temp = gene_list[!gene_list %in% gene_list_rm]
 
@@ -519,11 +525,14 @@ expression_wide2 <- expression_wide %>%
   left_join(expression_data_sample_mean, by = "study_number") %>%
   dplyr::select(study_number, StudyName, symbol_ensembl_gene_list_qc, expression_value_sample)
 
+library(stringr)  # Ensure stringr is loaded
 expression_long2 <- expression_wide2 %>%
   gather(gene, expression_value, -study_number, -StudyName) %>%
-  mutate(gene = str_replace_all(gene, c("expression_value_sample" = "Random genes"))) #%>%
+  mutate(gene = str_replace_all(gene, c("expression_value_sample" = "Random genes"))) %>%
   # mutate(gene = factor(gene, levels = c("Random genes", gene_list_qc)))
+  mutate(gene = str_extract(gene, "^[^_]+"))  # Extract only the gene symbol before "_"
 expression_long2
+
 mean_1000_genes <- mean(expression_data_sample_mean$expression_value_sample)
 # head(expression_long2)
 # 
@@ -569,7 +578,6 @@ mean_1000_genes <- mean(expression_data_sample_mean$expression_value_sample)
   
   rm(p1, p2, temp )
 
-
 ```
 
 ## Heatmaps for genes of interest
@@ -579,33 +587,203 @@ If we would put these correlations in one simple and comprehensible figure, we c
 **Figure 4: correlation heatmap between expression of genes of interest**
 
 ```{r heatmap_corr_genes, message=FALSE, warning=FALSE}
-library(tidyverse)
-library(magrittr)
+library(stringr)  # Ensure stringr is loaded
+library(dplyr)    # Ensure dplyr is loaded
 
+# Process data
 temp <- expression_wide %>%
   column_to_rownames("study_number") %>%
   dplyr::select(symbol_ensembl_gene_list_qc) %>% 
-  drop_na() %>% # drop NA 
-  Filter(function(x) sd(x) != 0, .) # filter variables with sd = 0
+  drop_na() %>%  # Drop NA values
+  Filter(function(x) sd(x) != 0, .)  # Remove variables with sd = 0
 
+# Rename columns to only contain the gene symbol
+colnames(temp) <- str_extract(colnames(temp), "^[^_]+")  
+
+# Compute Spearman correlation
 temp.cor <- cor(temp, method = "spearman") 
 
+# Generate heatmap with larger font size
 p1 <- pheatmap(data.matrix(temp.cor), 
                scale = "none",
                cluster_rows = TRUE, 
                cluster_cols = TRUE,
                legend = TRUE,
-               fontsize = 10)
+               fontsize = 18,         # Increase overall font size
+               fontsize_row = 16,      # Increase row label font size
+               fontsize_col = 16)      # Increase column label font size
 p1
 
+# Save heatmap plots
 ggsave(filename = paste0(PLOT_loc, "/", Today, ".correlations.gene_list.pdf"), plot = p1, height = 15, width = 15)
-
 ggsave(filename = paste0(PLOT_loc, "/", Today, ".correlations.gene_list.png"), plot = p1, height = 15, width = 15)
+ggsave(filename = paste0(PLOT_loc, "/", Today, ".correlations.gene_list.ps"), plot = p1, height = 15, width = 15)
 
-
+# Cleanup
 rm(temp, temp.cor, p1)
-
 ```
+
+
+## Genes by phenotype
+
+Heatmap to visualize the correlation with phenotypes.
+
+**Figure 5: correlation heatmap between expression of genes of interest and phenotypes**
+
+```{r}
+library(stringr)
+library(dplyr)
+library(pheatmap)
+library(patchwork)
+library(RColorBrewer)
+
+# Define stratification variables
+chosen_variables <- c("Fat.bin_10", "IPH.bin", "SMC.bin", "Plaque_Vulnerability_Index")
+remove_meta_data <- c("Macrophages.bin", "Calc.bin", "Collagen.bin", "MAC_rankNorm", "SMC_rankNorm", "VesselDensity_rankNorm", 
+                      "epmajor.3years", "epmajor_3years_yn", "AsymptSympt2G", 
+                      "Gender", "Hospital", "StudyName")
+
+# Extract only genes (remove metadata columns)
+gene_expression_data <- expression_wide %>%
+  column_to_rownames("study_number") %>%
+  dplyr::select(-all_of(chosen_variables)) %>%  # Remove stratification variables
+  dplyr::select(-all_of(remove_meta_data)) %>%  # Remove metadata columns
+  drop_na() %>%
+  Filter(function(x) is.numeric(x) && sd(x, na.rm = TRUE) != 0, .)  # Keep only numeric genes with variance
+
+# Extract gene names (assuming row names contain "GENE_ENSG00000...")
+names(gene_expression_data) <- str_extract(names(gene_expression_data), "^[^_]+")
+
+# Transpose gene_expression_data
+gene_expression_data <- t(gene_expression_data)
+
+# Assign numeric sample IDs (1, 2, ..., n) but store original mapping
+sample_ids <- as.character(seq_len(ncol(gene_expression_data)))  # Create new sample IDs
+original_sample_names <- colnames(gene_expression_data)  # Store original sample names
+
+# Replace column names in gene expression data with 1:n
+colnames(gene_expression_data) <- sample_ids  
+
+# Define a color palette for the heatmap
+heatmap_colors <- colorRampPalette(RColorBrewer::brewer.pal(9, "YlGnBu"))(100)  # Green-Yellow-Blue
+
+# Initialize a list to store heatmaps
+heatmap_list <- lapply(chosen_variables, function(var) {
+  
+  # Create annotation dataframe for the current stratification variable
+  annotation_col <- expression_wide %>%
+    dplyr::select(study_number, all_of(var)) %>%
+    column_to_rownames("study_number") %>%
+    drop_na()  # Remove NA values
+  
+  # Ensure annotation_col uses the same sample order as gene_expression_data
+  annotation_col <- annotation_col[original_sample_names, , drop = FALSE]
+  
+  # Replace annotation rownames with new sample IDs
+  rownames(annotation_col) <- sample_ids
+  
+  # Convert annotation variable to factor
+  annotation_col[[var]] <- as.factor(annotation_col[[var]])
+
+  # Define annotation color mapping for the current variable
+  annotation_colors <- list()
+  if (var == "Fat.bin_10") {
+    annotation_colors[[var]] <- c(" <10%" = "#1290D9", " >10%" = "#E55738")
+  } else if (var == "SMC.bin") {
+    annotation_colors[[var]] <- c("no/minor" = "#1290D9", "moderate/heavy" = "#E55738")
+  } else if (var == "IPH.bin") {
+    annotation_colors[[var]] <- c("no" = "#1290D9", "yes" = "#E55738")
+  } else if (var == "Plaque_Vulnerability_Index") {
+    annotation_colors[[var]] <- setNames(c("#1290D9", "#5EB17F", "#C5D220", "#FBB820", "#E55738", "#DB003F"), 
+                                         as.character(0:5))
+  }
+
+  # Ensure annotation colors only include existing factor levels
+  annotation_colors[[var]] <- annotation_colors[[var]][levels(annotation_col[[var]])]
+  
+  # Define a fixed order for each variable
+  if (var == "Fat.bin_10") {
+    unique_groups <- c(" <10%", " >10%")
+  } else if (var == "SMC.bin") {
+    unique_groups <- c("no/minor", "moderate/heavy")
+  } else if (var == "IPH.bin") {
+    unique_groups <- c("no", "yes")
+  } else if (var == "Plaque_Vulnerability_Index") {
+    unique_groups <- as.character(0:5)  # Ensure numerical order (0 → 5)
+  } else {
+    unique_groups <- unique(annotation_col[[var]])  # Default order
+  }
+  
+  # Initialize an empty matrix to store reordered samples
+  reordered_data <- NULL
+  reordered_annotation <- NULL
+  group_changes <- c()
+  
+  # Loop over each unique group and cluster within that group separately
+  for (i in seq_along(unique_groups)) {
+    group_name <- unique_groups[i]
+    
+    # Subset data for the current group
+    group_samples <- which(annotation_col[[var]] == group_name)
+    sub_data <- gene_expression_data[, group_samples, drop = FALSE]
+    
+    # Perform clustering only if group has more than 1 sample
+    if (length(group_samples) > 1) {
+      sample_dendrogram <- hclust(dist(t(sub_data)), method = "complete")
+      clustered_samples <- group_samples[sample_dendrogram$order]
+    } else {
+      clustered_samples <- group_samples  # Keep single sample as is
+    }
+    
+    # Store reordered data
+    if (is.null(reordered_data)) {
+      reordered_data <- gene_expression_data[, clustered_samples]
+      reordered_annotation <- annotation_col[clustered_samples, , drop = FALSE]
+    } else {
+      reordered_data <- cbind(reordered_data, gene_expression_data[, clustered_samples])
+      reordered_annotation <- rbind(reordered_annotation, annotation_col[clustered_samples, , drop = FALSE])
+    }
+    
+    # Store group change index for visual separation
+    if (i < length(unique_groups)) {
+      group_changes <- c(group_changes, ncol(reordered_data))
+    }
+  }
+  
+  # Capture the pheatmap output as a grob
+  grob_heatmap <- grid.grabExpr({
+    pheatmap(data.matrix(reordered_data), 
+             scale = "none",
+             cluster_rows = FALSE,  # No clustering for genes
+             cluster_cols = FALSE,  # Samples are already clustered within groups
+             gaps_col = group_changes,  # Split the heatmap by groups
+             legend = TRUE,
+             fontsize = 18,         
+             fontsize_row = 16,      # Gene labels
+             fontsize_col = 16,      # Sample labels (HIDDEN now)
+             show_colnames = FALSE,  # Hide sample names
+             annotation_col = reordered_annotation,  # Add stratification (upper x-axis)
+             annotation_colors = annotation_colors,  # Ensure colors are mapped correctly
+             color = heatmap_colors,  # Scientific color scale
+             main = paste("Heatmap Stratified by", var))  # Title for each heatmap
+  })
+  return(grob_heatmap)  # Store grob object
+})
+
+# Combine all heatmaps into a single figure using patchwork
+combined_plot <- wrap_plots(heatmap_list, ncol = 2)  # Arrange in 2x2 grid
+
+# Save combined figure
+ggsave(filename = paste0(PLOT_loc, "/", Today, ".heatmap_stratified_all.pdf"), 
+       plot = combined_plot, height = 20, width = 20)
+ggsave(filename = paste0(PLOT_loc, "/", Today, ".heatmap_stratified_all.png"), 
+       plot = combined_plot, height = 20, width = 20)
+
+# Cleanup
+rm(gene_expression_data, heatmap_colors, heatmap_list, combined_plot)
+```
+
+
 
 # Gene target list
 
@@ -613,7 +791,7 @@ We are saving the final list of genes of interest
 
 ```{r Save target genes}
 
-temp <- subset(expression_data_sel, select = c("gene_ensembl", "symbol"))
+temp <- subset(expression_data_sel, select = c("symbol", "gene_ensembl"))
 
 fwrite(temp,
        file = paste0(OUT_loc, "/", Today, ".target_list.qc.txt"),
@@ -642,6 +820,23 @@ rm(temp)
 ## Create a SummarizedExperiment
 
 We make a `SummarizedExperiment` for the subset of RNAseq data. We make sure to only include the samples we need based on informed consent and we include only the requested variables.
+
+### Add autoimmunity drugs
+
+Using drug usage data check whether there are patients with autoimmune disease.
+
+```{r}
+# Inventory 'raw' data
+table(bulkRNA_meta_clin$aid)
+
+# Create a new variable and change -999 to NA, 0 to 'no', 1 to 'yes'
+bulkRNA_meta_clin$AutoImDrug <- ifelse(bulkRNA_meta_clin$aid == -999, NA, ifelse(bulkRNA_meta_clin$aid == 0, "no", "yes"))
+table(bulkRNA_meta_clin$AutoImDrug)
+
+# Create a new variable and change -999 to NA, 0 to 'no', 1 to 'yes'
+bulkRNA_meta_clin$AutoImDrug <- ifelse(bulkRNA_meta_clin$aid == -999, NA, ifelse(bulkRNA_meta_clin$aid == 0, "no", "yes"))
+
+```
 
 Next, we are constructing the `SummarizedExperiment`.
 ```{r RNAseq to SE}
@@ -751,8 +946,8 @@ ggpubr::gghistogram(as.tibble(t(subset(assay(AERNAScomboSE_target), AERNAScomboS
 
 --------------------------------------------------------------------------------
 
-    Version:      v1.0.0
-    Last update:  2024-11-26
+    Version:      v1.0.1
+    Last update:  2025-03-13
     Written by:   Sander W. van der Laan (s.w.vanderlaan-2[at]umcutrecht.nl).
     Description:  Script to load bulk RNA sequencing data, and perform gene expression analyses, and visualisations.
     Minimum requirements: R version 3.5.2 (2018-12-20) -- 'Eggshell Igloo', macOS Mojave (10.14.2).
@@ -768,6 +963,7 @@ ggpubr::gghistogram(as.tibble(t(subset(assay(AERNAScomboSE_target), AERNAScomboS
     _W_
 
     **Changes log**
+    * v1.0.1 Update to the heatmap. 
     * v1.0.0 Inital version. Re-arranged to explore the subset of data. 
 
 --------------------------------------------------------------------------------
@@ -783,5 +979,5 @@ save.image(paste0(PROJECT_loc, "/",Today,".",PROJECTNAME,".bulkRNAseq.exploratio
 ```
 
 +-----------------------------------------------------------------------------------------------------------------------------------------+
-| <sup>© 1979-2024 Sander W. van der Laan | s.w.vanderlaan[at]gmail[dot]com | [vanderlaanand.science](https://vanderlaanand.science).</sup> |
+| <sup>© 1979-2025 Sander W. van der Laan | s.w.vanderlaan[at]gmail[dot]com | [vanderlaanand.science](https://vanderlaanand.science).</sup> |
 +-----------------------------------------------------------------------------------------------------------------------------------------+
