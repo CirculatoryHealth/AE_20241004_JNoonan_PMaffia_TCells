@@ -364,7 +364,7 @@ cor_results_final$p_value <- ifelse(!is.na(cor_results_final$p_value) & cor_resu
                                     "<0.001", round(cor_results_final$p_value, 3))
 
 # Export to CSV
-write.csv(cor_results_final, file = paste0(PROJECT_loc, "/", Today, ".", PROJECTNAME, ".polygenicscore_correlation_results.csv"), row.names = FALSE)
+write.csv(cor_results_final, file = paste0(OUT_loc, "/", Today, ".", PROJECTNAME, ".polygenicscore_correlation_results.csv"), row.names = FALSE)
 
 # Display table
 print(cor_results_final)
