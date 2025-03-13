@@ -249,7 +249,7 @@ cor_results <- cor(expression_phenotype[, c("weighted_score", "unweighted_score"
 cor_results
 
 # Export correlation results to a CSV file
-write.csv(cor_results, file = paste0(PROJECT_loc, "/", Today, ".", PROJECTNAME, ".polygenicscore_correlation_results.csv"))
+write.csv(cor_results, file = paste0(OUT_loc, "/", Today, ".", PROJECTNAME, ".polygenicscore_correlation_r.csv"))
 ```
 
 Let's visualize the correlations in a heatmap.
@@ -309,14 +309,65 @@ p <- pheatmap(cor_matrix,
               number_color = "black")
 
 # Save as PNG and PDF
-ggsave(filename = paste0(PROJECT_loc, "/", Today, ".", PROJECTNAME, ".polygenicscore_correlation_heatmap.png"), 
+ggsave(filename = paste0(PLOT_loc, "/", Today, ".", PROJECTNAME, ".polygenicscore_correlation_heatmap.png"), 
        plot = p[[4]], width = 8, height = 6, dpi = 300)
 
-ggsave(filename = paste0(PROJECT_loc, "/", Today, ".", PROJECTNAME, ".polygenicscore_correlation_heatmap.pdf"), 
+ggsave(filename = paste0(PLOT_loc, "/", Today, ".", PROJECTNAME, ".polygenicscore_correlation_heatmap.pdf"), 
        plot = p[[4]], width = 8, height = 6)
 
 # Cleanup
 rm(p)
+```
+
+
+```{r}
+library(tibble)
+library(dplyr)
+library(tidyr)
+
+# Function to compute correlation and p-values
+compute_correlation_pval <- function(data, method = "spearman") {
+  cor_matrix <- cor(data, use = "pairwise.complete.obs", method = method)  # Correlation matrix
+  p_matrix <- matrix(NA, nrow = ncol(data), ncol = ncol(data), dimnames = list(colnames(data), colnames(data)))  # Empty p-value matrix
+  
+  for (i in 1:(ncol(data) - 1)) {
+    for (j in (i + 1):ncol(data)) {
+      test_result <- cor.test(data[[i]], data[[j]], method = method)  # Compute correlation
+      p_matrix[i, j] <- test_result$p.value
+      p_matrix[j, i] <- test_result$p.value  # Symmetric
+    }
+  }
+  
+  return(list(cor_matrix = cor_matrix, p_matrix = p_matrix))
+}
+
+# Compute correlation and p-values
+cor_pval_results <- compute_correlation_pval(expression_phenotype[, c("weighted_score", "unweighted_score", "Fat.bin_10", "SMC.bin", "IPH.bin", "Plaque_Vulnerability_Index")])
+
+# Convert correlation matrix to long format
+cor_results_table <- as.data.frame(cor_pval_results$cor_matrix) %>%
+  rownames_to_column(var = "Trait") %>%
+  pivot_longer(cols = -Trait, names_to = "Compared_With", values_to = "Correlation") %>%
+  dplyr::filter(Trait != Compared_With)  # Remove self-correlations (diagonal)
+
+# Convert p-value matrix to long format
+pval_results_table <- as.data.frame(cor_pval_results$p_matrix) %>%
+  rownames_to_column(var = "Trait") %>%
+  pivot_longer(cols = -Trait, names_to = "Compared_With", values_to = "p_value") %>%
+  dplyr::filter(Trait != Compared_With)  # Remove self-correlations (diagonal)
+
+# Merge correlation and p-value tables
+cor_results_final <- inner_join(cor_results_table, pval_results_table, by = c("Trait", "Compared_With"))
+
+# Format p-value column (e.g., "<0.001" for very small values)
+cor_results_final$p_value <- ifelse(!is.na(cor_results_final$p_value) & cor_results_final$p_value < 0.001, 
+                                    "<0.001", round(cor_results_final$p_value, 3))
+
+# Export to CSV
+write.csv(cor_results_final, file = paste0(PROJECT_loc, "/", Today, ".", PROJECTNAME, ".polygenicscore_correlation_results.csv"), row.names = FALSE)
+
+# Display table
+print(cor_results_final)
 ```
 
 
@@ -408,10 +459,10 @@ combined_plot
 
 ```{r}
 # Save the larger figure
-ggsave(filename = paste0(PROJECT_loc, "/", Today, ".", PROJECTNAME, ".polygenicscore_correlation.png"),
+ggsave(filename = paste0(PLOT_loc, "/", Today, ".", PROJECTNAME, ".polygenicscore_correlation.png"),
        plot = combined_plot, width = 12, height = 10, dpi = 300)
 
-ggsave(filename = paste0(PROJECT_loc, "/", Today, ".", PROJECTNAME, ".polygenicscore_correlation.pdf"),
+ggsave(filename = paste0(PLOT_loc, "/", Today, ".", PROJECTNAME, ".polygenicscore_correlation.pdf"),
        plot = combined_plot, width = 12, height = 10)
 ```
 
