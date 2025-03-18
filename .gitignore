@@ -11,6 +11,9 @@
 *.RDS
 *.rds
 
+# R Environment Variables
+.Renviron
+
 # tag files
 tags
 
@@ -44,9 +47,6 @@ vignettes/*.pdf
 *.utf8.md
 *.knit.md
 
-# R Environment Variables
-.Renviron
-
 # System files
 *.DS_Store
 
@@ -74,7 +74,8 @@ _archived
 *.sample
 *.pheno
 
-*.xlsx
-*.xls
-*.pdf
+# Add the .xlsx and .pdf
+# *.xlsx
+# *.xls
+# *.pdf
 
