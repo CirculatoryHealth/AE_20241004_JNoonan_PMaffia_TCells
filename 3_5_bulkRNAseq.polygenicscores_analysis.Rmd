@@ -1,0 +1,1769 @@
+---
+title: "bulkRNAseq polygenic analyses"
+subtitle: Accompanying 'AE_20241004_JNoonan_PMaffia_TCells'
+author: '[Sander W. van der Laan, PhD](https://vanderlaanand.science) | s.w.vanderlaan[at]gmail[dot]com'
+date: '`r Sys.Date()`'
+output:
+  html_notebook: 
+    cache: yes
+    code_folding: hide
+    collapse: yes
+    df_print: paged
+    fig.align: center
+    fig_caption: yes
+    fig_height: 10
+    fig_retina: 2
+    fig_width: 12
+    theme: paper
+    toc: yes
+    toc_float:
+      collapsed: no
+      smooth_scroll: yes
+    highlight: tango
+mainfont: Helvetica
+editor_options:
+  chunk_output_type: inline
+bibliography: references.bib
+knit: worcs::cite_all
+---
+
+# General Setup
+```{r echo = FALSE}
+rm(list = ls())
+```
+
+```{r LocalSystem, echo = FALSE}
+source("scripts/local.system.R")
+```
+
+```{r Source functions}
+source("scripts/functions.R")
+```
+
+```{r loading_packages, message=FALSE, warning=FALSE}
+source("scripts/pack02.packages.R")
+```
+
+```{r Setting: Colors}
+Today = format(as.Date(as.POSIXlt(Sys.time())), "%Y%m%d")
+Today.Report = format(as.Date(as.POSIXlt(Sys.time())), "%A, %B %d, %Y")
+source("scripts/colors.R")
+```
+
+```{r setup_notebook, include=FALSE}
+# We recommend that you prepare your raw data for analysis in 'prepare_data.R',
+# and end that file with either open_data(yourdata), or closed_data(yourdata).
+# Then, uncomment the line below to load the original or synthetic data
+# (whichever is available), to allow anyone to reproduce your code:
+# load_data()
+
+# further define some knitr-options.
+knitr::opts_chunk$set(fig.width = 12, fig.height = 8, fig.path = 'Figures/', 
+                      warning = TRUE, # show warnings during codebook generation
+                      message = TRUE, # show messages during codebook generation
+                      error = TRUE, # do not interrupt codebook generation in case of errors, 
+                                    # usually better for debugging
+                      echo = TRUE,  # show R code
+                      eval = TRUE)
+
+ggplot2::theme_set(ggplot2::theme_minimal())
+# pander::panderOptions("table.split.table", Inf)
+library("worcs")
+library("rmarkdown")
+
+```
+
+
+# Main analyses
+
+Here we perform the polygenic score analyses. We first load the prepared RNAseq data, and extract only the relevant genes. We then calculate a polygenic score from the target genes. 
+
+## Targets
+
+Here we obtain data from the `r TRAIT_OF_INTEREST` in plaques.
+
+```{r targets, message=FALSE, warning=FALSE}
+library(openxlsx)
+
+gene_list_df <- read.xlsx(paste0(PROJECT_loc, "/targets/targets.xlsx"), sheet = "Genes")
+
+gene_list <- unlist(gene_list_df$Gene)
+gene_list
+
+```
+
+### Filter genes
+
+In case some genes are not available in our data we could filter them here.
+
+```{r list target genes}
+gene_list
+```
+
+We check whether any of the target genes were missing in our data; none are. 
+
+```{r filter target genes}
+gene_list_rm <- c("COL3A", "COL2A") 
+
+temp = gene_list[!gene_list %in% gene_list_rm]
+
+gene_list_qc <- c(temp)
+
+# gene_list_qc <- gene_list
+# 
+# for debug
+# gene_list_qc_replace <- c("MRTFA")
+
+
+```
+
+
+# Loading data
+
+We simply load the previously saved `RDS`-file and extract the clinical and RNAseq data from that.
+
+```{r LoadAEDB}
+# AEDB.CEA <- readRDS(file = paste0(OUT_loc, "/",Today,".",PROJECTNAME,".AEDB.CEA.RDS"))
+AEDB.CEA <- readRDS(file = paste0(OUT_loc, "/20250313.",PROJECTNAME,".AEDB.CEA.RDS"))
+AEDB.CEA$STUDY_NUMBER <- paste0("ae", AEDB.CEA$STUDY_NUMBER)
+head(AEDB.CEA$STUDY_NUMBER)
+
+# AERNASE <- readRDS(file = paste0(OUT_loc, "/", Today, ".AERNAScomboSEvst.CEA.1093pts.SE.after_qc.IC_academic.RDS"))
+AERNASE <- readRDS(file = paste0(OUT_loc, "/20250313.AERNAScomboSEvst.CEA.1093pts.SE.after_qc.IC_academic.RDS"))
+
+# AERNASE.targets <- readRDS(file = paste0(OUT_loc, "/", Today, ".AERNAScomboSE_target.CEA.1093pts.SE.after_qc.IC_academic.RDS"))
+AERNASE.targets <- readRDS(file = paste0(OUT_loc, "/20250313.AERNAScomboSE_target.CEA.1093pts.SE.after_qc.IC_academic.RDS"))
+
+# AERNASE.clin.targets <- readRDS(file = paste0(OUT_loc, "/", Today, ".",TRAIT_OF_INTEREST,".AERNASE.clin.targets.df.RDS"))
+AERNASE.clin.targets <- readRDS(file = paste0(OUT_loc, "/20250313.",TRAIT_OF_INTEREST,".AERNASE.clin.targets.df.RDS"))
+
+# AERNASE.targets <- readRDS(file = paste0(OUT_loc, "/", Today, ".",TRAIT_OF_INTEREST,".AERNASE.targets.se.RDS"))
+AERNASE.targets <- readRDS(file = paste0(OUT_loc, "/20250313.",TRAIT_OF_INTEREST,".AERNASE.targets.se.RDS"))
+
+# AERNASE.targets.genedata <- readRDS(, file = paste0(OUT_loc, "/", Today, ".",TRAIT_OF_INTEREST,".AERNASE.targets.genedata.RDS"))
+AERNASE.targets.genedata <- readRDS(, file = paste0(OUT_loc, "/20250313.",TRAIT_OF_INTEREST,".AERNASE.targets.genedata.RDS"))
+head(AERNASE.clin.targets$study_number)
+head(AERNASE.targets$study_number)
+head(AERNASE.targets.genedata)
+```
+
+
+Getting some summary statistics.
+```{r}
+cat("Average expression of a random selection of 1000 genes.\n")
+set.seed(141619)
+mean(rowMeans(as_tibble(assay(AERNASE)) %>% dplyr::sample_n(1000)))
+
+cat("\nAverage expression of target genes.\n")
+rowMeans(assay(AERNASE.targets))
+
+cat("\nGene information.\n")
+rowRanges(AERNASE.targets)
+```
+
+
+# Create polygenic score
+
+Here we create a polygenic score consisting of the variance weighted averages of the target genes. 
+
+```{r}
+library(SummarizedExperiment)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(ggpubr)
+
+# Extract expression data from SummarizedExperiment
+expression_data <- assay(AERNASE.targets)
+
+# Ensure gene_list_qc is a character vector
+gene_list_qc <- as.character(gene_list_qc)
+
+# Subset expression data for the target genes
+expression_subset <- expression_data[rownames(expression_data) %in% gene_list_qc, , drop = FALSE]
+
+# Check for missing genes
+missing_genes <- setdiff(gene_list_qc, rownames(expression_subset))
+if (length(missing_genes) > 0) {
+  message("Warning: The following genes were not found in the dataset: ", paste(missing_genes, collapse = ", "))
+}
+
+# Compute variance for each gene across individuals (rows)
+gene_variance <- apply(expression_subset, 1, var, na.rm = TRUE)
+
+# Normalize weights so they sum to 1
+weights <- gene_variance / sum(gene_variance, na.rm = TRUE)
+
+# Ensure weight vector matches number of selected genes
+if (length(weights) != nrow(expression_subset)) {
+  stop("Error: Weight vector length does not match the number of genes in the expression matrix.")
+}
+
+# Compute the variance-weighted polygenic score for each individual
+weighted_score <- colSums(expression_subset * weights, na.rm = TRUE)
+
+# Compute the unweighted polygenic score (mean expression per individual)
+unweighted_score <- colMeans(expression_subset, na.rm = TRUE)
+
+# Convert scores to a data frame
+score_df <- data.frame(
+  study_number = colnames(expression_subset),  # Match individuals (columns in expression data)
+  weighted_score = weighted_score,  # Variance-weighted score
+  unweighted_score = unweighted_score  # Unweighted mean expression score
+)
+
+# Extract phenotype data from SummarizedExperiment (assumed in colData)
+phenotype_data <- as.data.frame(colData(AERNASE.targets)) %>%
+  dplyr::select(study_number, Fat.bin_10, SMC.bin, IPH.bin, Plaque_Vulnerability_Index)
+
+# Merge phenotype data with scores
+expression_phenotype <- inner_join(phenotype_data, score_df, by = "study_number")
+
+# Add a factor for Plaque Vulnerability Index (PVI)
+expression_phenotype$PVI_factor <- factor(expression_phenotype$Plaque_Vulnerability_Index, levels = as.character(0:5))
+```
+
+# Analysis and visualization of polygenic score
+
+Here we perform some basic analyses and visualizations of the polygenic score.
+
+```{r}
+library(ggpubr)
+library(dplyr)
+
+# Convert categorical plaque phenotype variables into numeric
+expression_phenotype <- expression_phenotype %>%
+  mutate(
+    Fat.bin_10 = as.numeric(factor(Fat.bin_10, levels = c(" <10%", " >10%"))),
+    SMC.bin = as.numeric(factor(SMC.bin, levels = c("no/minor", "moderate/heavy"))),
+    IPH.bin = as.numeric(factor(IPH.bin, levels = c("no", "yes"))),
+    Plaque_Vulnerability_Index = as.numeric(Plaque_Vulnerability_Index)
+  )
+
+```
+
+
+Compute correlations.
+
+```{r}
+# Compute Spearman correlation
+cor_results <- cor(expression_phenotype[, c("weighted_score", "unweighted_score", "Fat.bin_10", "SMC.bin", "IPH.bin", "Plaque_Vulnerability_Index")], 
+                   use = "pairwise.complete.obs", method = "spearman")
+
+# Print correlation results
+cor_results
+
+# Export correlation results to a CSV file
+write.csv(cor_results, file = paste0(OUT_loc, "/", Today, ".", PROJECTNAME, ".polygenicscore_correlation_r.csv"))
+```
+
+Let's visualize the correlations in a heatmap.
+
+```{r}
+library(pheatmap)
+library(Hmisc)  # For rcorr() to get p-values
+
+# Compute Spearman correlation with p-values
+cor_results <- rcorr(as.matrix(expression_phenotype[, c("weighted_score", "unweighted_score", "Fat.bin_10", "SMC.bin", "IPH.bin", "Plaque_Vulnerability_Index")]), 
+                     type = "spearman")
+
+cor_matrix <- cor_results$r  # Extract correlation coefficients
+p_matrix <- cor_results$P  # Extract p-values
+
+# Rename variables and reorder rows/columns
+new_names <- c("Fat", "SMCs", "IPH", "PVI", "Polygenic Score", "Unweighted Polygenic Score")
+
+# Reorder the correlation matrix
+cor_matrix <- cor_matrix[c("Fat.bin_10", "SMC.bin", "IPH.bin", "Plaque_Vulnerability_Index", "weighted_score", "unweighted_score"),
+                         c("Fat.bin_10", "SMC.bin", "IPH.bin", "Plaque_Vulnerability_Index", "weighted_score", "unweighted_score")]
+
+p_matrix <- p_matrix[c("Fat.bin_10", "SMC.bin", "IPH.bin", "Plaque_Vulnerability_Index", "weighted_score", "unweighted_score"),
+                     c("Fat.bin_10", "SMC.bin", "IPH.bin", "Plaque_Vulnerability_Index", "weighted_score", "unweighted_score")]
+
+# Apply new names
+rownames(cor_matrix) <- new_names
+colnames(cor_matrix) <- new_names
+
+rownames(p_matrix) <- new_names
+colnames(p_matrix) <- new_names
+
+# Function to map p-values to asterisks
+significance_levels <- function(p) {
+  ifelse(p < 0.001, "***",
+         ifelse(p < 0.01, "**",
+                ifelse(p < 0.05, "*", "")))
+}
+
+# Generate asterisks for p-values
+p_asterisks <- matrix(significance_levels(p_matrix), nrow = nrow(p_matrix), ncol = ncol(p_matrix))
+
+# Remove diagonal values (set to empty string "")
+diag(p_asterisks) <- ""
+
+rownames(p_asterisks) <- new_names
+colnames(p_asterisks) <- new_names
+
+# Create the heatmap with asterisks
+p <- pheatmap(cor_matrix, 
+              cluster_rows = FALSE,
+              cluster_cols = FALSE,
+              color = colorRampPalette(c("blue", "white", "red"))(100), 
+              fontsize = 12, 
+              main = "Polygenic Score Correlation Heatmap",
+              display_numbers = p_asterisks,  # Add asterisks for p-values
+              number_color = "black")
+
+# Save as PNG and PDF
+ggsave(filename = paste0(PLOT_loc, "/", Today, ".", PROJECTNAME, ".polygenicscore_correlation_heatmap.png"), 
+       plot = p[[4]], width = 8, height = 6, dpi = 300)
+
+ggsave(filename = paste0(PLOT_loc, "/", Today, ".", PROJECTNAME, ".polygenicscore_correlation_heatmap.pdf"), 
+       plot = p[[4]], width = 8, height = 6)
+
+# Cleanup
+rm(p)
+```
+
+
+```{r}
+library(tibble)
+library(dplyr)
+library(tidyr)
+
+# Function to compute correlation and p-values
+compute_correlation_pval <- function(data, method = "spearman") {
+  cor_matrix <- cor(data, use = "pairwise.complete.obs", method = method)  # Correlation matrix
+  p_matrix <- matrix(NA, nrow = ncol(data), ncol = ncol(data), dimnames = list(colnames(data), colnames(data)))  # Empty p-value matrix
+  
+  for (i in 1:(ncol(data) - 1)) {
+    for (j in (i + 1):ncol(data)) {
+      test_result <- cor.test(data[[i]], data[[j]], method = method)  # Compute correlation
+      p_matrix[i, j] <- test_result$p.value
+      p_matrix[j, i] <- test_result$p.value  # Symmetric
+    }
+  }
+  
+  return(list(cor_matrix = cor_matrix, p_matrix = p_matrix))
+}
+
+# Compute correlation and p-values
+cor_pval_results <- compute_correlation_pval(expression_phenotype[, c("weighted_score", "unweighted_score", "Fat.bin_10", "SMC.bin", "IPH.bin", "Plaque_Vulnerability_Index")])
+
+# Convert correlation matrix to long format
+cor_results_table <- as.data.frame(cor_pval_results$cor_matrix) %>%
+  rownames_to_column(var = "Trait") %>%
+  pivot_longer(cols = -Trait, names_to = "Compared_With", values_to = "Correlation") %>%
+  dplyr::filter(Trait != Compared_With)  # Remove self-correlations (diagonal)
+
+# Convert p-value matrix to long format
+pval_results_table <- as.data.frame(cor_pval_results$p_matrix) %>%
+  rownames_to_column(var = "Trait") %>%
+  pivot_longer(cols = -Trait, names_to = "Compared_With", values_to = "p_value") %>%
+  dplyr::filter(Trait != Compared_With)  # Remove self-correlations (diagonal)
+
+# Merge correlation and p-value tables
+cor_results_final <- inner_join(cor_results_table, pval_results_table, by = c("Trait", "Compared_With"))
+
+# Format p-value column (e.g., "<0.001" for very small values)
+cor_results_final$p_value <- ifelse(!is.na(cor_results_final$p_value) & cor_results_final$p_value < 0.001, 
+                                    "<0.001", round(cor_results_final$p_value, 3))
+
+# Export to CSV
+write.csv(cor_results_final, file = paste0(OUT_loc, "/", Today, ".", PROJECTNAME, ".polygenicscore_correlation_results.csv"), row.names = FALSE)
+
+# Display table
+print(cor_results_final)
+```
+
+
+
+```{r}
+library(ggpubr)
+library(dplyr)
+library(ggsci)
+
+# Compute max value for better label placement
+max_y <- max(expression_phenotype$weighted_score, na.rm = TRUE)
+
+# Boxplot for binary traits (Fat, SMCs, IPH)
+p1 <- ggboxplot(expression_phenotype %>% drop_na(Fat.bin_10, weighted_score), x = "Fat.bin_10", y = "weighted_score",
+                add = "jitter", color = "Fat.bin_10", palette = "npg", repel = TRUE) +
+  stat_compare_means(method = "wilcox.test") +  
+  labs(title = "Polygenic Score (weighted) vs Fat", x = "Fat", y = "Polygenic Score") +
+  theme_minimal()
+p1
+```
+
+
+```{r}
+p2 <- ggboxplot(expression_phenotype %>% drop_na(SMC.bin, weighted_score), x = "SMC.bin", y = "weighted_score",
+                add = "jitter", color = "SMC.bin", palette = "npg") +
+  stat_compare_means(method = "wilcox.test") +
+  labs(title = "Polygenic Score (weighted) vs SMCs", x = "SMCs", y = "Polygenic Score") +
+  theme_minimal()
+p2
+```
+
+
+```{r}
+p3 <- ggboxplot(expression_phenotype %>% drop_na(IPH.bin, weighted_score), x = "IPH.bin", y = "weighted_score",
+                add = "jitter", color = "IPH.bin", palette = "npg") +
+  stat_compare_means(method = "wilcox.test") +
+  labs(title = "Polygenic Score (weighted) vs IPH", x = "IPH", y = "Polygenic Score") +
+  theme_minimal()
+p3
+```
+
+
+```{r}
+# Define NPG colors manually
+npg_colors <- c("#E64B35", "#4DBBD5", "#00A087", "#3C5488", "#F39B7F", "#8491B4")
+
+# Remove NA values
+data_clean <- expression_phenotype %>% drop_na(PVI_factor, weighted_score)
+
+# Convert factor to numeric for regression
+data_clean$PVI_numeric <- as.numeric(data_clean$PVI_factor)
+
+# Perform linear regression
+lm_model <- lm(weighted_score ~ PVI_numeric, data = data_clean)
+summary_lm <- summary(lm_model)
+
+# Extract regression coefficient (β) and p-value
+beta <- round(summary_lm$coefficients[2, 1], 3)  # Slope
+p_value <- summary_lm$coefficients[2, 4]  # p-value
+
+# Format p-value for display
+p_text <- ifelse(p_value < 0.001, "p < 0.001", paste0("p = ", round(p_value, 3)))
+
+# Create plot
+p4 <- ggplot(data_clean, aes(x = PVI_numeric, y = weighted_score, color = PVI_factor)) +
+  geom_point(size = 3, alpha = 0.8) +  # Scatter points
+  geom_smooth(method = "lm", se = TRUE, color = "black", aes(group = 1), linetype = "dashed") +  # Dotted regression line
+  scale_color_manual(values = npg_colors) +  # Use manually defined NPG colors
+  scale_x_continuous(breaks = 1:length(levels(expression_phenotype$PVI_factor)),  # Ensure correct axis labels
+                     labels = levels(expression_phenotype$PVI_factor)) +
+  labs(title = "Polygenic Score vs PVI", x = "PVI", y = "Polygenic Score", color = "PVI") +
+  theme_minimal() +
+  theme(legend.background = element_rect(fill = "white", color = "white")) +  # White legend background
+  annotate("text", x = max(data_clean$PVI_numeric) - 1, y = max(data_clean$weighted_score), 
+           label = paste0("β = ", beta, ", ", p_text), 
+           hjust = 1, size = 4, fontface = "bold")  # Add regression coefficient and p-value
+
+p4  # Print the plot
+```
+
+Combine the graphs. 
+
+```{r}
+# Arrange plots with larger layout
+combined_plot <- ggarrange(p1, p2, p3, p4, ncol = 2, nrow = 2, align = "hv", heights = c(1, 1.1))
+combined_plot
+```
+
+
+```{r}
+# Save the larger figure
+ggsave(filename = paste0(PLOT_loc, "/", Today, ".", PROJECTNAME, ".polygenicscore_correlation.png"),
+       plot = combined_plot, width = 12, height = 10, dpi = 300)
+
+ggsave(filename = paste0(PLOT_loc, "/", Today, ".", PROJECTNAME, ".polygenicscore_correlation.pdf"),
+       plot = combined_plot, width = 12, height = 10)
+
+rm(p1, p2, p3, p4, combined_plot)  # Remove temporary objects
+```
+
+
+# Create module score
+
+Let's use Seurat to create a module score for the target genes; a similar approach as presented in the NatCVR paper from [Mokry et al.](https://doi.org/10.1038/s44161-022-00171-0).
+
+First, we will load `Seurat`. 
+
+```{r}
+library(Seurat)
+```
+
+
+### Create Seurat object
+Next, we will create a Seurat object from the target genes.
+
+
+For this we want to add the Gene Symbol to the rowdata of the `SummarizedExperiment`.
+```{r}
+library(SummarizedExperiment)
+
+# Assume `rse` is your RangedSummarizedExperiment object
+rse <- AERNASE  # Replace with your actual object
+
+# Check available rowData columns
+colnames(rowData(rse))
+
+# Ensure the gene symbol column exists (adjust column name if needed)
+if ("symbol" %in% colnames(rowData(rse))) {
+  
+  # Extract gene symbols and ENSG IDs
+  gene_symbols <- rowData(rse)$symbol
+  ensg_ids <- rownames(rse)
+  
+  # Replace missing gene symbols with "NoGeneName"
+  gene_symbols[is.na(gene_symbols) | gene_symbols == ""] <- "NoGeneName"
+  
+  # Format as "Symbol_ENSG"
+  new_gene_names <- paste0(gene_symbols, "_", ensg_ids)
+  
+  # Update rownames
+  rownames(rse) <- new_gene_names
+  
+} else {
+  warning("Gene Symbol column not found in rowData(rse). Check column names!")
+}
+
+# Check updated rownames
+head(rownames(rse))
+
+```
+
+
+```{r}
+# Create Seurat object using the RangedSummarizedExperiment dataset AERNASE.targets and including the associated metadata
+
+# Extract count matrix
+count_matrix <- assay(rse)  # Extract raw counts
+dense_count_matrix <- as.matrix(count_matrix)  # Convert sparse to dense
+
+# Extract metadata
+metadata <- as.data.frame(colData(rse))  # Convert colData to a data frame
+
+# Create a Seurat object
+seurat_obj <- CreateSeuratObject(
+  counts = dense_count_matrix, 
+  meta.data = metadata,  # Attach metadata
+  # min.cells = 3,         # Optional: Filter genes expressed in fewer than 3 cells
+  # min.features = 200     # Optional: Filter cells with fewer than 200 detected genes
+)
+
+# Extract raw counts
+raw_counts <- GetAssayData(seurat_obj, assay = "RNA", layer = "counts")
+
+# Apply log-normalization: log1p() = log(1 + x)
+log_counts <- log1p(raw_counts)
+dense_logcounts <- as.matrix(log_counts)  # Convert sparse to dense
+
+# Add logcounts to the RNA assay in Seurat
+seurat_obj[["RNA"]] <- SetAssayData(seurat_obj[["RNA"]], layer = "logcounts", new.data = dense_logcounts)
+
+# Print summary of the Seurat object
+print(seurat_obj)
+
+# Verify logcounts is added
+Layers(seurat_obj[["RNA"]])  # Check layers again
+
+# rownames(seurat_obj)
+rm(count_matrix, dense_count_matrix, log_counts, dense_logcounts, metadata)  # Remove temporary objects
+```
+
+### Adding module score to Seurat object
+
+Now, let's add the module score to the Seurat object. Here we focus on these 4 genes: `RUNX3`, `PRDM1`, `GZMB`, and `CD3E`. The idea based on the correlation analyses and reflection on our single cell data was to focus on these genes. Conceptually this makes sense as, (for example) It’s entirely possible that `GNLY`, as an example, comes from a different cell type. Also upregulated `GZMB`, `RUNX3` and `PRDM1` are most consistent with what we observed in our single cell data - and so typing these to `CD3E` expression would be the ideal scenario.
+
+
+```{r}
+# Define the target genes
+sets <- list()
+# sets$GSS <- c("RUNX3", "PRDM1", "GZMB", "CD3E")
+sets$GMS <- c("RUNX3-ENSG00000020633", "PRDM1-ENSG00000057657", "GZMB-ENSG00000100453", "CD3E-ENSG00000198851")
+
+# Check if genes exist in Seurat object
+valid_genes <- intersect(sets$GSS, rownames(seurat_obj))
+missing_genes <- setdiff(sets$GSS, rownames(seurat_obj))
+
+# Check if genes exist in Seurat object
+if (length(missing_genes) > 0) {
+  message("Warning: The following genes are not found in Seurat object: ", paste(missing_genes, collapse = ", "))
+} else {
+  message("All genes found in Seurat object.")
+}
+
+```
+
+<!-- Now, we can add the module score to the Seurat object. -->
+
+<!-- ```{r} -->
+<!-- # Use the correct slot ("data" instead of "counts") and reduce control genes if needed -->
+<!-- seurat_obj <- AddModuleScore( -->
+<!--   seurat_obj,  -->
+<!--   features = list(valid_genes),  # Use only valid genes -->
+<!--   name = "GSS",  -->
+<!--   assay = "RNA",  # Ensure correct assay -->
+<!--   layer = "counts",  # Use the correct slot -->
+<!--   ctrl = 50  # Reduce control genes (if dataset is small) -->
+<!-- ) -->
+
+<!-- # Check results -->
+<!-- head(seurat_obj@meta.data) -->
+<!-- ``` -->
+
+### Calculate module score
+
+Setup the `GeneModuleScore` function to compute the module score.
+
+```{r}
+library(Matrix)
+
+GeneModuleScore <- function(seurat_obj, gene_set, name = "ModuleScore", assay = "RNA", layer = "logcounts", ctrl = 50, seed = 42) {
+  
+  set.seed(seed)  # Ensure reproducibility
+
+  # Extract data from Seurat object
+  expression_matrix <- GetAssayData(seurat_obj, assay = assay, layer = layer)
+  
+  # Ensure the gene set exists in the expression data
+  valid_genes <- intersect(gene_set, rownames(expression_matrix))
+  missing_genes <- setdiff(gene_set, rownames(expression_matrix))
+  
+  if (length(valid_genes) == 0) {
+    stop("Error: No valid genes found in Seurat object. Cannot compute module score.")
+  }
+  
+  if (length(missing_genes) > 0) {
+    message("Warning: The following genes were not found: ", paste(missing_genes, collapse = ", "))
+  }
+  
+  # Compute mean expression of selected genes per cell
+  target_score <- colMeans(expression_matrix[valid_genes, , drop = FALSE])
+
+  # Compute average expression of all genes to determine bins
+  avg_expression <- rowMeans(expression_matrix)
+
+  # Bin genes based on expression level
+  expression_bins <- cut_number(avg_expression, n = 24, labels = FALSE, right = FALSE)
+  names(expression_bins) <- names(avg_expression)
+
+  # Select control genes from the same expression bins
+  control_genes <- vector(mode = "list", length = length(valid_genes))
+  
+  for (i in seq_along(valid_genes)) {
+    gene_bin <- expression_bins[valid_genes[i]]
+    bin_genes <- names(expression_bins[expression_bins == gene_bin])
+    
+    # Exclude the original gene and take a random subset of control genes
+    control_genes[[i]] <- setdiff(bin_genes, valid_genes[i])
+    
+    if (length(control_genes[[i]]) >= ctrl) {
+      control_genes[[i]] <- sample(control_genes[[i]], size = ctrl, replace = FALSE)
+    }
+  }
+  
+  # Flatten the list and remove duplicates
+  control_genes <- unique(unlist(control_genes))
+  
+  if (length(control_genes) == 0) {
+    stop("Error: No valid control genes found.")
+  }
+  
+  # Compute mean expression of control genes
+  control_score <- colMeans(expression_matrix[control_genes, , drop = FALSE])
+
+  # Compute module score as the difference
+  module_score <- target_score - control_score
+
+  # Store module score in Seurat metadata
+  seurat_obj@meta.data[[name]] <- module_score
+
+  message("Successfully added module score: ", name)
+  
+  return(seurat_obj)
+}
+```
+
+Compute the module score.
+
+```{r}
+# Add module score to Seurat object
+seurat_obj <- GeneModuleScore(seurat_obj, gene_set = sets$GMS, name = "GMS", assay = "RNA", layer = "logcounts", ctrl = 50)
+```
+
+
+### Visualize gene module score
+
+Let's plot the Gene Module Score (GMS) for our targets.
+
+```{r}
+# Get metadata
+metadata_df <- seurat_obj@meta.data
+```
+
+```{r}
+# Load necessary library
+library(ggpubr)
+
+# Add a factor for Plaque Vulnerability Index (PVI)
+metadata_df$PVI_factor <- factor(metadata_df$Plaque_Vulnerability_Index, levels = as.character(0:5))
+
+# Compute correlation (Spearman is recommended for ordinal/categorical PVI)
+cor_test <- cor.test(as.numeric(metadata_df$Plaque_Vulnerability_Index), metadata_df$GMS, method = "spearman")
+
+# Extract correlation coefficient (R) and p-value
+r_value <- cor_test$estimate
+r_squared <- r_value^2  # Compute R²
+p_value <- cor_test$p.value
+
+# Create correlation text label
+cor_label <- paste0("R² = ", round(r_squared, 3), "\n p = ", signif(p_value, 3))
+
+# Add comparison per group
+my_comparisons <- list( c("0", "1"), c("0", "2"), c("0", "3"), c("0", "4"), c("0", "5")   )
+```
+
+
+
+```{r}
+# Create a boxplot of the module score
+p_box <- ggboxplot(metadata_df, 
+                x = "Plaque_Vulnerability_Index", 
+                y = "GMS", 
+                add = "jitter", 
+                color = "Plaque_Vulnerability_Index", 
+                palette = "npg",
+                ylim = c(-0.25, 0.5)
+                ) +
+  # stat_compare_means(comparisons = my_comparisons, label = "p.signif") + # Add pairwise comparisons
+  # stat_compare_means(label.y = 0.55) +  # Global p-value
+  labs(title = "Gene Module Score vs PVI", 
+       x = "PVI", 
+       y = "Gene Module Score",
+       color = "PVI") +  # Change legend title
+  annotate("text", 
+           x = 4.5, 
+           # y = max(metadata_df$GMS) * 1.1, 
+           y = 0.45,
+           label = cor_label, 
+           size = 5, hjust = 0) + # Add R² annotation
+  theme_minimal()
+
+p_box
+```
+
+```{r}
+# Create the boxplot with jitter and regression line
+p5 <- ggplot(metadata_df, aes(x = as.factor(Plaque_Vulnerability_Index), y = GMS, color = as.factor(Plaque_Vulnerability_Index))) +
+  geom_boxplot(outlier.shape = NA, alpha = 0.5) +  # Boxplot without outlier points
+  geom_jitter(width = 0.2, size = 2, alpha = 0.8) +  # Jitter points
+  geom_smooth(aes(group = 1), method = "lm", se = TRUE, linetype = "dotted", color = "black") +  # Regression line
+  # stat_compare_means(comparisons = my_comparisons, label = "p.signif") +  # Add pairwise comparisons
+  # stat_compare_means(label.y = 0.55) +  # Global p-value
+  labs(title = "Gene Module Score vs PVI", 
+       x = "PVI", 
+       y = "Gene Module Score",
+       color = "PVI") +  # Change legend title
+  annotate("text", x = 4, y = 0.45, label = cor_label, size = 5, hjust = 0) +  # Add R² annotation
+  scale_color_npg() +  # Use npg color palette
+  coord_cartesian(ylim = c(-0.25, 0.55)) +  # Set y-axis limits
+  theme_minimal()
+
+# Display the plot
+p5
+
+# Save the plot
+ggsave(filename = paste0(PLOT_loc, "/", Today, ".", PROJECTNAME, ".GMS_vs_PVI.boxplot.png"),
+       plot = p5, width = 8, height = 6, dpi = 300)
+ggsave(filename = paste0(PLOT_loc, "/", Today, ".", PROJECTNAME, ".GMS_vs_PVI.boxplot.pdf"),
+       plot = p5, width = 8, height = 6, dpi = 300)
+```
+
+```{r}
+library(ggpubr)
+library(dplyr)
+library(ggsci)
+
+# Compute max value for better label placement
+max_y <- max(metadata_df$GMS, na.rm = TRUE)
+
+# Boxplot for binary traits (Fat, SMCs, IPH)
+p1 <- ggboxplot(metadata_df %>% drop_na(Fat.bin_10, GMS), x = "Fat.bin_10", y = "GMS",
+                add = "jitter", color = "Fat.bin_10", palette = "npg", repel = TRUE) +
+  stat_compare_means(method = "wilcox.test") +  
+  labs(title = "Polygenic Score vs Fat", x = "Fat", y = "Polygenic Score") +
+  theme_minimal()
+p1
+```
+
+
+```{r}
+p2 <- ggboxplot(metadata_df %>% drop_na(SMC.bin, GMS), x = "SMC.bin", y = "GMS",
+                add = "jitter", color = "SMC.bin", palette = "npg") +
+  stat_compare_means(method = "wilcox.test") +
+  labs(title = "Polygenic Score vs SMCs", x = "SMCs", y = "Polygenic Score") +
+  theme_minimal()
+p2
+```
+
+
+```{r}
+p3 <- ggboxplot(metadata_df %>% drop_na(IPH.bin, GMS), x = "IPH.bin", y = "GMS",
+                add = "jitter", color = "IPH.bin", palette = "npg") +
+  stat_compare_means(method = "wilcox.test") +
+  labs(title = "Polygenic Score vs IPH", x = "IPH", y = "Polygenic Score") +
+  theme_minimal()
+p3
+```
+
+
+```{r}
+# Define NPG colors manually
+npg_colors <- c("#E64B35", "#4DBBD5", "#00A087", "#3C5488", "#F39B7F", "#8491B4")
+
+# Remove NA values
+data_clean <- metadata_df %>% drop_na(PVI_factor, GMS)
+
+# Convert factor to numeric for regression
+data_clean$PVI_numeric <- as.numeric(data_clean$PVI_factor)
+
+# Perform linear regression
+lm_model <- lm(GMS ~ PVI_numeric, data = data_clean)
+summary_lm <- summary(lm_model)
+
+# Extract regression coefficient (β) and p-value
+beta <- round(summary_lm$coefficients[2, 1], 3)  # Slope
+p_value <- summary_lm$coefficients[2, 4]  # p-value
+
+# Format p-value for display
+p_text <- ifelse(p_value < 0.001, "p < 0.001", paste0("p = ", round(p_value, 3)))
+```
+
+
+```{r}
+# Create plot
+p4 <- ggplot(data_clean, aes(x = PVI_numeric, y = GMS, color = PVI_factor)) +
+  geom_jitter(width = 0.2, size = 3, alpha = 0.8) +  # Add jitter to prevent overlap
+  geom_point(size = 3, alpha = 0.8) +  # Scatter points
+  geom_smooth(method = "lm", se = TRUE, color = "black", aes(group = 1), linetype = "dashed") +  # Dotted regression line
+  scale_color_manual(values = npg_colors) +  # Use manually defined NPG colors
+  scale_x_continuous(breaks = 1:length(levels(expression_phenotype$PVI_factor)),  # Ensure correct axis labels
+                     labels = levels(expression_phenotype$PVI_factor)) +
+  labs(title = "Polygenic Score vs PVI", x = "PVI", y = "Polygenic Score", color = "PVI") +
+  theme_minimal() +
+  theme(legend.background = element_rect(fill = "white", color = "white")) +  # White legend background
+  annotate("text", x = max(data_clean$PVI_numeric), y = max(data_clean$GMS), 
+           label = paste0("β = ", beta, ", ", p_text), 
+           hjust = 1, size = 4, fontface = "bold")  # Add regression coefficient and p-value
+
+p4  # Print the plot
+```
+
+Combine the graphs. 
+
+```{r}
+# Arrange plots with larger layout
+combined_plot <- ggarrange(p1, p2, p3, p4, ncol = 2, nrow = 2, align = "hv", heights = c(1, 1.1))
+combined_plot
+```
+
+
+```{r}
+# Save the larger figure
+ggsave(filename = paste0(PLOT_loc, "/", Today, ".", PROJECTNAME, ".GMS_correlation.png"),
+       plot = combined_plot, width = 12, height = 10, dpi = 300)
+
+ggsave(filename = paste0(PLOT_loc, "/", Today, ".", PROJECTNAME, ".GMS_correlation.pdf"),
+       plot = combined_plot, width = 12, height = 10)
+rm(p1, p2, p3, p4, combined_plot)  # Remove temporary objects
+```
+
+
+# GMS in relation to plaque phenotypes
+
+## Covariates & other variables
+
+1.  Age (continuous in 1-year increment). [`Age`]
+2.  Sex (male vs. female). [`Gender`]
+3.  Presence of hypertension at baseline (defined either as history of hypertension, SBP ≥140 mm Hg, DBP ≥90 mm Hg, or prescription of antihypertensive medications). [`Hypertension.composite`]
+4.  Presence of diabetes mellitus at baseline (defined either as a history of diabetes and/or administration of glucose lowering medication). [`DiabetesStatus`]
+5.  Smoking (current, ex-, never). [`SmokerStatus`]
+6.  LDL-C levels (continuous). [`LDL_final`]
+7.  Use of lipid-lowering drugs. [`Med.Statin.LLD`]
+8.  Use of antiplatelet drugs. [`Med.all.antiplatelet`]
+9.  eGFR (continuous). [`GFR_MDRD`]
+10.	BMI (continuous). [`BMI`]
+11.	History of cardiovascular disease (stroke, coronary artery disease, peripheral artery disease). [`MedHx_CVD`] combination of [`CAD_history`, `Stroke_history`, `Peripheral.interv`]
+12.	Level of stenosis (50-70% vs. 70-99%). [`stenose`]
+13. Year of surgery [`ORdate_year`] as we discovered in Van Lammeren _et al._ the composition of the plaque and therefore the Athero-Express Biobank Study has changed over the years. Likely through changes in lifestyle and primary prevention regimes.
+
+## Models
+
+We will analyze the data through four different models
+
+- Model 1: adjusted for age, sex, and year of surgery
+- Model 2: adjusted for age, sex, year of surgery, and additionally adjusted for history hypertension (defined from medical history and/or use of antihypertensive medications), diabetes (defined as history of a diagnosis and/or use of glucose-lowering medications), current smoking, LDL-C levels at time of operation, use of statins, use of antiplatelet agents, eGFR, BMI, history of cardiovascular disease (coronary artery disease, stroke, peripheral artery disease), and level of stenosis (50-70%, 70-90%, 90-99%)
+
+## Cross-sectional analysis plaque phenotypes
+
+In the cross-sectional analysis of plaque `r TRAIT_OF_INTEREST` levels we will focus on the following plaque vulnerability phenotypes:
+
+- Percentage of macrophages (continuous trait)
+- Percentage of SMCs (continuous trait)
+- Number of intraplaque microvessels per 3-4 hotspots (continuous trait)
+- Presence of moderate/heavy calcifications (binary trait)
+- Presence of moderate/heavy collagen content (binary trait)
+- Presence of lipid core no/<10% vs. >10% (binary trait)
+- Presence of intraplaque hemorrhage (binary trait)
+
+
+First, we need to add a few variables to the metadata.
+```{r}
+# Rename Seurat object
+
+AERNAseurat <- seurat_obj
+rm(seurat_obj, metadata_df)
+```
+
+We'll add the following variables to the metadata:
+
+- `dateok`
+- `MedHx_CVD`
+
+
+```{r}
+# Add dateok of surgery to metadata
+AERNAseurat@meta.data$dateok <- AEDB.CEA$dateok[match(rownames(AERNAseurat@meta.data), AEDB.CEA$STUDY_NUMBER)]
+
+# Add DiabetesStatus
+AERNAseurat@meta.data$MedHx_CVD <- AEDB.CEA$MedHx_CVD[match(rownames(AERNAseurat@meta.data), AEDB.CEA$STUDY_NUMBER)]
+```
+
+
+```{r}
+table(AERNAseurat$MedHx_CVD)
+
+```
+
+### Calculate MAC/SMC ratio
+
+```{r}
+AERNAseurat@meta.data$MAC_SMC_ratio <- AERNAseurat@meta.data$MAC_rankNorm / AERNAseurat@meta.data$SMC_rankNorm
+
+AERNAseurat@meta.data$MAC_SMC_ratio_rank  <- qnorm((rank(AERNAseurat@meta.data$MAC_SMC_ratio, na.last = "keep") - 0.5) / sum(!is.na(AERNAseurat@meta.data$MAC_SMC_ratio)))
+
+
+cat("Summary of data.\n")
+summary(AERNAseurat@meta.data$MAC_rankNorm)
+summary(AERNAseurat@meta.data$SMC_rankNorm)
+summary(AERNAseurat@meta.data$MAC_SMC_ratio_rank)
+
+ggpubr::gghistogram(AERNAseurat@meta.data, "MAC_SMC_ratio_rank", 
+                    # y = "..count..", 
+                    color = "white",
+                    fill = "Gender",
+                    palette = c("#1290D9", "#DB003F"), 
+                    add = "median", 
+                    #add_density = TRUE,
+                    rug = TRUE,
+                    #add.params =  list(color = "black", linetype = 2), 
+                    title = "macrophages/smooth muscle cells ratio",
+                    xlab = "inverse-rank normalized", 
+                    ggtheme = theme_minimal())
+```
+
+### Parse binary traits
+
+```{r CrossSec: plaques - transformations and visualisations binary}
+library(dplyr)
+# calcification
+cat("Summary of data.\n")
+summary(AERNAseurat@meta.data$Calc.bin)
+contrasts(AERNAseurat@meta.data$Calc.bin)
+
+AERNAseurat@meta.data$CalcificationPlaque <- as.factor(AERNAseurat@meta.data$Calc.bin)
+
+df <- AERNAseurat@meta.data %>%
+  dplyr::filter(!is.na(CalcificationPlaque)) %>%
+  dplyr::group_by(Gender, CalcificationPlaque) %>%
+dplyr::summarise(counts = n()) 
+
+ggpubr::ggbarplot(df, x = "CalcificationPlaque", y = "counts",
+                    # y = "..count..",
+                    color = "white",
+                    fill = "Gender",
+                    palette = c("#DB003F", "#1290D9"),
+                    label = TRUE, lab.vjust = 2, lab.col = "#FFFFFF",
+                    title = "Calcification",
+                    xlab = "calcification", 
+                    ggtheme = theme_minimal())
+rm(df)
+
+# collagen
+cat("Summary of data.\n")
+summary(AERNAseurat@meta.data$Collagen.bin)
+contrasts(AERNAseurat@meta.data$Collagen.bin)
+
+AERNAseurat@meta.data$CollagenPlaque <- as.factor(AERNAseurat@meta.data$Collagen.bin)
+
+df <- AERNAseurat@meta.data %>%
+  dplyr::filter(!is.na(CollagenPlaque)) %>%
+  dplyr::group_by(Gender, CollagenPlaque) %>%
+dplyr::summarise(counts = n()) 
+
+ggpubr::ggbarplot(df, x = "CollagenPlaque", y = "counts",
+                    # y = "..count..",
+                    color = "white",
+                    fill = "Gender",
+                    palette = c("#DB003F", "#1290D9"),
+                    label = TRUE, lab.vjust = 2, lab.col = "#FFFFFF",
+                    title = "Collagen",
+                    xlab = "collagen", 
+                    ggtheme = theme_minimal())
+rm(df)
+
+# fat 10%
+cat("Summary of data.\n")
+summary(AERNAseurat@meta.data$Fat.bin_10)
+contrasts(AERNAseurat@meta.data$Fat.bin_10)
+
+AERNAseurat@meta.data$Fat10Perc <- as.factor(AERNAseurat@meta.data$Fat.bin_10)
+
+df <- AERNAseurat@meta.data %>%
+  dplyr::filter(!is.na(Fat10Perc)) %>%
+  dplyr::group_by(Gender, Fat10Perc) %>%
+dplyr::summarise(counts = n()) 
+
+ggpubr::ggbarplot(df, x = "Fat10Perc", y = "counts",
+                    # y = "..count..",
+                    color = "white",
+                    fill = "Gender",
+                    palette = c("#DB003F", "#1290D9"),
+                    label = TRUE, lab.vjust = 2, lab.col = "#FFFFFF",
+                    title = "Intraplaque fat",
+                    xlab = "intraplaque fat", 
+                    ggtheme = theme_minimal())
+rm(df)
+
+# macrophages binned
+cat("Summary of data.\n")
+summary(AERNAseurat@meta.data$Macrophages.bin)
+contrasts(AERNAseurat@meta.data$Macrophages.bin)
+
+AERNAseurat@meta.data$MAC_binned <- as.factor(AERNAseurat@meta.data$Macrophages.bin)
+
+df <- AERNAseurat@meta.data %>%
+  dplyr::filter(!is.na(MAC_binned)) %>%
+  dplyr::group_by(Gender, MAC_binned) %>%
+dplyr::summarise(counts = n()) 
+
+ggpubr::ggbarplot(df, x = "MAC_binned", y = "counts",
+                    # y = "..count..",
+                    color = "white",
+                    fill = "Gender",
+                    palette = c("#DB003F", "#1290D9"),
+                    label = TRUE, lab.vjust = 2, lab.col = "#FFFFFF",
+                    title = "Macrophages (binned)",
+                    xlab = "Macrophages", 
+                    ggtheme = theme_minimal())
+rm(df)
+
+
+
+# SMC binned
+cat("Summary of data.\n")
+summary(AERNAseurat@meta.data$SMC.bin)
+contrasts(AERNAseurat@meta.data$SMC.bin)
+
+AERNAseurat@meta.data$SMC_binned <- as.factor(AERNAseurat@meta.data$SMC.bin)
+
+df <- AERNASE.clin.targets %>%
+  dplyr::filter(!is.na(SMC_binned)) %>%
+  dplyr::group_by(Gender, SMC_binned) %>%
+dplyr::summarise(counts = n()) 
+
+ggpubr::ggbarplot(df, x = "SMC_binned", y = "counts",
+                    # y = "..count..",
+                    color = "white",
+                    fill = "Gender",
+                    palette = c("#DB003F", "#1290D9"),
+                    label = TRUE, lab.vjust = 2, lab.col = "#FFFFFF",
+                    title = "SMC (binned)",
+                    xlab = "SMC", 
+                    ggtheme = theme_minimal())
+rm(df)
+
+
+
+
+# IPH
+cat("Summary of data.\n")
+summary(AERNAseurat@meta.data$IPH.bin)
+contrasts(AERNAseurat@meta.data$IPH.bin)
+
+AERNAseurat@meta.data$IPH <- as.factor(AERNAseurat@meta.data$IPH.bin)
+
+df <- AERNASE.clin.targets %>%
+  dplyr::filter(!is.na(IPH)) %>%
+  dplyr::group_by(Gender, IPH) %>%
+dplyr::summarise(counts = n()) 
+
+ggpubr::ggbarplot(df, x = "IPH", y = "counts",
+                    # y = "..count..",
+                    color = "white",
+                    fill = "Gender",
+                    palette = c("#DB003F", "#1290D9"),
+                    label = TRUE, lab.vjust = 2, lab.col = "#FFFFFF",
+                    title = "Intraplaque hemorrhage",
+                    xlab = "intraplaque hemorrhage", 
+                    ggtheme = theme_minimal())
+rm(df)
+```
+
+
+### Parse Symptoms
+```{r CrossSec: plaques - transformations and visualisations symptoms}
+# Symptoms
+cat("Summary of data.\n")
+summary(AERNAseurat@meta.data$AsymptSympt)
+contrasts(AERNAseurat@meta.data$AsymptSympt)
+
+AERNAseurat@meta.data$AsymptSympt <- as.factor(AERNAseurat@meta.data$AsymptSympt)
+
+df <- AERNAseurat@meta.data %>%
+  dplyr::filter(!is.na(AsymptSympt)) %>%
+  dplyr::group_by(Gender, AsymptSympt) %>%
+dplyr::summarise(counts = n()) 
+
+ggpubr::ggbarplot(df, x = "AsymptSympt", y = "counts",
+                    # y = "..count..",
+                    color = "white",
+                    fill = "Gender",
+                    palette = c("#DB003F", "#1290D9"),
+                    label = TRUE, lab.vjust = 2, lab.col = "#FFFFFF",
+                    title = "Symptoms",
+                    xlab = "symptoms", 
+                    ggtheme = theme_minimal())
+rm(df)
+
+```
+
+
+```{r}
+# Get the metadata in a dataframe
+AERNAseurat_meta <- AERNAseurat@meta.data
+
+```
+
+
+```{r }
+# Get sample size
+study.samplesize = nrow(AERNAseurat_meta) # study.samplesize is an expected variable in the GLM.BIN() GLM.CON() functions
+
+# Add the gene module score
+TRAITS.TARGET.RANK = "GMS"
+
+# Get continuous traits
+TRAITS.CON.RANK = c("MAC_rankNorm", "SMC_rankNorm", "MAC_SMC_ratio_rank", "VesselDensity_rankNorm")
+
+# Get binary traits
+TRAITS.BIN = c("CalcificationPlaque", "CollagenPlaque", "Fat10Perc", "IPH",
+               "MAC_binned", "SMC_binned")
+```
+
+
+```{r }
+# Models 
+# Model 1: adjusted for age and sex
+# Model 2: adjusted for age, sex, hypertension, diabetes, smoking, LDL-C levels, lipid-lowering drugs, antiplatelet drugs, eGFR, BMI, history of CVD, level of stenosis,
+
+AERNAseurat_meta$ORdate_epoch <- as.numeric(AERNAseurat_meta$dateok)
+AERNAseurat_meta$ORdate_year <- AERNAseurat_meta$ORyear
+AERNAseurat_meta$StudyName <- labelled::to_factor(AERNAseurat_meta$StudyName)
+```
+
+
+```{r }
+cat("Summary of 'year of surgery' in 'epoch' (); coded as `numeric()`\n")
+summary(AERNAseurat_meta$ORdate_epoch)
+
+cat("\nSummary of 'year of surgery' in 'years' (); coded as `factor()`\n")
+table(AERNAseurat_meta$ORdate_year)
+# COVARIATES_M1 = c("Age", "Gender", "ORdate_year")
+COVARIATES_M1 = c("Age", "Gender", "ORdate_epoch", "StudyName")
+
+COVARIATES_M2 = c(COVARIATES_M1,  
+               "Hypertension.composite", "DiabetesStatus", 
+               "SmokerStatus", 
+               # "SmokerCurrent",
+               "Med.Statin.LLD", "Med.all.antiplatelet", 
+               "GFR_MDRD", "BMI", 
+               # "CAD_history", "Stroke_history", "Peripheral.interv", 
+               "MedHx_CVD",
+               "stenose")
+# str(AERNASE.clin.targets)
+# COVARIATES_M3 = c(COVARIATES_M2, "LDL_final")
+
+# COVARIATES_M4 = c(COVARIATES_M2, "hsCRP_plasma")
+
+```
+
+
+### Model 1
+
+In this model we correct for _Age_, _Gender_, and _year of surgery_.
+
+Here we use the inverse-rank normalized data - visually this is more normally distributed.
+
+#### Quantitative plaque traits
+
+```{r}
+detach("package:EnsDb.Hsapiens.v86", unload = TRUE)
+detach("package:ensembldb", unload = TRUE)
+
+```
+
+Analysis of continuous/quantitative plaque traits as a function of plaque `r TRAIT_OF_INTEREST` expression levels.
+
+```{r CrossSec: plaques - linear regression MODEL1 RANK, paged.print=FALSE}
+library(dplyr)
+library(MASS)
+
+GLM.results <- data.frame(matrix(NA, ncol = 15, nrow = 0))
+
+cat("Running linear regression...\n")
+for (target_of_interest in 1:length(TRAITS.TARGET.RANK)) {
+  TARGET = TRAITS.TARGET.RANK[target_of_interest]
+  cat(paste0("\nAnalysis of ",TARGET,".\n"))
+  for (trait in 1:length(TRAITS.CON.RANK)) {
+    TRAIT = TRAITS.CON.RANK[trait]
+    cat(paste0("\n- processing ",TRAIT,"\n\n"))
+    currentDF <- as.data.frame(AERNAseurat_meta %>%
+      dplyr::select(., TARGET, TRAIT, COVARIATES_M1) %>%
+      filter(complete.cases(.))) %>%
+      filter_if(~is.numeric(.), all_vars(!is.infinite(.)))
+    # # for debug
+    # print(DT::datatable(currentDF))
+    # print(nrow(currentDF))
+    # print(str(currentDF))
+    ### univariate
+    # fit <- lm(currentDF[,TARGET] ~ currentDF[,TRAIT] + Age + Gender + ORdate_year, data = currentDF)
+    fit <- lm(currentDF[,TARGET] ~ currentDF[,TRAIT] + Age + Gender + ORdate_epoch, data = currentDF)
+    model_step <- stepAIC(fit, direction = "both", trace = FALSE)
+    # print(model_step)
+    # print(summary(fit))
+
+    GLM.results.TEMP <- data.frame(matrix(NA, ncol = 15, nrow = 0))
+    GLM.results.TEMP[1,] = GLM.CON(fit, "AERNAseurat_meta", TARGET, TRAIT, verbose = TRUE)
+    GLM.results = rbind(GLM.results, GLM.results.TEMP)
+  }
+}
+cat("Edit the column names...\n")
+colnames(GLM.results) = c("Dataset", "Predictor", "Trait",
+                          "Beta", "s.e.m.",
+                          "OR", "low95CI", "up95CI",
+                          "T-value", "P-value", "r^2", "r^2_adj", "N", "Model_N", "Perc_Miss")
+
+cat("Correct the variable types...\n")
+GLM.results$Beta <- as.numeric(GLM.results$Beta)
+GLM.results$s.e.m. <- as.numeric(GLM.results$s.e.m.)
+GLM.results$OR <- as.numeric(GLM.results$OR)
+GLM.results$low95CI <- as.numeric(GLM.results$low95CI)
+GLM.results$up95CI <- as.numeric(GLM.results$up95CI)
+GLM.results$`T-value` <- as.numeric(GLM.results$`T-value`)
+GLM.results$`P-value` <- as.numeric(GLM.results$`P-value`)
+GLM.results$`r^2` <- as.numeric(GLM.results$`r^2`)
+GLM.results$`r^2_adj` <- as.numeric(GLM.results$`r^2_adj`)
+GLM.results$`N` <- as.numeric(GLM.results$`N`)
+GLM.results$`Model_N` <- as.numeric(GLM.results$`Model_N`)
+GLM.results$`Perc_Miss` <- as.numeric(GLM.results$`Perc_Miss`)
+
+# Save the data
+cat("Writing results to Excel-file...\n")
+### Univariate
+library(openxlsx)
+write.xlsx(GLM.results,
+           file = paste0(OUT_loc, "/",Today,".AERNAseurat_meta.Con.Uni.",TRAIT_OF_INTEREST,".PlaquePhenotypes.RANK.MODEL1.xlsx"),
+           rowNames = FALSE, colNames = TRUE, sheetName = "Con.Uni.PlaquePheno")
+
+# Removing intermediates
+cat("Removing intermediate files...\n")
+rm(TRAIT, trait, currentDF, GLM.results, GLM.results.TEMP, fit, model_step)
+
+
+```
+
+#### Binary plaque traits
+
+Analysis of binary plaque traits as a function of plaque `r TRAIT_OF_INTEREST` expression levels.
+```{r CrossSec: plaques - logistic regression MODEL1 RANK, paged.print=FALSE}
+
+GLM.results <- data.frame(matrix(NA, ncol = 16, nrow = 0))
+for (target_of_interest in 1:length(TRAITS.TARGET.RANK)) {
+  TARGET = TRAITS.TARGET.RANK[target_of_interest]
+  cat(paste0("\nAnalysis of ",TARGET,".\n"))
+  for (trait in 1:length(TRAITS.BIN)) {
+    TRAIT = TRAITS.BIN[trait]
+    cat(paste0("\n- processing ",TRAIT,"\n\n"))
+    currentDF <- as.data.frame(AERNAseurat_meta %>%
+      dplyr::select(., TARGET, TRAIT, COVARIATES_M1) %>%
+      filter(complete.cases(.))) %>%
+      filter_if(~is.numeric(.), all_vars(!is.infinite(.)))
+    # for debug
+    # print(DT::datatable(currentDF))
+    # print(nrow(currentDF))
+    # print(str(currentDF))
+    # print(class(currentDF[,TRAIT]))
+    ### univariate
+    # fit <- glm(as.factor(currentDF[,TRAIT]) ~ currentDF[,TARGET] + Age + Gender + ORdate_year,
+    #           data  =  currentDF, family = binomial(link = "logit"))
+    fit <- glm(as.factor(currentDF[,TRAIT]) ~ currentDF[,TARGET] + Age + Gender + ORdate_epoch,
+              data  =  currentDF, family = binomial(link = "logit"))
+    
+    model_step <- stepAIC(fit, direction = "both", trace = FALSE)
+    # print(model_step)
+    # print(summary(fit))
+    
+    GLM.results.TEMP <- data.frame(matrix(NA, ncol = 16, nrow = 0))
+    GLM.results.TEMP[1,] = GLM.BIN(fit, "AERNAseurat_meta", TARGET, TRAIT, verbose = TRUE)
+    GLM.results = rbind(GLM.results, GLM.results.TEMP)
+  }
+}
+cat("Edit the column names...\n")
+colnames(GLM.results) = c("Dataset", "Predictor", "Trait",
+                          "Beta", "s.e.m.",
+                          "OR", "low95CI", "up95CI",
+                          "Z-value", "P-value", "r^2_l", "r^2_cs", "r^2_nagelkerke", "N", "Model_N", "Perc_Miss")
+
+cat("Correct the variable types...\n")
+GLM.results$Beta <- as.numeric(GLM.results$Beta)
+GLM.results$s.e.m. <- as.numeric(GLM.results$s.e.m.)
+GLM.results$OR <- as.numeric(GLM.results$OR)
+GLM.results$low95CI <- as.numeric(GLM.results$low95CI)
+GLM.results$up95CI <- as.numeric(GLM.results$up95CI)
+GLM.results$`Z-value` <- as.numeric(GLM.results$`Z-value`)
+GLM.results$`P-value` <- as.numeric(GLM.results$`P-value`)
+GLM.results$`r^2_l` <- as.numeric(GLM.results$`r^2_l`)
+GLM.results$`r^2_cs` <- as.numeric(GLM.results$`r^2_cs`)
+GLM.results$`r^2_nagelkerke` <- as.numeric(GLM.results$`r^2_nagelkerke`)
+GLM.results$`N` <- as.numeric(GLM.results$`N`)
+GLM.results$`Model_N` <- as.numeric(GLM.results$`Model_N`)
+GLM.results$`Perc_Miss` <- as.numeric(GLM.results$`Perc_Miss`)
+
+# Save the data
+cat("Writing results to Excel-file...\n")
+
+### Univariate
+write.xlsx(GLM.results,
+           file = paste0(OUT_loc, "/",Today,".AERNAseurat_meta.Bin.Uni.",TRAIT_OF_INTEREST,".PlaquePhenotypes.RANK.MODEL1.xlsx"),
+           rowNames = FALSE, colNames = TRUE, sheetName = "Bin.Uni.PlaquePheno")
+
+# Removing intermediates
+cat("Removing intermediate files...\n")
+rm(TRAIT, trait, currentDF, GLM.results, GLM.results.TEMP, fit, model_step)
+
+```
+
+
+### Model 2
+
+In this model we correct for _Age_, _Gender_, _year of surgery_, _Hypertension status_, _Diabetes status_, _current smoker status_, _lipid-lowering drugs (LLDs)_, _antiplatelet medication_, _eGFR (MDRD)_, _BMI_, _MedHx_CVD_ (combination of _CAD history_, _stroke history_, and _peripheral interventions_), and _stenosis_.
+
+Here we use the `inverse-rank normalized` data - visually this is more normally distributed.
+
+#### Quantitative plaque traits
+
+Analysis of continuous/quantitative plaque traits as a function of plaque `r TRAIT_OF_INTEREST` expression levels.
+```{r CrossSec: plaques - linear regression MODEL2 RANK, paged.print=FALSE}
+
+GLM.results <- data.frame(matrix(NA, ncol = 15, nrow = 0))
+cat("Running linear regression...\n")
+for (target_of_interest in 1:length(TRAITS.TARGET.RANK)) {
+  TARGET = TRAITS.TARGET.RANK[target_of_interest]
+  cat(paste0("\nAnalysis of ",TARGET,".\n"))
+  for (trait in 1:length(TRAITS.CON.RANK)) {
+    TRAIT = TRAITS.CON.RANK[trait]
+    cat(paste0("\n- processing ",TRAIT,"\n\n"))
+    currentDF <- as.data.frame(AERNAseurat_meta %>%
+      dplyr::select(., TARGET, TRAIT, COVARIATES_M2) %>%
+      filter(complete.cases(.))) %>%
+      filter_if(~is.numeric(.), all_vars(!is.infinite(.)))
+    # for debug
+    # print(DT::datatable(currentDF))
+    # print(nrow(currentDF))
+    # print(str(currentDF))
+    ### univariate
+    # fit <- lm(currentDF[,TARGET] ~ currentDF[,TRAIT] + Age + Gender + ORdate_year + 
+    #             Hypertension.composite + DiabetesStatus + SmokerStatus + 
+    #             Med.Statin.LLD + Med.all.antiplatelet + GFR_MDRD + BMI + 
+    #             MedHx_CVD + stenose, 
+    #           data = currentDF)
+    
+    fit <- lm(currentDF[,TARGET] ~ currentDF[,TRAIT] + Age + Gender + ORdate_epoch +
+              Hypertension.composite + DiabetesStatus + SmokerStatus + 
+              Med.Statin.LLD + Med.all.antiplatelet + GFR_MDRD + BMI + 
+              MedHx_CVD + stenose, 
+              data = currentDF) 
+    
+    model_step <- stepAIC(fit, direction = "both", trace = FALSE)
+    # print(model_step)
+    # print(summary(fit))
+    
+    GLM.results.TEMP <- data.frame(matrix(NA, ncol = 15, nrow = 0))
+    GLM.results.TEMP[1,] = GLM.CON(fit, "AERNAseurat_meta", TARGET, TRAIT, verbose = TRUE)
+    GLM.results = rbind(GLM.results, GLM.results.TEMP)
+  }
+}
+cat("Edit the column names...\n")
+colnames(GLM.results) = c("Dataset", "Predictor", "Trait",
+                          "Beta", "s.e.m.",
+                          "OR", "low95CI", "up95CI",
+                          "T-value", "P-value", "r^2", "r^2_adj", "N", "Model_N", "Perc_Miss")
+
+cat("Correct the variable types...\n")
+GLM.results$Beta <- as.numeric(GLM.results$Beta)
+GLM.results$s.e.m. <- as.numeric(GLM.results$s.e.m.)
+GLM.results$OR <- as.numeric(GLM.results$OR)
+GLM.results$low95CI <- as.numeric(GLM.results$low95CI)
+GLM.results$up95CI <- as.numeric(GLM.results$up95CI)
+GLM.results$`T-value` <- as.numeric(GLM.results$`T-value`)
+GLM.results$`P-value` <- as.numeric(GLM.results$`P-value`)
+GLM.results$`r^2` <- as.numeric(GLM.results$`r^2`)
+GLM.results$`r^2_adj` <- as.numeric(GLM.results$`r^2_adj`)
+GLM.results$`N` <- as.numeric(GLM.results$`N`)
+GLM.results$`Model_N` <- as.numeric(GLM.results$`Model_N`)
+GLM.results$`Perc_Miss` <- as.numeric(GLM.results$`Perc_Miss`)
+
+# Save the data
+cat("Writing results to Excel-file...\n")
+### Univariate
+library(openxlsx)
+write.xlsx(GLM.results,
+           file = paste0(OUT_loc, "/",Today,".AERNAseurat_meta.Con.Multi.",TRAIT_OF_INTEREST,".PlaquePhenotypes.RANK.MODEL2.xlsx"),
+           rowNames = FALSE, colNames = TRUE, sheetName = "Con.Multi.PlaquePheno")
+# Removing intermediates
+cat("Removing intermediate files...\n")
+rm(TRAIT, trait, currentDF, GLM.results, GLM.results.TEMP, fit, model_step)
+
+
+```
+
+#### Binary plaque traits
+
+Analysis of binary plaque traits as a function of plaque `r TRAIT_OF_INTEREST` levels.
+```{r CrossSec: plaques - logistic regression MODEL2 RANK, paged.print=FALSE}
+
+GLM.results <- data.frame(matrix(NA, ncol = 16, nrow = 0))
+for (target_of_interest in 1:length(TRAITS.TARGET.RANK)) {
+  TARGET = TRAITS.TARGET.RANK[target_of_interest]
+  cat(paste0("\nAnalysis of ",TARGET,".\n"))
+  for (trait in 1:length(TRAITS.BIN)) {
+    TRAIT = TRAITS.BIN[trait]
+    cat(paste0("\n- processing ",TRAIT,"\n\n"))
+    currentDF <- as.data.frame(AERNAseurat_meta %>%
+      dplyr::select(., TARGET, TRAIT, COVARIATES_M2) %>%
+      filter(complete.cases(.))) %>%
+      filter_if(~is.numeric(.), all_vars(!is.infinite(.)))
+    # for debug
+    # print(DT::datatable(currentDF))
+    # print(nrow(currentDF))
+    # print(str(currentDF))
+    # print(class(currentDF[,TRAIT]))
+    ### univariate
+    # fit <- glm(as.factor(currentDF[,TRAIT]) ~ currentDF[,TARGET] + Age + Gender + ORdate_year + 
+    #             Hypertension.composite + DiabetesStatus + SmokerStatus + 
+    #             Med.Statin.LLD + Med.all.antiplatelet + GFR_MDRD + BMI + 
+    #             MedHx_CVD + stenose, 
+    #           data  =  currentDF, family = binomial(link = "logit"))
+    
+    fit <- glm(as.factor(currentDF[,TRAIT]) ~ currentDF[,TARGET] + Age + Gender + ORdate_epoch + 
+                Hypertension.composite + DiabetesStatus + SmokerStatus + 
+                Med.Statin.LLD + Med.all.antiplatelet + GFR_MDRD + BMI + 
+                MedHx_CVD + stenose, 
+              data  =  currentDF, family = binomial(link = "logit"))
+    
+    model_step <- stepAIC(fit, direction = "both", trace = FALSE)
+    # print(model_step)
+    # print(summary(fit))
+    
+    GLM.results.TEMP <- data.frame(matrix(NA, ncol = 16, nrow = 0))
+    GLM.results.TEMP[1,] = GLM.BIN(fit, "AERNAseurat_meta", TARGET, TRAIT, verbose = TRUE)
+    GLM.results = rbind(GLM.results, GLM.results.TEMP)
+  }
+}
+cat("Edit the column names...\n")
+colnames(GLM.results) = c("Dataset", "Predictor", "Trait",
+                          "Beta", "s.e.m.",
+                          "OR", "low95CI", "up95CI",
+                          "Z-value", "P-value", "r^2_l", "r^2_cs", "r^2_nagelkerke", "N", "Model_N", "Perc_Miss")
+
+cat("Correct the variable types...\n")
+GLM.results$Beta <- as.numeric(GLM.results$Beta)
+GLM.results$s.e.m. <- as.numeric(GLM.results$s.e.m.)
+GLM.results$OR <- as.numeric(GLM.results$OR)
+GLM.results$low95CI <- as.numeric(GLM.results$low95CI)
+GLM.results$up95CI <- as.numeric(GLM.results$up95CI)
+GLM.results$`Z-value` <- as.numeric(GLM.results$`Z-value`)
+GLM.results$`P-value` <- as.numeric(GLM.results$`P-value`)
+GLM.results$`r^2_l` <- as.numeric(GLM.results$`r^2_l`)
+GLM.results$`r^2_cs` <- as.numeric(GLM.results$`r^2_cs`)
+GLM.results$`r^2_nagelkerke` <- as.numeric(GLM.results$`r^2_nagelkerke`)
+GLM.results$`N` <- as.numeric(GLM.results$`N`)
+GLM.results$`Model_N` <- as.numeric(GLM.results$`Model_N`)
+GLM.results$`Perc_Miss` <- as.numeric(GLM.results$`Perc_Miss`)
+
+# Save the data
+cat("Writing results to Excel-file...\n")
+
+### Univariate
+write.xlsx(GLM.results,
+           file = paste0(OUT_loc, "/",Today,".AERNAseurat_meta.Bin.Multi.",TRAIT_OF_INTEREST,".PlaquePhenotypes.RANK.MODEL2.xlsx"),
+           rowNames = FALSE, colNames = TRUE, sheetName = "Bin.Multi.PlaquePheno")
+
+# Removing intermediates
+cat("Removing intermediate files...\n")
+rm(TRAIT, trait, currentDF, GLM.results, GLM.results.TEMP, fit, model_step)
+
+```
+
+## Target expression vs. vulnerability index
+
+We will also correlate the target levels to the `Plaque vulnerability index`. First, we'll visualize this, next we run model 1 and model 2. 
+
+### Visualize
+
+Here we plot the target levels to the `Plaque vulnerability index`. 
+
+```{r Fix ORyearGroup, message=FALSE, warning=FALSE}
+library(sjlabelled)
+
+AERNAseurat_meta$yeartemp <- as.numeric(year(AERNAseurat_meta$dateok))
+
+attach(AERNAseurat_meta)
+
+AERNAseurat_meta[,"ORyearGroup"] <- NA
+AERNAseurat_meta$ORyearGroup[yeartemp <= 2007] <- "< 2007"
+AERNAseurat_meta$ORyearGroup[yeartemp > 2007] <- "> 2007"
+detach(AERNAseurat_meta)
+
+table(AERNAseurat_meta$ORyearGroup, AERNAseurat_meta$ORdate_year)
+```
+
+
+```{r per PlaqueVulnerabilityIndex}
+
+cat(paste0("Processing gene: \n"))
+gene_module_list <- c("GMS")
+for (TARGET_GENE in gene_module_list) {
+
+  cat(paste0("- ", TARGET_GENE, "\n"))
+
+  compare_means(as.formula(paste0(TARGET_GENE, " ~ Plaque_Vulnerability_Index")),  data = AERNAseurat_meta, method = "kruskal.test")
+  p1 <- ggpubr::ggboxplot(AERNAseurat_meta, 
+                    x = "Plaque_Vulnerability_Index",
+                    y = TARGET_GENE,  
+                    xlab = "Plaque vulnerability index",
+                    ylab = paste0(TARGET_GENE, " (normalized expression)\n"),
+                    color = "Plaque_Vulnerability_Index",
+                    palette = "npg",
+                    add = "jitter") +
+    stat_compare_means(label = "p.format",  method = "kruskal.test")
+  ggpar(p1, legend = "bottom", legend.title = "Plaque vulnerability index")
+  ggsave(filename = paste0(PLOT_loc, "/", Today, ".",TARGET_GENE,".plaque.PlaqueVulnerabilityIndex.pdf"), plot = last_plot())
+  
+  compare_means(as.formula(paste0(TARGET_GENE, " ~ Plaque_Vulnerability_Index")), group.by = "Gender", data = AERNAseurat_meta, method = "kruskal.test")
+  p2 <- ggpubr::ggboxplot(AERNAseurat_meta, 
+                    x = "Plaque_Vulnerability_Index",
+                    y = TARGET_GENE,  
+                    xlab = "Plaque vulnerability index by gender",
+                    ylab = paste0(TARGET_GENE, " (normalized expression)\n"),
+                    color = "Gender",
+                    palette = c("#D5267B", "#1290D9"),
+                    add = "jitter") +
+    stat_compare_means(aes(group = Gender), label = "p.format",  method = "kruskal.test")
+  ggpar(p2, legend = "bottom", legend.title = "Plaque vulnerability index")
+  ggsave(filename = paste0(PLOT_loc, "/", Today, ".",TARGET_GENE,".plaque.PlaqueVulnerabilityIndex.byGender.pdf"), plot = last_plot())
+  
+  
+  compare_means(as.formula(paste0(TARGET_GENE, " ~ Plaque_Vulnerability_Index")), data = AERNAseurat_meta, method = "kruskal.test")
+  p5 <- ggpubr::ggboxplot(AERNAseurat_meta, 
+                    x = "Plaque_Vulnerability_Index",
+                    y = TARGET_GENE,  
+                    xlab = "Plaque vulnerability index",
+                    ylab = paste0(TARGET_GENE, " (normalized expression)\n"),
+                    color = "Plaque_Vulnerability_Index",
+                    palette = "npg",
+                    facet.by = "ORyearGroup",
+                    add = "jitter") +
+    stat_compare_means(label = "p.format",  method = "kruskal.test")
+  ggpar(p5, legend = "bottom", legend.title = "Plaque vulnerability index")
+  ggsave(filename = paste0(PLOT_loc, "/", Today, ".",TARGET_GENE,".plaque.PlaqueVulnerabilityIndex_Facet_byYear.pdf"), plot = last_plot())
+  
+  compare_means(as.formula(paste0(TARGET_GENE, " ~ Plaque_Vulnerability_Index")), group.by = "Gender", data = AERNAseurat_meta, method = "kruskal.test")
+  p6 <- ggpubr::ggboxplot(AERNAseurat_meta, 
+                    x = "Plaque_Vulnerability_Index",
+                    y = TARGET_GENE,  
+                    xlab = "Plaque vulnerability index",
+                    ylab = paste0(TARGET_GENE, " (normalized expression)\n"),
+                    color = "Gender",
+                    palette = c("#D5267B", "#1290D9"),
+                    facet.by = "ORyearGroup",
+                    add = "jitter") +
+    stat_compare_means(aes(group = Gender), label = "p.format",  method = "kruskal.test")
+  ggpar(p6, legend = "bottom", legend.title = "Plaque vulnerability index")
+  ggsave(filename = paste0(PLOT_loc, "/", Today, ".",TARGET_GENE,".plaque.PlaqueVulnerabilityIndex_Facet_byYear.byGender.pdf"), plot = last_plot())
+}
+
+```
+
+
+### Model 1
+
+In this model we correct for _Age_, _Gender_, and _year of surgery_.
+
+Here we use the inverse-rank normalized data - visually this is more normally distributed.
+
+Analysis of the plaque vulnerability index as a function of target plasma or plaque levels.
+
+```{r CrossSec: Plaque_Vulnerability_Index - ordinal regression MODEL1 RANK, paged.print=TRUE}
+
+cat(paste0("Processing gene: \n"))
+for (TARGET_GENE in gene_module_list) {
+
+  cat(paste0("- ", TARGET_GENE, "\n"))
+
+  GLM.results <- data.frame(matrix(NA, ncol = 16, nrow = 0))
+  for (target in 1:length(TARGET_GENE)) {
+    TARGET = TARGET_GENE[target]
+    cat(paste0("\nAnalysis of ",TARGET,".\n"))
+    TRAIT = "Plaque_Vulnerability_Index"
+      cat(paste0("\n- processing ",TRAIT,"\n\n"))
+      currentDF <- as.data.frame(AERNAseurat_meta %>%
+        dplyr::select(., TARGET, TRAIT, COVARIATES_M1) %>%
+        filter(complete.cases(.))) %>%
+        filter_if(~is.numeric(.), all_vars(!is.infinite(.))) %>%
+        droplevels(.)
+      
+      # fix numeric OR year
+      # currentDF$ORdate_year <- as.numeric(currentDF$ORdate_year)
+      
+      # for debug
+      # print(DT::datatable(currentDF))
+      # print(nrow(currentDF))
+      # print(str(currentDF))
+      # print(class(currentDF[,TRAIT]))
+      # table(currentDF$ORdate_year)
+      ### univariate
+       # + Hypertension.composite + DiabetesStatus + SmokerCurrent + 
+       #            Med.Statin.LLD + Med.all.antiplatelet + GFR_MDRD + BMI + 
+       #            CAD_history + Stroke_history + Peripheral.interv + stenose
+      # fit <- polr(currentDF[,TRAIT] ~ currentDF[,PROTEIN] + Age + Gender + ORdate_year, 
+      #           data  =  currentDF, 
+      #           Hess = TRUE)
+      fit <- polr(currentDF[,TRAIT] ~ currentDF[,TARGET] + Age + Gender + ORdate_epoch, 
+                data  =  currentDF, 
+                Hess = TRUE)
+      print(summary(fit))
+      
+      ## store table
+      (ctable <- coef(summary(fit)))
+  
+      ## calculate and store p values
+      p <- pnorm(abs(ctable[, "t value"]), lower.tail = FALSE) * 2
+      
+      ## combined table
+      print((ctable <- cbind(ctable, "p value" = p)))
+    }
+}
+```
+
+### Model 2
+
+In this model we correct for _Age_, _Gender_, _Hypertension status_, _Diabetes status_, _current smoker status_, _lipid-lowering drugs (LLDs)_, _antiplatelet medication_, _eGFR (MDRD)_, _BMI_, _MedHx_CVD_ (combination of _CAD history_, _stroke history_, and _peripheral interventions_), and _stenosis._.
+
+```{r CrossSec: Plaque_Vulnerability_Index - ordinal regression MODEL2 RANK, paged.print=TRUE}
+
+cat(paste0("Processing gene: \n"))
+for (TARGET_GENE in gene_module_list) {
+
+  cat(paste0("- ", TARGET_GENE, "\n"))
+
+  for (target in 1:length(TARGET_GENE)) {
+    TARGET = TARGET_GENE[target]
+    cat(paste0("\nAnalysis of ",TARGET,".\n"))
+    TRAIT = "Plaque_Vulnerability_Index"
+      cat(paste0("\n- processing ",TRAIT,"\n\n"))
+      currentDF <- as.data.frame(AERNAseurat_meta %>%
+        dplyr::select(., TARGET, TRAIT, COVARIATES_M2) %>%
+        filter(complete.cases(.))) %>%
+        filter_if(~is.numeric(.), all_vars(!is.infinite(.))) %>%
+        droplevels(.)
+      
+      # fix numeric OR year
+      # currentDF$ORdate_year <- as.numeric(currentDF$ORdate_year)
+      
+      # for debug
+      # print(DT::datatable(currentDF))
+      # print(nrow(currentDF))
+      # print(str(currentDF))
+      # print(class(currentDF[,TRAIT]))
+      ### univariate
+  
+      # fit <- polr(as.factor(currentDF[,TRAIT]) ~ currentDF[,PROTEIN] + Age + Gender + ORdate_year + Hypertension.composite + DiabetesStatus + SmokerStatus + Med.Statin.LLD + Med.all.antiplatelet + GFR_MDRD + BMI + MedHx_CVD + stenose,
+      #           data  =  currentDF,
+      #           Hess = TRUE)
+      
+      fit <- polr(as.factor(currentDF[,TRAIT]) ~ currentDF[,TARGET] + Age + Gender + ORdate_epoch + Hypertension.composite + DiabetesStatus + SmokerStatus + Med.Statin.LLD + Med.all.antiplatelet + GFR_MDRD + BMI + MedHx_CVD + stenose,
+                data  =  currentDF,
+                Hess = TRUE)
+      
+      print(summary(fit))
+      
+      ## store table
+      (ctable <- coef(summary(fit)))
+  
+      ## calculate and store p values
+      p <- pnorm(abs(ctable[, "t value"]), lower.tail = FALSE) * 2
+      
+      ## combined table
+      print((ctable <- cbind(ctable, "p value" = p)))
+    }
+}
+```
+
+
+
+# Session information
+
+--------------------------------------------------------------------------------
+
+    Version:      v1.2.0
+    Last update:  2025-03-18
+    Written by:   Sander W. van der Laan (s.w.vanderlaan-2[at]umcutrecht.nl).
+    Description:  Script to analyse targets from the Ather-Express Biobank Study.
+    Minimum requirements: R version 3.5.2 (2018-12-20) -- 'Eggshell Igloo', macOS Mojave (10.14.2).
+    
+    **MoSCoW To-Do List**
+    The things we Must, Should, Could, and Would have given the time we have.
+    _M_
+
+    _S_
+
+    _C_
+
+    _W_
+
+    **Changes log**
+    * v1.2.0 Added gene module score analyses. 
+    * v1.1.0 Added gene module score calculations.
+    * v1.0.0 Inital version.
+    
+
+--------------------------------------------------------------------------------
+
+```{r eval = TRUE}
+sessionInfo()
+```
+
+# Saving environment
+```{r Saving}
+save.image(paste0(PROJECT_loc, "/",Today,".",PROJECTNAME,".bulkRNAseq.polygenicscore.RData"))
+```
+
++-----------------------------------------------------------------------------------------------------------------------------------------+
+| <sup>© 1979-2024 Sander W. van der Laan | s.w.vanderlaan[at]gmail[dot]com | [vanderlaanand.science](https://vanderlaanand.science).</sup> |
++-----------------------------------------------------------------------------------------------------------------------------------------+
+

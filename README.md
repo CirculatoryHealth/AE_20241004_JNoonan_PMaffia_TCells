@@ -82,6 +82,12 @@ We projected target genes to the single-cell RNAseq data derived from 46 carotid
 **Figure 3: Dotplot showing expression of target genes per cell type in carotid plaques from the Athero-Express Biobank Study**
 ![Dotplot showing expression of target genes per cell type in carotid plaques from the Athero-Express Biobank Study](PLOTS/20250313.DotPlot.Targets.png)
 
+### Polygenic score
+
+We also created a polygenic score for the target genes using a function that takes into account the variance of all genes in the bulk RNAseq data.
+
+**Figure 4: Polygenic score for target genes in carotid plaques from the Athero-Express Biobank Study**
+![Polygenic score for target genes in carotid plaques from the Athero-Express Biobank Study](PLOTS/20250318.TCells.GMS_correlation.png)
 
 # Where do I start?
 
@@ -127,29 +133,33 @@ The list of genes-of-interest are in `targets.xlsx`.
 
 The bulk RNAseq and scRNAseq are mapped against b38 and Ensembl 86; all genes were found in our data.
 
-### 1. AEDB.CEA.baseline.Rmd
+### 1_AEDB.CEA.baseline.Rmd
 
 This notebook is used to create a `RDS`-formatted datasets with the selection of samples.
 
-### 3.1 bulkRNAseq.preparation.Rmd
+### 3_1_bulkRNAseq.preparation.Rmd
 
 This notebook is used to prepare the bulk RNAseq analyses using the output of the `3_1_bulkRNAseq.preparation.Rmd` notebook.
 
-### 3.2 bulkRNAseq.exploration.Rmd
+### 3_2_bulkRNAseq.exploration.Rmd
 
 This notebook used the output from `3_1_bulkRNAseq.preparation.Rmd` to explore the expression of the target gene(s) compared to some variables and the expression of 1,000 randomly picked genes.
 
-### 3.3 bulkRNAseq.main_analysis.Rmd
+### 3_3_bulkRNAseq.main_analysis.Rmd
 
 This is the main-analysis notebook uses the output from `3_1_bulkRNAseq.preparation.Rmd` and `3_ _2_bulkRNAseq.exploration.Rmd`. Here linear and logistic regression analyses are executed using two models, `model 1` is a 'simple' model correcting for age, sex, year-of-surgery and RNAseq experiment (AERNAS1 and AERNAS2), `model 2` is the same as `model 1` but extended with a selection of traditional risk factors. 
 
-### 3.4 bulkRNAseq.additional_figures.Rmd
+### 3_4_bulkRNAseq.additional_figures.Rmd
 
-Here the output from `3_3_bulkRNAseq.main_analysis.Rmd` is used to create additional informative figures that could be used for publication. 
+**[NOT USED]** Here the output from `3_3_bulkRNAseq.main_analysis.Rmd` is used to create additional informative figures that could be used for publication. 
 
-### 4. scRNAseq.Rmd
+### 4_scRNAseq.Rmd
 
 Here the expression of the target gene(s) is inspected and visualized in the single-cell RNAseq dataset using output from `1_AEDB.CEA.baseline.Rmd`. 
+
+### 3_5_bulkRNAseq.polygenicscores_analysis.Rmd
+
+Compute the polygenic scores using the same approach as `AddModuleScore` from the `Seurat` package.
 
 
 # Reproducibility
@@ -188,8 +198,8 @@ Dr. Sander W. van der Laan has received Roche funding for unrelated work.
 
 #### Changes log
     
-    _Version:_      v1.4.7</br>
-    _Last update:_  2025-03-13</br>
+    _Version:_      v1.5.0</br>
+    _Last update:_  2025-03-18</br>
     _Written by:_   Sander W. van der Laan (s.w.vanderlaan [at] gmail [dot] com).
     
     **MoSCoW To-Do List**
@@ -203,6 +213,7 @@ Dr. Sander W. van der Laan has received Roche funding for unrelated work.
     _W_
 
     **Changes log**
+    * v1.5.0 Major update. Added polygenic score analyses. Added additional figures for the bulk RNAseq. Added a few more details to the README.md.
     * v1.4.7 Updates to the scripts. Project specific re-organization.
     * v1.4.6 Updates to molQTL lookup script; accordingly the `targets.xlsx` file changed. Dropped all output to reduce size. Updates to the readme.me. Added wiki-pages with further explanations.
     * v1.4.5 Fixed an issue with the selection variable in KeyTable to fix the SNP_analyses.Rmd downstream script-steps.
