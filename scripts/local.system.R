@@ -5,11 +5,11 @@
 ### Operating System Version
 ### MacBook Pro
 ROOT_loc = "/Users/slaan3"
-STORAGE_loc = "/Users/slaan3"
 CLOUD_loc = "/Users/slaan3/Library/Mobile Documents/com~apple~CloudDocs/"
 ONEDRIVE_loc = "/Users/slaan3/Library/CloudStorage/OneDrive-UMCUtrecht/Genomics"
 
-# STORAGE_loc = "/Volumes/LaCie"
+# STORAGE_loc = "/Users/slaan3"
+STORAGE_loc = "/Volumes//ExtremeSSD8Tb"
 
 ### Generic 
 LAB_loc = paste0(CLOUD_loc, "/Genomics/LabBusiness")

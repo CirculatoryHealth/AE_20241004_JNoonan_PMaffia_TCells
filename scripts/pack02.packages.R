@@ -21,6 +21,12 @@ install.packages.auto("tidyverse")
 install.packages.auto("knitr")
 install.packages.auto("DT")
 
+install.packages.auto("haven")
+install.packages.auto("openxlsx")
+install.packages.auto("tableone")
+install.packages.auto("flextable")
+install.packages.auto("officer")
+
 # for plotting
 install.packages.auto("qqman")
 install.packages.auto("forestplot")
