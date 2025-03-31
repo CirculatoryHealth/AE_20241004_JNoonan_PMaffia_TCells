@@ -29,7 +29,7 @@ knit: worcs::cite_all
 
 # General Setup
 ```{r echo = FALSE}
-rm(list = ls())
+# rm(list = ls())
 ```
 
 ```{r LocalSystem, echo = FALSE}
@@ -1171,7 +1171,6 @@ AERNASE.clin.targets <- merge(AERNASE.clin.targets,
                                                         )), 
                             by.x = "study_number", by.y = "STUDY_NUMBER", sort = TRUE)
 
-
 ```
 
 
@@ -1242,9 +1241,9 @@ COX.STAT <- function(coxfit, DATASET, OUTCOME, target_of_interest){
   print(output)
 } 
 
-times = c("ep_major_t_3years") #, "ep_stroke_t_3years", "ep_coronary_t_3years", "ep_cvdeath_t_3years")
+times = c("ep_major_t_3years", "ep_stroke_t_3years", "ep_coronary_t_3years", "ep_cvdeath_t_3years")
 
-endpoints = c("epmajor.3years") #, "epstroke.3years", "epcoronary.3years", "epcvdeath.3years")
+endpoints = c("epmajor.3years", "epstroke.3years", "epcoronary.3years", "epcvdeath.3years")
 
 cat("* Check the cases per event type - for sanity.")
 for (events in endpoints){
@@ -1717,8 +1716,8 @@ saveRDS(AERNASE.targets.genedata, file = paste0(OUT_loc, "/", Today, ".",TRAIT_O
 
 --------------------------------------------------------------------------------
 
-    Version:      v1.2.3
-    Last update:  2025-03-13
+    Version:      v1.2.4
+    Last update:  2025-03-31
     Written by:   Sander W. van der Laan (s.w.vanderlaan-2[at]umcutrecht.nl).
     Description:  Script to analyse targets from the Ather-Express Biobank Study.
     Minimum requirements: R version 3.5.2 (2018-12-20) -- 'Eggshell Igloo', macOS Mojave (10.14.2).
@@ -1734,6 +1733,7 @@ saveRDS(AERNASE.targets.genedata, file = paste0(OUT_loc, "/", Today, ".",TRAIT_O
     _W_
 
     **Changes log**
+    * v1.2.4 Added additional outcomes (stroke, coronary, cvd-death) in the Cox regression.
     * v1.2.3 Updates to the list of genes. Re-organization efficient for the paper. 
     * v1.2.2 Textual fixes.
     * v1.2.1 Fixed saveRDS to save targets, SE, genedata and clinical data.
