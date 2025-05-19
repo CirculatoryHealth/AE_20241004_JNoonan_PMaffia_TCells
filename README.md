@@ -67,27 +67,27 @@ Continuous variables were inverse-rank normal transformated, indicated by `_rank
 For the expression analysis we used carotid plaque-derived bulk RNAseq data and queried it for the gene list. Below a graph showing the overall expression of the genes (not all are in the data) compared to the mean expression of 1,000 randomly picked genes. 
 
 **Figure 1A: Overall expression of target genes in carotid plaques from the Athero-Express Biobank Study**
-![Overall expression of target genes in carotid plaques from the Athero-Express Biobank Study](PLOTS/20250313.TargetExpression_vs_1000genes.png)
+![Overall expression of target genes in carotid plaques from the Athero-Express Biobank Study](PLOTS/20250519.TargetExpression_vs_1000genes.png)
 
 **Figure 1B: Overall expression of target genes by experiment in carotid plaques from the Athero-Express Biobank Study**
-![Overall expression of target genes by experiment in carotid plaques from the Athero-Express Biobank Study](PLOTS/20250313.TargetExpression_vs_1000genes_by_AERNAStudy.png)
+![Overall expression of target genes by experiment in carotid plaques from the Athero-Express Biobank Study](PLOTS/20250519.TargetExpression_vs_1000genes_by_AERNAStudy.png)
 
 ### Single cell RNAseq
 
 We projected target genes to the single-cell RNAseq data derived from 46 carotid plaque samples. We identified cell communities (Figure 2), mapped and projected target gene expression to the cell communities (Figure 3). 
 
 **Figure 2: Cell communities identified in carotid plaques from the Athero-Express Biobank Study**
-![Cell communities identified in carotid plaques from the Athero-Express Biobank Study](PLOTS/20250313.UMAP.png)
+![Cell communities identified in carotid plaques from the Athero-Express Biobank Study](PLOTS/20250519.UMAP.png)
 
 **Figure 3: Dotplot showing expression of target genes per cell type in carotid plaques from the Athero-Express Biobank Study**
-![Dotplot showing expression of target genes per cell type in carotid plaques from the Athero-Express Biobank Study](PLOTS/20250313.DotPlot.Targets.png)
+![Dotplot showing expression of target genes per cell type in carotid plaques from the Athero-Express Biobank Study](PLOTS/20250519.DotPlot.Targets.png)
 
 ### Polygenic score
 
 We also created a polygenic score for the target genes using a function that takes into account the variance of all genes in the bulk RNAseq data.
 
 **Figure 4: Polygenic score for target genes in carotid plaques from the Athero-Express Biobank Study**
-![Polygenic score for target genes in carotid plaques from the Athero-Express Biobank Study](PLOTS/20250318.TCells.GMS_correlation.png)
+![Polygenic score for target genes in carotid plaques from the Athero-Express Biobank Study](PLOTS/20250519.TCells.GMS_correlation.png)
 
 # Where do I start?
 
@@ -198,8 +198,8 @@ Dr. Sander W. van der Laan has received Roche funding for unrelated work.
 
 #### Changes log
     
-    _Version:_      v1.5.0</br>
-    _Last update:_  2025-03-18</br>
+    _Version:_      v1.5.1</br>
+    _Last update:_  2025-05-19</br>
     _Written by:_   Sander W. van der Laan (s.w.vanderlaan [at] gmail [dot] com).
     
     **MoSCoW To-Do List**
@@ -213,6 +213,7 @@ Dr. Sander W. van der Laan has received Roche funding for unrelated work.
     _W_
 
     **Changes log**
+    * v1.5.1 Small fix to handling the NAs in the Plaque Vulnerability Index; added CD68 to the GMS.
     * v1.5.0 Major update. Added polygenic score analyses. Added additional figures for the bulk RNAseq. Added a few more details to the README.md.
     * v1.4.7 Updates to the scripts. Project specific re-organization.
     * v1.4.6 Updates to molQTL lookup script; accordingly the `targets.xlsx` file changed. Dropped all output to reduce size. Updates to the readme.me. Added wiki-pages with further explanations.

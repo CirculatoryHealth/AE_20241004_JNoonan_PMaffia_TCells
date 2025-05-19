@@ -123,25 +123,25 @@ gene_list_qc <- c(temp)
 We simply load the previously saved `RDS`-file and extract the clinical and RNAseq data from that.
 
 ```{r LoadAEDB}
-# AEDB.CEA <- readRDS(file = paste0(OUT_loc, "/",Today,".",PROJECTNAME,".AEDB.CEA.RDS"))
-AEDB.CEA <- readRDS(file = paste0(OUT_loc, "/20250313.",PROJECTNAME,".AEDB.CEA.RDS"))
+AEDB.CEA <- readRDS(file = paste0(OUT_loc, "/",Today,".",PROJECTNAME,".AEDB.CEA.RDS"))
+# AEDB.CEA <- readRDS(file = paste0(OUT_loc, "/20250313.",PROJECTNAME,".AEDB.CEA.RDS"))
 AEDB.CEA$STUDY_NUMBER <- paste0("ae", AEDB.CEA$STUDY_NUMBER)
 head(AEDB.CEA$STUDY_NUMBER)
 
-# AERNASE <- readRDS(file = paste0(OUT_loc, "/", Today, ".AERNAScomboSEvst.CEA.1093pts.SE.after_qc.IC_academic.RDS"))
-AERNASE <- readRDS(file = paste0(OUT_loc, "/20250313.AERNAScomboSEvst.CEA.1093pts.SE.after_qc.IC_academic.RDS"))
+AERNASE <- readRDS(file = paste0(OUT_loc, "/", Today, ".AERNAScomboSEvst.CEA.1093pts.SE.after_qc.IC_academic.RDS"))
+# AERNASE <- readRDS(file = paste0(OUT_loc, "/20250313.AERNAScomboSEvst.CEA.1093pts.SE.after_qc.IC_academic.RDS"))
 
-# AERNASE.targets <- readRDS(file = paste0(OUT_loc, "/", Today, ".AERNAScomboSE_target.CEA.1093pts.SE.after_qc.IC_academic.RDS"))
-AERNASE.targets <- readRDS(file = paste0(OUT_loc, "/20250313.AERNAScomboSE_target.CEA.1093pts.SE.after_qc.IC_academic.RDS"))
+AERNASE.targets <- readRDS(file = paste0(OUT_loc, "/", Today, ".AERNAScomboSE_target.CEA.1093pts.SE.after_qc.IC_academic.RDS"))
+# AERNASE.targets <- readRDS(file = paste0(OUT_loc, "/20250313.AERNAScomboSE_target.CEA.1093pts.SE.after_qc.IC_academic.RDS"))
 
-# AERNASE.clin.targets <- readRDS(file = paste0(OUT_loc, "/", Today, ".",TRAIT_OF_INTEREST,".AERNASE.clin.targets.df.RDS"))
-AERNASE.clin.targets <- readRDS(file = paste0(OUT_loc, "/20250313.",TRAIT_OF_INTEREST,".AERNASE.clin.targets.df.RDS"))
+AERNASE.clin.targets <- readRDS(file = paste0(OUT_loc, "/", Today, ".",TRAIT_OF_INTEREST,".AERNASE.clin.targets.df.RDS"))
+# AERNASE.clin.targets <- readRDS(file = paste0(OUT_loc, "/20250313.",TRAIT_OF_INTEREST,".AERNASE.clin.targets.df.RDS"))
 
-# AERNASE.targets <- readRDS(file = paste0(OUT_loc, "/", Today, ".",TRAIT_OF_INTEREST,".AERNASE.targets.se.RDS"))
-AERNASE.targets <- readRDS(file = paste0(OUT_loc, "/20250313.",TRAIT_OF_INTEREST,".AERNASE.targets.se.RDS"))
+AERNASE.targets <- readRDS(file = paste0(OUT_loc, "/", Today, ".",TRAIT_OF_INTEREST,".AERNASE.targets.se.RDS"))
+# AERNASE.targets <- readRDS(file = paste0(OUT_loc, "/20250313.",TRAIT_OF_INTEREST,".AERNASE.targets.se.RDS"))
 
-# AERNASE.targets.genedata <- readRDS(, file = paste0(OUT_loc, "/", Today, ".",TRAIT_OF_INTEREST,".AERNASE.targets.genedata.RDS"))
-AERNASE.targets.genedata <- readRDS(, file = paste0(OUT_loc, "/20250313.",TRAIT_OF_INTEREST,".AERNASE.targets.genedata.RDS"))
+AERNASE.targets.genedata <- readRDS(, file = paste0(OUT_loc, "/", Today, ".",TRAIT_OF_INTEREST,".AERNASE.targets.genedata.RDS"))
+# AERNASE.targets.genedata <- readRDS(, file = paste0(OUT_loc, "/20250313.",TRAIT_OF_INTEREST,".AERNASE.targets.genedata.RDS"))
 head(AERNASE.clin.targets$study_number)
 head(AERNASE.targets$study_number)
 head(AERNASE.targets.genedata)
@@ -162,9 +162,14 @@ rowRanges(AERNASE.targets)
 ```
 
 
-# Create polygenic score
+# Weighted and unweighted polygenic score
 
-Here we create a polygenic score consisting of the variance weighted averages of the target genes. 
+Here we create a polygenic score consisting of the variance weighted averages of the target genes. We added _CD68_ to the target list too.
+
+
+## Prepare
+
+Here we prepare a weighted and an unweighted polygenic score for the target genes. 
 
 ```{r}
 library(SummarizedExperiment)
@@ -176,8 +181,8 @@ library(ggpubr)
 # Extract expression data from SummarizedExperiment
 expression_data <- assay(AERNASE.targets)
 
-# Ensure gene_list_qc is a character vector
-gene_list_qc <- as.character(gene_list_qc)
+# Ensure gene_list_qc is a character vector -- add CD68
+gene_list_qc <- as.character(gene_list_qc, "CD68")
 
 # Subset expression data for the target genes
 expression_subset <- expression_data[rownames(expression_data) %in% gene_list_qc, , drop = FALSE]
@@ -187,7 +192,11 @@ missing_genes <- setdiff(gene_list_qc, rownames(expression_subset))
 if (length(missing_genes) > 0) {
   message("Warning: The following genes were not found in the dataset: ", paste(missing_genes, collapse = ", "))
 }
+```
 
+We compute the variance and calculate the weights for the weighted score. 
+
+```{r}
 # Compute variance for each gene across individuals (rows)
 gene_variance <- apply(expression_subset, 1, var, na.rm = TRUE)
 
@@ -198,7 +207,13 @@ weights <- gene_variance / sum(gene_variance, na.rm = TRUE)
 if (length(weights) != nrow(expression_subset)) {
   stop("Error: Weight vector length does not match the number of genes in the expression matrix.")
 }
+```
 
+## Calculate scores
+
+Now, we calculate the scores. 
+
+```{r}
 # Compute the variance-weighted polygenic score for each individual
 weighted_score <- colSums(expression_subset * weights, na.rm = TRUE)
 
@@ -211,7 +226,11 @@ score_df <- data.frame(
   weighted_score = weighted_score,  # Variance-weighted score
   unweighted_score = unweighted_score  # Unweighted mean expression score
 )
+```
 
+We add the phenotype data to the score data for downstream analyses. 
+
+```{r}
 # Extract phenotype data from SummarizedExperiment (assumed in colData)
 phenotype_data <- as.data.frame(colData(AERNASE.targets)) %>%
   dplyr::select(study_number, Fat.bin_10, SMC.bin, IPH.bin, Plaque_Vulnerability_Index)
@@ -223,9 +242,11 @@ expression_phenotype <- inner_join(phenotype_data, score_df, by = "study_number"
 expression_phenotype$PVI_factor <- factor(expression_phenotype$Plaque_Vulnerability_Index, levels = as.character(0:5))
 ```
 
-# Analysis and visualization of polygenic score
+## Analysis and visualization of polygenic score
 
 Here we perform some basic analyses and visualizations of the polygenic score.
+
+### Analysis
 
 ```{r}
 library(ggpubr)
@@ -256,6 +277,8 @@ cor_results
 # Export correlation results to a CSV file
 write.csv(cor_results, file = paste0(OUT_loc, "/", Today, ".", PROJECTNAME, ".polygenicscore_correlation_r.csv"))
 ```
+
+### Visualizations
 
 Let's visualize the correlations in a heatmap.
 
@@ -474,7 +497,7 @@ rm(p1, p2, p3, p4, combined_plot)  # Remove temporary objects
 ```
 
 
-# Create module score
+# Module score
 
 Let's use Seurat to create a module score for the target genes; a similar approach as presented in the NatCVR paper from [Mokry et al.](https://doi.org/10.1038/s44161-022-00171-0).
 
@@ -485,7 +508,7 @@ library(Seurat)
 ```
 
 
-### Create Seurat object
+## Create Seurat object
 Next, we will create a Seurat object from the target genes.
 
 
@@ -566,6 +589,7 @@ rm(count_matrix, dense_count_matrix, log_counts, dense_logcounts, metadata)  # R
 ### Adding module score to Seurat object
 
 Now, let's add the module score to the Seurat object. Here we focus on these 4 genes: `RUNX3`, `PRDM1`, `GZMB`, and `CD3E`. The idea based on the correlation analyses and reflection on our single cell data was to focus on these genes. Conceptually this makes sense as, (for example) It’s entirely possible that `GNLY`, as an example, comes from a different cell type. Also upregulated `GZMB`, `RUNX3` and `PRDM1` are most consistent with what we observed in our single cell data - and so typing these to `CD3E` expression would be the ideal scenario.
+We also add `CD68` to the list of genes, as this is a marker for macrophages.
 
 
 ```{r}
@@ -573,10 +597,14 @@ Now, let's add the module score to the Seurat object. Here we focus on these 4 g
 sets <- list()
 # sets$GSS <- c("RUNX3", "PRDM1", "GZMB", "CD3E")
 sets$GMS <- c("RUNX3-ENSG00000020633", "PRDM1-ENSG00000057657", "GZMB-ENSG00000100453", "CD3E-ENSG00000198851")
+sets$GMS_cd68 <- c("RUNX3-ENSG00000020633", "PRDM1-ENSG00000057657", "GZMB-ENSG00000100453", "CD3E-ENSG00000198851", "CD68-ENSG00000129226")
 
 # Check if genes exist in Seurat object
-valid_genes <- intersect(sets$GSS, rownames(seurat_obj))
-missing_genes <- setdiff(sets$GSS, rownames(seurat_obj))
+valid_genes <- intersect(sets$GMS, rownames(seurat_obj))
+missing_genes <- setdiff(sets$GMS, rownames(seurat_obj))
+
+valid_genes_cd68 <- intersect(sets$GMS_cd68, rownames(seurat_obj))
+missing_genes_cd68 <- setdiff(sets$GMS_cd68, rownames(seurat_obj))
 
 # Check if genes exist in Seurat object
 if (length(missing_genes) > 0) {
@@ -587,22 +615,6 @@ if (length(missing_genes) > 0) {
 
 ```
 
-<!-- Now, we can add the module score to the Seurat object. -->
-
-<!-- ```{r} -->
-<!-- # Use the correct slot ("data" instead of "counts") and reduce control genes if needed -->
-<!-- seurat_obj <- AddModuleScore( -->
-<!--   seurat_obj,  -->
-<!--   features = list(valid_genes),  # Use only valid genes -->
-<!--   name = "GSS",  -->
-<!--   assay = "RNA",  # Ensure correct assay -->
-<!--   layer = "counts",  # Use the correct slot -->
-<!--   ctrl = 50  # Reduce control genes (if dataset is small) -->
-<!-- ) -->
-
-<!-- # Check results -->
-<!-- head(seurat_obj@meta.data) -->
-<!-- ``` -->
 
 ### Calculate module score
 
@@ -677,11 +689,13 @@ GeneModuleScore <- function(seurat_obj, gene_set, name = "ModuleScore", assay = 
 }
 ```
 
-Compute the module score.
+Compute the module score. We also add the score including _CD68_.
 
 ```{r}
 # Add module score to Seurat object
 seurat_obj <- GeneModuleScore(seurat_obj, gene_set = sets$GMS, name = "GMS", assay = "RNA", layer = "counts", ctrl = 50)
+
+seurat_obj <- GeneModuleScore(seurat_obj, gene_set = sets$GMS_cd68, name = "GMS_cd68", assay = "RNA", layer = "counts", ctrl = 50)
 ```
 
 
@@ -696,9 +710,15 @@ metadata_df <- seurat_obj@meta.data
 
 
 ```{r}
+cat("Distribution of GMS:\n")
 summary(metadata_df$GMS)
 
+cat("\nDistribution of GMS with CD68:\n")
+summary(metadata_df$GMS_cd68)
+
 ```
+
+#### Distribution of GMS
 
 ```{r}
 library(ggpubr)
@@ -720,6 +740,44 @@ p_hist <- ggpubr::gghistogram(metadata_df,
 p_hist
 ```
 
+#### Distribution of GMS with CD68
+
+```{r}
+library(ggpubr)
+
+# Create a histogram of GMS
+p_hist_cd68 <- ggpubr::gghistogram(metadata_df, 
+                              x = "GMS_cd68", 
+                              bins = 30,  # Number of bins
+                              fill = "skyblue",
+                              color = "black", 
+                              # palette = "npg",
+                              add = "mean",  # Add mean line
+                              rug = TRUE) +  # Add rug plot at bottom
+  labs(title = "Distribution of GMS with CD68", 
+       x = "Gene Module Score (GMS) with CD68", 
+       y = "Frequency") +
+  theme_minimal()
+
+# Show the plot
+p_hist_cd68
+```
+
+#### Correlation of GMS with GMS including CD68
+
+```{r}
+ggpubr::ggscatter(metadata_df, 
+          x = "GMS", 
+          y = "GMS_cd68", 
+          add = "reg.line", 
+          conf.int = TRUE, 
+          cor.coef = TRUE, 
+          cor.method = "pearson", 
+          xlab = "GMS", 
+          ylab = "GMS with CD68") +
+  labs(title = "Correlation of GMS with GMS including CD68") +
+  theme_minimal()
+```
 
 
 # GMS in relation to plaque phenotypes
@@ -727,15 +785,22 @@ p_hist
 Let's plot the Gene Module Score (GMS) for our targets.
 
 
+## GMS vs PVI
+
 ```{r}
 # Load necessary library
 library(ggpubr)
 
+# Filter metadata_df to remove NA values
+metadata_df_clean <- metadata_df %>% dplyr::filter(!is.na(Plaque_Vulnerability_Index))
+
 # Add a factor for Plaque Vulnerability Index (PVI)
-metadata_df$PVI_factor <- factor(metadata_df$Plaque_Vulnerability_Index, levels = as.character(0:5))
+metadata_df_clean$PVI_factor <- factor(metadata_df_clean$Plaque_Vulnerability_Index, levels = as.character(0:5))
+# metadata_df$PVI_factor <- addNA(as.factor(metadata_df$PVI))
+# levels(metadata_df$PVI_factor)[is.na(levels(metadata_df$PVI_factor))] <- "NA"
 
 # Compute correlation (Spearman is recommended for ordinal/categorical PVI)
-cor_test <- cor.test(as.numeric(metadata_df$Plaque_Vulnerability_Index), metadata_df$GMS, method = "spearman")
+cor_test <- cor.test(as.numeric(metadata_df_clean$Plaque_Vulnerability_Index), metadata_df_clean$GMS, method = "spearman")
 
 # Extract correlation coefficient (R) and p-value
 r_value <- cor_test$estimate
@@ -749,30 +814,28 @@ cor_label <- paste0("R² = ", round(r_squared, 3), "\n p = ", signif(p_value, 3)
 my_comparisons <- list( c("0", "1"), c("0", "2"), c("0", "3"), c("0", "4"), c("0", "5")   )
 ```
 
-
+### Visualize GMS
 
 ```{r}
 # Create a boxplot of the module score
-p_box <- ggboxplot(metadata_df, 
-                x = "Plaque_Vulnerability_Index", 
-                y = "GMS", 
-                add = "jitter", 
-                color = "Plaque_Vulnerability_Index", 
-                palette = "npg",
-                ylim = c(-1.25, 2)
-                ) +
+p_box <- ggboxplot(metadata_df_clean, 
+                   x = "PVI_factor", 
+                   y = "GMS", 
+                   add = "jitter", 
+                   color = "PVI_factor", 
+                   palette = "npg",
+                   ylim = c(-1.25, 2)) +
   # stat_compare_means(comparisons = my_comparisons, label = "p.signif") + # Add pairwise comparisons
   # stat_compare_means(label.y = 0.55) +  # Global p-value
   labs(title = "Gene Module Score vs PVI", 
        x = "PVI", 
        y = "Gene Module Score",
-       color = "PVI") +  # Change legend title
+       color = "PVI") + 
   annotate("text", 
            x = 4.5, 
-           # y = max(metadata_df$GMS) * 1.1, 
            y = 1.75,
            label = cor_label, 
-           size = 5, hjust = 0) + # Add R² annotation
+           size = 5, hjust = 0) +
   theme_minimal()
 
 p_box
@@ -780,19 +843,19 @@ p_box
 
 ```{r}
 # Create the boxplot with jitter and regression line
-p5 <- ggplot(metadata_df, aes(x = as.factor(Plaque_Vulnerability_Index), y = GMS, color = as.factor(Plaque_Vulnerability_Index))) +
-  geom_boxplot(outlier.shape = NA, alpha = 0.5) +  # Boxplot without outlier points
-  geom_jitter(width = 0.2, size = 2, alpha = 0.8) +  # Jitter points
+p5 <- ggplot(metadata_df_clean, aes(x = as.factor(Plaque_Vulnerability_Index), y = GMS, color = as.factor(Plaque_Vulnerability_Index))) +
+  geom_boxplot(outlier.shape = NA, alpha = 0.5) +  # Boxplot
+  geom_jitter(width = 0.2, size = 2, alpha = 0.8) +  # Jitter
   geom_smooth(aes(group = 1), method = "lm", se = TRUE, linetype = "dotted", color = "black") +  # Regression line
-  # stat_compare_means(comparisons = my_comparisons, label = "p.signif") +  # Add pairwise comparisons
-  # stat_compare_means(label.y = 0.55) +  # Global p-value
+  # stat_compare_means(comparisons = my_comparisons, label = "p.signif") +
+  # stat_compare_means(label.y = 0.55) +
   labs(title = "Gene Module Score vs PVI", 
        x = "PVI", 
        y = "Gene Module Score",
-       color = "PVI") +  # Change legend title
-  annotate("text", x = 4.5, y = 1.75, label = cor_label, size = 5, hjust = 0) +  # Add R² annotation
-  scale_color_npg() +  # Use npg color palette
-  coord_cartesian(ylim = c(-1.25, 2)) +  # Set y-axis limits
+       color = "PVI") +  # Legend title
+  annotate("text", x = 4.5, y = 1.75, label = cor_label, size = 5, hjust = 0) +  # R²
+  scale_color_npg(na.value = "grey") +  # Set NA to grey
+  coord_cartesian(ylim = c(-1.25, 2)) +
   theme_minimal()
 
 # Display the plot
@@ -804,6 +867,87 @@ ggsave(filename = paste0(PLOT_loc, "/", Today, ".", PROJECTNAME, ".GMS_vs_PVI.bo
 ggsave(filename = paste0(PLOT_loc, "/", Today, ".", PROJECTNAME, ".GMS_vs_PVI.boxplot.pdf"),
        plot = p5, width = 8, height = 6, dpi = 300)
 ```
+
+## GMS + CD68 vs PVI
+
+Here we do the same, but with the GMS including CD68.
+
+```{r}
+# Load necessary library
+library(ggpubr)
+
+# Compute correlation (Spearman is recommended for ordinal/categorical PVI)
+cor_test <- cor.test(as.numeric(metadata_df_clean$PVI_factor), metadata_df_clean$GMS_cd68, method = "spearman")
+
+# Extract correlation coefficient (R) and p-value
+r_value <- cor_test$estimate
+r_squared <- r_value^2  # Compute R²
+p_value <- cor_test$p.value
+
+# Create correlation text label
+cor_label <- paste0("R² = ", round(r_squared, 3), "\n p = ", signif(p_value, 3))
+
+# Add comparison per group
+my_comparisons <- list( c("0", "1"), c("0", "2"), c("0", "3"), c("0", "4"), c("0", "5")   )
+```
+
+### Visualize GMS + CD68
+
+```{r}
+# Create a boxplot of the module score
+p_box_cd68 <- ggboxplot(metadata_df_clean, 
+                   x = "PVI_factor", 
+                   y = "GMS_cd68", 
+                   add = "jitter", 
+                   color = "PVI_factor", 
+                   palette = "npg",
+                   ylim = c(-1.25, 2)) +
+  # stat_compare_means(comparisons = my_comparisons, label = "p.signif") + # Add pairwise comparisons
+  # stat_compare_means(label.y = 0.55) +  # Global p-value
+  labs(title = "Gene Module Score (with CD68) vs PVI", 
+       x = "PVI", 
+       y = "Gene Module Score (with CD68)",
+       color = "PVI") + 
+  annotate("text", 
+           x = 4.5, 
+           y = 1.75,
+           label = cor_label, 
+           size = 5, hjust = 0) +
+  theme_minimal()
+
+p_box_cd68
+```
+
+```{r}
+# Create the boxplot with jitter and regression line
+p5 <- ggplot(metadata_df_clean, aes(x = as.factor(Plaque_Vulnerability_Index), y = GMS_cd68, color = as.factor(Plaque_Vulnerability_Index))) +
+  geom_boxplot(outlier.shape = NA, alpha = 0.5) +  # Boxplot
+  geom_jitter(width = 0.2, size = 2, alpha = 0.8) +  # Jitter
+  geom_smooth(aes(group = 1), method = "lm", se = TRUE, linetype = "dotted", color = "black") +  # Regression line
+  # stat_compare_means(comparisons = my_comparisons, label = "p.signif") +
+  # stat_compare_means(label.y = 0.55) +
+  labs(title = "Gene Module Score (with CD68) vs PVI", 
+       x = "PVI", 
+       y = "Gene Module Score (with CD68)",
+       color = "PVI") +  # Legend title
+  annotate("text", x = 4.5, y = 1.75, label = cor_label, size = 5, hjust = 0) +  # R²
+  scale_color_npg(na.value = "grey") +  # Set NA to grey
+  coord_cartesian(ylim = c(-1.25, 2)) +
+  theme_minimal()
+
+# Display the plot
+p5
+
+# Save the plot
+ggsave(filename = paste0(PLOT_loc, "/", Today, ".", PROJECTNAME, ".GMS_with_cd68_vs_PVI.boxplot.png"),
+       plot = p5, width = 8, height = 6, dpi = 300)
+ggsave(filename = paste0(PLOT_loc, "/", Today, ".", PROJECTNAME, ".GMS_with_cd68_vs_PVI.boxplot.pdf"),
+       plot = p5, width = 8, height = 6, dpi = 300)
+```
+
+
+## GMS vs other traits
+
 
 ```{r}
 library(ggpubr)
@@ -904,6 +1048,108 @@ ggsave(filename = paste0(PLOT_loc, "/", Today, ".", PROJECTNAME, ".GMS_correlati
 rm(p1, p2, p3, p4, combined_plot)  # Remove temporary objects
 ```
 
+
+## GMS + CD68 vs other traits
+
+
+```{r}
+library(ggpubr)
+library(dplyr)
+library(ggsci)
+
+# Compute max value for better label placement
+max_y <- max(metadata_df$GMS_cd68, na.rm = TRUE)
+
+# Boxplot for binary traits (Fat, SMCs, IPH)
+p1 <- ggboxplot(metadata_df %>% drop_na(Fat.bin_10, GMS_cd68), x = "Fat.bin_10", y = "GMS_cd68",
+                add = "jitter", color = "Fat.bin_10", palette = "npg", repel = TRUE) +
+  stat_compare_means(method = "wilcox.test") +  
+  labs(title = "Polygenic Score (with CD68) vs Fat", x = "Fat", y = "Polygenic Score (with CD68)") +
+  theme_minimal()
+p1
+```
+
+
+```{r}
+p2 <- ggboxplot(metadata_df %>% drop_na(SMC.bin, GMS_cd68), x = "SMC.bin", y = "GMS_cd68",
+                add = "jitter", color = "SMC.bin", palette = "npg") +
+  stat_compare_means(method = "wilcox.test") +
+  labs(title = "Polygenic Score (with CD68) vs SMCs", x = "SMCs", y = "Polygenic Score (with CD68)") +
+  theme_minimal()
+p2
+```
+
+
+```{r}
+p3 <- ggboxplot(metadata_df %>% drop_na(IPH.bin, GMS_cd68), x = "IPH.bin", y = "GMS_cd68",
+                add = "jitter", color = "IPH.bin", palette = "npg") +
+  stat_compare_means(method = "wilcox.test") +
+  labs(title = "Polygenic Score (with CD68) vs IPH", x = "IPH", y = "Polygenic Score (with CD68)") +
+  theme_minimal()
+p3
+```
+
+
+```{r}
+# Define NPG colors manually
+npg_colors <- c("#E64B35", "#4DBBD5", "#00A087", "#3C5488", "#F39B7F", "#8491B4")
+
+# Remove NA values
+data_clean <- metadata_df %>% drop_na(PVI_factor, GMS_cd68)
+
+# Convert factor to numeric for regression
+data_clean$PVI_numeric <- as.numeric(data_clean$PVI_factor)
+
+# Perform linear regression
+lm_model <- lm(GMS_cd68 ~ PVI_numeric, data = data_clean)
+summary_lm <- summary(lm_model)
+
+# Extract regression coefficient (β) and p-value
+beta <- round(summary_lm$coefficients[2, 1], 3)  # Slope
+p_value <- summary_lm$coefficients[2, 4]  # p-value
+
+# Format p-value for display
+p_text <- ifelse(p_value < 0.001, "p < 0.001", paste0("p = ", round(p_value, 3)))
+```
+
+
+```{r}
+# Create plot
+p4 <- ggplot(data_clean, aes(x = PVI_numeric, y = GMS_cd68, color = PVI_factor)) +
+  geom_jitter(width = 0.2, size = 3, alpha = 0.8) +  # Add jitter to prevent overlap
+  geom_point(size = 3, alpha = 0.8) +  # Scatter points
+  geom_smooth(method = "lm", se = TRUE, color = "black", aes(group = 1), linetype = "dashed") +  # Dotted regression line
+  scale_color_manual(values = npg_colors) +  # Use manually defined NPG colors
+  scale_x_continuous(breaks = 1:length(levels(expression_phenotype$PVI_factor)),  # Ensure correct axis labels
+                     labels = levels(expression_phenotype$PVI_factor)) +
+  labs(title = "Polygenic Score (with CD68) vs PVI", x = "PVI", y = "Polygenic Score (with CD68)", color = "PVI") +
+  theme_minimal() +
+  theme(legend.background = element_rect(fill = "white", color = "white")) +  # White legend background
+  annotate("text", x = max(data_clean$PVI_numeric), y = max(data_clean$GMS_cd68), 
+           label = paste0("β = ", beta, ", ", p_text), 
+           hjust = 1, size = 4, fontface = "bold")  # Add regression coefficient and p-value
+
+p4  # Print the plot
+```
+
+Combine the graphs. 
+
+```{r}
+# Arrange plots with larger layout
+combined_plot <- ggarrange(p1, p2, p3, p4, ncol = 2, nrow = 2, align = "hv", heights = c(1, 1.1))
+combined_plot
+```
+
+
+```{r}
+# Save the larger figure
+ggsave(filename = paste0(PLOT_loc, "/", Today, ".", PROJECTNAME, ".GMS_with_cd68_correlation.png"),
+       plot = combined_plot, width = 12, height = 10, dpi = 300)
+
+ggsave(filename = paste0(PLOT_loc, "/", Today, ".", PROJECTNAME, ".GMS_with_cd68_correlation.pdf"),
+       plot = combined_plot, width = 12, height = 10)
+rm(p1, p2, p3, p4, combined_plot)  # Remove temporary objects
+```
 
 
 
@@ -1024,7 +1270,10 @@ ggpubr::ggbarplot(df, x = "CalcificationPlaque", y = "counts",
                     xlab = "calcification", 
                     ggtheme = theme_minimal())
 rm(df)
+```
 
+
+```{r CrossSec: plaques - transformations and visualisations binary Collagen}
 # collagen
 cat("Summary of data.\n")
 summary(AERNAseurat@meta.data$Collagen.bin)
@@ -1047,7 +1296,10 @@ ggpubr::ggbarplot(df, x = "CollagenPlaque", y = "counts",
                     xlab = "collagen", 
                     ggtheme = theme_minimal())
 rm(df)
+```
 
+
+```{r CrossSec: plaques - transformations and visualisations binary Fat}
 # fat 10%
 cat("Summary of data.\n")
 summary(AERNAseurat@meta.data$Fat.bin_10)
@@ -1070,7 +1322,10 @@ ggpubr::ggbarplot(df, x = "Fat10Perc", y = "counts",
                     xlab = "intraplaque fat", 
                     ggtheme = theme_minimal())
 rm(df)
+```
 
+
+```{r CrossSec: plaques - transformations and visualisations binary Macrophages}
 # macrophages binned
 cat("Summary of data.\n")
 summary(AERNAseurat@meta.data$Macrophages.bin)
@@ -1093,9 +1348,10 @@ ggpubr::ggbarplot(df, x = "MAC_binned", y = "counts",
                     xlab = "Macrophages", 
                     ggtheme = theme_minimal())
 rm(df)
+```
 
 
-
+```{r CrossSec: plaques - transformations and visualisations binary SMC}
 # SMC binned
 cat("Summary of data.\n")
 summary(AERNAseurat@meta.data$SMC.bin)
@@ -1118,10 +1374,10 @@ ggpubr::ggbarplot(df, x = "SMC_binned", y = "counts",
                     xlab = "SMC", 
                     ggtheme = theme_minimal())
 rm(df)
+```
 
 
-
-
+```{r CrossSec: plaques - transformations and visualisations binary IPH}
 # IPH
 cat("Summary of data.\n")
 summary(AERNAseurat@meta.data$IPH.bin)
@@ -1188,7 +1444,7 @@ AERNAseurat_meta <- AERNAseurat@meta.data
 study.samplesize = nrow(AERNAseurat_meta) # study.samplesize is an expected variable in the GLM.BIN() GLM.CON() functions
 
 # Add the gene module score
-TRAITS.TARGET.RANK = "GMS"
+TRAITS.TARGET.RANK = c("GMS", "GMS_cd68")
 
 # Get continuous traits
 TRAITS.CON.RANK = c("MAC_rankNorm", "SMC_rankNorm", "MAC_SMC_ratio_rank", "VesselDensity_rankNorm")
@@ -1580,7 +1836,7 @@ table(AERNAseurat_meta$ORyearGroup, AERNAseurat_meta$ORdate_year)
 ```{r per PlaqueVulnerabilityIndex}
 
 cat(paste0("Processing gene: \n"))
-gene_module_list <- c("GMS")
+gene_module_list <- c("GMS", "GMS_cd68")
 for (TARGET_GENE in gene_module_list) {
 
   cat(paste0("- ", TARGET_GENE, "\n"))
@@ -2335,8 +2591,8 @@ rm(TEMP.DF, target_of_interest, fit, cox, coxplot, COX.results, COX.results.TEMP
 
 --------------------------------------------------------------------------------
 
-    Version:      v1.3.1
-    Last update:  2025-04-01
+    Version:      v1.3.2
+    Last update:  2025-05-19
     Written by:   Sander W. van der Laan (s.w.vanderlaan-2[at]umcutrecht.nl).
     Description:  Script to analyse targets from the Ather-Express Biobank Study.
     Minimum requirements: R version 3.5.2 (2018-12-20) -- 'Eggshell Igloo', macOS Mojave (10.14.2).
@@ -2352,6 +2608,7 @@ rm(TEMP.DF, target_of_interest, fit, cox, coxplot, COX.results, COX.results.TEMP
     _W_
 
     **Changes log**
+    * v1.3.2 Added small fixes to the handling of NA in PVI; added GMS with CD68.
     * v1.3.1 Added additional outcomes for the Cox-regression.
     * v1.3.0 Added cross-sectional symptom and longitudinal analyses. Fixed an issue where the `logcounts` were used as the layer to include in the Seurat object.
     * v1.2.0 Added gene module score analyses. 
