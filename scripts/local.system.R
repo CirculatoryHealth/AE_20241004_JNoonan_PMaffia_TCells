@@ -79,11 +79,11 @@ ifelse(!dir.exists(file.path(ANALYSIS_loc, "/BASELINE")),
        FALSE)
 BASELINE_loc = paste0(ANALYSIS_loc, "/BASELINE")
 
-cat("\n- for genetic analyses\n")
-ifelse(!dir.exists(file.path(ANALYSIS_loc, "/SNP")), 
-       dir.create(file.path(ANALYSIS_loc, "/SNP")), 
-       FALSE)
-SNP_loc = paste0(ANALYSIS_loc, "/SNP")
+# cat("\n- for genetic analyses\n")
+# ifelse(!dir.exists(file.path(ANALYSIS_loc, "/SNP")), 
+#        dir.create(file.path(ANALYSIS_loc, "/SNP")), 
+#        FALSE)
+# SNP_loc = paste0(ANALYSIS_loc, "/SNP")
 
 cat("\n- for Cox regression results\n")
 ifelse(!dir.exists(file.path(PLOT_loc, "/COX")), 

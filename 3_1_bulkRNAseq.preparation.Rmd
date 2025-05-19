@@ -578,7 +578,7 @@ basetable_vars = c("Hospital", "ORyear", "Artery_summary",
                    "IPH.bin", "VesselDensity_rankNorm",
                    "Calc.bin", "Collagen.bin", 
                    "Fat.bin_10", "Fat.bin_40", 
-                   "OverallPlaquePhenotype", "Plaque_Vulnerability_Index",
+                   "OverallPlaquePhenotype", "Plaque_Vulnerability_Index", "Plaque_Vulnerability_Index_6Cat",
                    "PCSK9_plasma", "PCSK9_plasma_rankNorm") # this is for a sanity check
 
 basetable_bin = c("Gender", "Artery_summary",
@@ -595,7 +595,7 @@ basetable_bin = c("Gender", "Artery_summary",
                   "IPH.bin", 
                   "Calc.bin", "Collagen.bin", 
                   "Fat.bin_10", "Fat.bin_40", 
-                  "OverallPlaquePhenotype", "Plaque_Vulnerability_Index")
+                  "OverallPlaquePhenotype", "Plaque_Vulnerability_Index", "Plaque_Vulnerability_Index_6Cat")
 # basetable_bin
 
 basetable_con = basetable_vars[!basetable_vars %in% basetable_bin]
@@ -925,7 +925,7 @@ basetable_vars_update = c("Age", "Gender",
                           "IPH.bin", "VesselDensity_rankNorm",
                           "Calc.bin", "Collagen.bin", 
                           "Fat.bin_10", "Fat.bin_40", 
-                          "OverallPlaquePhenotype", "Plaque_Vulnerability_Index"
+                          "OverallPlaquePhenotype", "Plaque_Vulnerability_Index", "Plaque_Vulnerability_Index_6Cat"
                           ) # this is for a sanity check
 
 basetable_bin_update = c("Gender", 
@@ -946,7 +946,7 @@ basetable_bin_update = c("Gender",
                          "Calc.bin", "Collagen.bin", 
                          "Fat.bin_10", "Fat.bin_40", 
                          "OverallPlaquePhenotype",
-                         "Plaque_Vulnerability_Index")
+                         "Plaque_Vulnerability_Index", "Plaque_Vulnerability_Index_6Cat")
 # basetable_bin
 
 basetable_con_update = basetable_vars_update[!basetable_vars_update %in% basetable_bin_update]

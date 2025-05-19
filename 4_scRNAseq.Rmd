@@ -104,6 +104,12 @@ gene_list
 
 ```
 
+Adding _CD68_ to the list of targets. 
+```{r}
+# Add CD68 to the target list
+gene_list <- c(gene_list, "CD68")
+```
+
 
 # Load data
 
@@ -196,30 +202,48 @@ AEDB.CEA <- readRDS(file = paste0(OUT_loc, "/", Today,".",PROJECTNAME,".AEDB.CEA
 
 ```
 
+### Check existence of autoimmunity
+
+Using drug usage data check whether there are patients with autoimmune disease.
+
+```{r}
+# Inventory 'raw' data
+table(AEDB.CEA$aid)
+
+# Create a new variable and change -999 to NA, 0 to 'no', 1 to 'yes'
+AEDB.CEA$AutoImDrug <- ifelse(AEDB.CEA$aid == -999, NA, ifelse(AEDB.CEA$aid == 0, "no", "yes"))
+table(AEDB.CEA$AutoImDrug)
+
+# Create a new variable and change -999 to NA, 0 to 'no', 1 to 'yes'
+AEDB.CEA$AutoImDrug <- ifelse(AEDB.CEA$aid == -999, NA, ifelse(AEDB.CEA$aid == 0, "no", "yes"))
+
+```
+
 
 ```{r }
 # Baseline table variables
 basetable_vars = c("Hospital", "ORyear", "Artery_summary",
-                   "Age", "Gender", 
-                   # "TC_finalCU", "LDL_finalCU", "HDL_finalCU", "TG_finalCU", 
-                   "TC_final", "LDL_final", "HDL_final", "TG_final", 
-                   # "hsCRP_plasma",
-                   "systolic", "diastoli", "GFR_MDRD", "BMI", 
+                   "Age", "Gender",
+                   "TC_final", "LDL_final", "HDL_final", "TG_final",
+                   "systolic", "diastoli", "GFR_MDRD", "BMI",
                    "KDOQI", "BMI_WHO",
-                   "SmokerStatus", "AlcoholUse",
-                   "DiabetesStatus", 
-                   "Hypertension.selfreport", "Hypertension.selfreportdrug", "Hypertension.composite", "Hypertension.drugs", 
-                   "Med.anticoagulants", "Med.all.antiplatelet", "Med.Statin.LLD", 
-                   "Stroke_Dx", "sympt", "Symptoms.5G", "AsymptSympt", "AsymptSympt2G",
+                   "SmokerStatus", 
+                   "AutoImDrug",
+                   "DiabetesStatus",
+                   "Hypertension.selfreport", "Hypertension.selfreportdrug", "Hypertension.composite", "Hypertension.drugs",
+                   "Med.anticoagulants", "Med.all.antiplatelet", "Med.Statin.LLD",
+                   "Stroke_Dx",
+                   "sympt", "Symptoms.5G", "AsymptSympt", "AsymptSympt2G",
                    "Symptoms.Update2G", "Symptoms.Update3G", "indexsymptoms_latest_4g",
-                   "restenos", "stenose", 
-                   "CAD_history", "PAOD", "Peripheral.interv", 
+                   "restenos", "stenose",
+                   "CAD_history", "PAOD", "Peripheral.interv",
                    "EP_composite", "EP_composite_time", "EP_major", "EP_major_time",
                    "MAC_rankNorm", "SMC_rankNorm", "Macrophages.bin", "SMC.bin",
                    "Neutrophils_rankNorm", "MastCells_rankNorm",
                    "IPH.bin", "VesselDensity_rankNorm",
                    "Calc.bin", "Collagen.bin", 
-                   "Fat.bin_10", "Fat.bin_40", "OverallPlaquePhenotype", "Plaque_Vulnerability_Index",
+                   "Fat.bin_10", "Fat.bin_40", 
+                   "OverallPlaquePhenotype", "Plaque_Vulnerability_Index", "Plaque_Vulnerability_Index_6Cat",
                    "PCSK9_plasma", "PCSK9_plasma_rankNorm")
 
 basetable_bin = c("Gender",  "Artery_summary",
@@ -235,7 +259,7 @@ basetable_bin = c("Gender",  "Artery_summary",
                   "EP_major", "EP_composite", "Macrophages.bin", "SMC.bin",
                   "IPH.bin", 
                   "Calc.bin", "Collagen.bin", 
-                  "Fat.bin_10", "Fat.bin_40", "OverallPlaquePhenotype", "Plaque_Vulnerability_Index")
+                  "Fat.bin_10", "Fat.bin_40", "OverallPlaquePhenotype", "Plaque_Vulnerability_Index", "Plaque_Vulnerability_Index_6Cat")
 # basetable_bin
 
 basetable_con = basetable_vars[!basetable_vars %in% basetable_bin]
@@ -417,7 +441,9 @@ variables_of_interest <- c("Hospital", "ORyear", "Artery_summary",
                            "IPH.bin", "VesselDensity_rankNorm",
                            "Calc.bin", "Collagen.bin", 
                            "Fat.bin_10", "Fat.bin_40", 
-                           "OverallPlaquePhenotype", "Plaque_Vulnerability_Index")
+                           "OverallPlaquePhenotype", "Plaque_Vulnerability_Index", "Plaque_Vulnerability_Index_6Cat",
+                           "PCSK9_plasma", "PCSK9_plasma_rankNorm")
+
 
 temp <- subset(scRNAseqDataMetaAE.all, select = c("Patient", variables_of_interest))
 ```
@@ -507,24 +533,28 @@ sort(table(scRNAseqDataCEA39@meta.data$SCT_snn_res.1.25))
 cat("\n\nHow many cells per patient ...?")
 sort(table(scRNAseqDataCEA39@meta.data$STUDY_NUMBER))
 
+```
+```{r QualityControl Plots 1}
 cat("\n\nVisualizing these ratio's per study number and sample ...?")
 UMAPPlot(scRNAseqDataCEA39, label = TRUE, pt.size = 1.25, label.size = 4, group.by = "ident",
          repel = TRUE)
 ggsave(paste0(PLOT_loc, "/", Today, ".UMAP.png"), plot = last_plot())
 ggsave(paste0(PLOT_loc, "/", Today, ".UMAP.ps"), plot = last_plot())
+```
 
 
-# barplot(prop.table(x = table(scRNAseqDataCEA39@active.ident, scRNAseqDataCEA39@meta.data$Patient)), 
-#         cex.axis = 1.0, cex.names = 0.5, las = 1,
-#         col = uithof_color, xlab = "study number", legend.text = FALSE, args.legend = list(x = "bottom"))
-# dev.copy(pdf, paste0(QC_loc, "/", Today, ".cell_ratios_per_sample.pdf"))
-# dev.off()
+```{r QualityControl Plots 2}
+barplot(prop.table(x = table(scRNAseqDataCEA39@active.ident, scRNAseqDataCEA39@meta.data$STUDY_NUMBER)),
+        cex.axis = 1.0, cex.names = 0.5, las = 1,
+        col = uithof_color, xlab = "study number", legend.text = FALSE, args.legend = list(x = "bottom"))
+dev.copy(pdf, paste0(QC_loc, "/", Today, ".cell_ratios_per_sample.pdf"))
+dev.off()
 
-# barplot(prop.table(x = table(scRNAseqDataCEA39@active.ident, scRNAseqDataCEA39@meta.data$ID)), 
-#         cex.axis = 1.0, cex.names = 0.5, las = 2,
-#         col = uithof_color, xlab = "sample ID", legend.text = FALSE, args.legend = list(x = "bottom"))
-# dev.copy(pdf, paste0(QC_loc, "/", Today, ".cell_ratios_per_sample_per_plate.pdf"))
-# dev.off()
+barplot(prop.table(x = table(scRNAseqDataCEA39@active.ident, scRNAseqDataCEA39@meta.data$ID)),
+        cex.axis = 1.0, cex.names = 0.5, las = 2,
+        col = uithof_color, xlab = "sample ID", legend.text = FALSE, args.legend = list(x = "bottom"))
+dev.copy(pdf, paste0(QC_loc, "/", Today, ".cell_ratios_per_sample_per_plate.pdf"))
+dev.off()
 
 ```
 
@@ -1415,15 +1445,18 @@ sessionInfo()
 
 # Saving environment
 
-```{r Saving}
+```{r Cleaning}
 rm(backup.scRNAseqData)
 rm(scRNAseqData, scRNAseqDataCEA39)
+```
 
+
+```{r Saving}
 save.image(paste0(PROJECT_loc, "/",Today,".",PROJECTNAME,".AESCRNA.results.RData"))
 
 ```
 
 +-----------------------------------------------------------------------------------------------------------------------------------------+
-| <sup>© 1979-2024 Sander W. van der Laan | s.w.vanderlaan[at]gmail[dot]com | [vanderlaanand.science](https://vanderlaanand.science).</sup> |
+| <sup>© 1979-2025 Sander W. van der Laan | s.w.vanderlaan[at]gmail[dot]com | [vanderlaanand.science](https://vanderlaanand.science).</sup> |
 +-----------------------------------------------------------------------------------------------------------------------------------------+
 

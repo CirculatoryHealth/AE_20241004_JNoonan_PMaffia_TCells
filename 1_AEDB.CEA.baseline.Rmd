@@ -154,15 +154,15 @@ We can examine the contents of the Athero-Express Biobank dataset to know what e
 There is an excellent post on this: <https://www.r-bloggers.com/working-with-spss-labels-in-r/>.
 
 ```{r AEDB: describe}
-AEDB %>% sjPlot::view_df(show.type = TRUE,
-                         show.frq = TRUE,
-                         show.prc = TRUE,
-                         show.na = TRUE,
-                         max.len = TRUE,
-                         wrap.labels = 20,
-                         verbose = FALSE,
-                         use.viewer = FALSE,
-                         file = paste0(OUT_loc, "/", Today, ".AEDB.dictionary.html"))
+# AEDB %>% sjPlot::view_df(show.type = TRUE,
+#                          show.frq = TRUE,
+#                          show.prc = TRUE,
+#                          show.na = TRUE,
+#                          max.len = TRUE,
+#                          wrap.labels = 20,
+#                          verbose = FALSE,
+#                          use.viewer = FALSE,
+#                          file = paste0(OUT_loc, "/", Today, ".AEDB.dictionary.html"))
 ```
 
 ## Fixing and creating variables
@@ -703,7 +703,7 @@ p1 | p2
 rm(p1, p2)
 ```
 
-Here we calculate the *plaque instability/vulnerability* index
+Here we calculate the *plaque instability/vulnerability* index.
 
 ```{r Plaque Vulnerability}
 # Plaque vulnerability
@@ -796,7 +796,10 @@ table(AEDB$SMC_Instability, useNA = "ifany")
 table(AEDB$IPH_Instability, useNA = "ifany")
 
 # creating vulnerability index
-AEDB <- AEDB %>% mutate(Plaque_Vulnerability_Index = factor(rowSums(.[grep("_Instability", names(.))], na.rm = TRUE)),
+AEDB <- AEDB %>% mutate(Plaque_Vulnerability_Index_6Cat = factor(rowSums(.[grep("_Instability", names(.))], na.rm = TRUE)),
+                                ) # ignores NAs and produces 6 categories
+
+AEDB <- AEDB %>% mutate(Plaque_Vulnerability_Index = factor(rowSums(.[grep("_Instability", names(.))], na.rm = FALSE)),
                                 )
 
 table(AEDB$Plaque_Vulnerability_Index, useNA = "ifany")
@@ -1178,7 +1181,7 @@ basetable_vars = c("Hospital", "ORyear",
                    "IPH.bin", "VesselDensity_rankNorm",
                    "Calc.bin", "Collagen.bin", 
                    "Fat.bin_10", "Fat.bin_40", 
-                   "OverallPlaquePhenotype", "Plaque_Vulnerability_Index",
+                   "OverallPlaquePhenotype", "Plaque_Vulnerability_Index", "Plaque_Vulnerability_Index_6Cat",
                    "PCSK9_plasma", "PCSK9_plasma_rankNorm")
 
 basetable_bin = c("Gender", 
@@ -1195,7 +1198,7 @@ basetable_bin = c("Gender",
                   "IPH.bin", 
                   "Calc.bin", "Collagen.bin", 
                   "Fat.bin_10", "Fat.bin_40", 
-                  "OverallPlaquePhenotype", "Plaque_Vulnerability_Index")
+                  "OverallPlaquePhenotype", "Plaque_Vulnerability_Index", "Plaque_Vulnerability_Index_6Cat")
 # basetable_bin
 
 basetable_con = basetable_vars[!basetable_vars %in% basetable_bin]
@@ -1287,8 +1290,8 @@ saveRDS(AEDB, file = paste0(OUT_loc, "/",Today,".",PROJECTNAME,".AEDB.raw.RDS"))
 
 ------------------------------------------------------------------------------------------------------------------------
 
-    Version:      v1.3.1
-    Last update:  2025-03-12
+    Version:      v1.3.2
+    Last update:  2025-05-19
     Written by:   Sander W. van der Laan (s.w.vanderlaan[at]gmail[dot]com).
     Description:  Script to get some Athero-Express Biobank Study baseline characteristics in the whole cohort and the CEA subset.
     Minimum requirements: R version 3.4.3 (2017-06-30) -- 'Single Candle', Mac OS X El Capitan
@@ -1304,6 +1307,7 @@ saveRDS(AEDB, file = paste0(OUT_loc, "/",Today,".",PROJECTNAME,".AEDB.raw.RDS"))
     _W_
 
     **Changes log**
+    * v1.3.2 Small fix to the plaque vulnerability index. 
     * v1.3.1 Small update to the AEDB.
     * v1.3.0 Major update to the AEDB.
     * v1.2.2 Project updates. Fixes to links and date.
