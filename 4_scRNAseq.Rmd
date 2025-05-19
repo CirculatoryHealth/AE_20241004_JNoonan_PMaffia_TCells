@@ -104,10 +104,10 @@ gene_list
 
 ```
 
-Adding _CD68_ to the list of targets. 
+Adding _CD8B_ to the list of targets. 
 ```{r}
 # Add CD68 to the target list
-gene_list <- c(gene_list, "CD68")
+gene_list <- c(gene_list, "CD8B")
 ```
 
 

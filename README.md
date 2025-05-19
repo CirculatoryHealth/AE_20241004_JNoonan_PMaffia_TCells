@@ -213,7 +213,7 @@ Dr. Sander W. van der Laan has received Roche funding for unrelated work.
     _W_
 
     **Changes log**
-    * v1.5.1 Small fix to handling the NAs in the Plaque Vulnerability Index; added CD68 to the GMS.
+    * v1.5.1 Small fix to handling the NAs in the Plaque Vulnerability Index; added CD8B to the GMS.
     * v1.5.0 Major update. Added polygenic score analyses. Added additional figures for the bulk RNAseq. Added a few more details to the README.md.
     * v1.4.7 Updates to the scripts. Project specific re-organization.
     * v1.4.6 Updates to molQTL lookup script; accordingly the `targets.xlsx` file changed. Dropped all output to reduce size. Updates to the readme.me. Added wiki-pages with further explanations.

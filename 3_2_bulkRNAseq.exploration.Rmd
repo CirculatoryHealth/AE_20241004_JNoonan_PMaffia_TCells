@@ -99,10 +99,10 @@ DT::datatable(variant_list)
 ```
 
 
-We will also add _CD68_ as a target. 
+We will also add _CD8B_ as a target. 
 
 ```{r}
-gene_list <- c(gene_list, "CD68")
+gene_list <- c(gene_list, "CD8B")
 ```
 
 
@@ -977,7 +977,7 @@ ggpubr::gghistogram(as.tibble(t(subset(assay(AERNAScomboSE_target), AERNAScomboS
     _W_
 
     **Changes log**
-    * v1.0.2 Small fix to Plaque Vulnerability Index (add NAs); add CD68 as target gene.
+    * v1.0.2 Small fix to Plaque Vulnerability Index (add NAs); add CD8B as target gene.
     * v1.0.1 Update to the heatmap. 
     * v1.0.0 Inital version. Re-arranged to explore the subset of data. 
 
