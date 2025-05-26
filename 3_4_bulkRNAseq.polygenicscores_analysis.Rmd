@@ -2426,6 +2426,10 @@ for (i in 1:length(times)){
     COX.results.TEMP <- data.frame(matrix(NA, ncol = 12, nrow = 0))
     COX.results.TEMP[1,] = COX.STAT(cox, "AERNAseurat_meta", ep, TRAITS.TARGET.RANK[target_of_interest])
     COX.results = rbind(COX.results, COX.results.TEMP)
+    saveRDS(survfit(coxplot), paste0(COX_loc,"/",
+                               Today,".AERNAseurat_meta.Cox.",ep,".2G.",
+                               # Today,".AERNASE.clin.targets.Cox.",ep,".4G.",
+                               TRAITS.TARGET.RANK[target_of_interest],".MODEL1.cox_survfit_object.rds"))
 
   }
 }
@@ -2539,6 +2543,10 @@ for (i in 1:length(times)){
                                Today,".AERNAseurat_meta.Cox.",ep,".2G.",
                                # Today,".AERNASE.clin.targets.Cox.",ep,".4G.",
                                TRAITS.TARGET.RANK[target_of_interest],".MODEL2.pdf"), height = 12, width = 10, onefile = TRUE)
+    saveRDS(survfit(coxplot), paste0(COX_loc,"/",
+                               Today,".AERNAseurat_meta.Cox.",ep,".2G.",
+                               # Today,".AERNASE.clin.targets.Cox.",ep,".4G.",
+                               TRAITS.TARGET.RANK[target_of_interest],".MODEL2.cox_survfit_object.rds"))
 
     show(summary(cox))
 
@@ -2590,8 +2598,8 @@ rm(TEMP.DF, target_of_interest, fit, cox, coxplot, COX.results, COX.results.TEMP
 
 --------------------------------------------------------------------------------
 
-    Version:      v1.3.2
-    Last update:  2025-05-19
+    Version:      v1.3.3
+    Last update:  2025-05-26
     Written by:   Sander W. van der Laan (s.w.vanderlaan-2[at]umcutrecht.nl).
     Description:  Script to analyse targets from the Ather-Express Biobank Study.
     Minimum requirements: R version 3.5.2 (2018-12-20) -- 'Eggshell Igloo', macOS Mojave (10.14.2).
@@ -2607,6 +2615,7 @@ rm(TEMP.DF, target_of_interest, fit, cox, coxplot, COX.results, COX.results.TEMP
     _W_
 
     **Changes log**
+    * v1.3.3 Added RDS output fo the Cox-regression objects.
     * v1.3.2 Added small fixes to the handling of NA in PVI; added GMS with CD8B.
     * v1.3.1 Added additional outcomes for the Cox-regression.
     * v1.3.0 Added cross-sectional symptom and longitudinal analyses. Fixed an issue where the `logcounts` were used as the layer to include in the Seurat object.
@@ -2627,6 +2636,6 @@ save.image(paste0(PROJECT_loc, "/",Today,".",PROJECTNAME,".bulkRNAseq.polygenics
 ```
 
 +-----------------------------------------------------------------------------------------------------------------------------------------+
-| <sup>© 1979-2024 Sander W. van der Laan | s.w.vanderlaan[at]gmail[dot]com | [vanderlaanand.science](https://vanderlaanand.science).</sup> |
+| <sup>© 1979-2025 Sander W. van der Laan | s.w.vanderlaan[at]gmail[dot]com | [vanderlaanand.science](https://vanderlaanand.science).</sup> |
 +-----------------------------------------------------------------------------------------------------------------------------------------+
 

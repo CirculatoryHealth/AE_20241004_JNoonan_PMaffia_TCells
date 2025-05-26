@@ -32,11 +32,17 @@ install.packages.auto("tableone")
 # (default method for FindMarkers) please install the limma package
 # --------------------------------------------
 install.packages.auto('BiocManager')
-BiocManager::install('limma')
+# BiocManager::install('limma')
+library('limma')
 # --------------------------------------------
 #   After installation of limma, Seurat will automatically use the more 
 # efficient implementation (no further action necessary).
 # This message will be shown once per session
+
+# Presto is needed for a much faster implementation of the FindMarkers() function in Seurat
+library('devtools')
+devtools::install_github('immunogenomics/presto')
+library("presto")
 
 # Install the devtools package from Hadley Wickham
 library('devtools')
@@ -44,6 +50,3 @@ library('devtools')
 # devtools::install_version(package = 'Seurat', version = package_version('2.3.4'))
 install.packages.auto("Seurat")
 library("Seurat")
-# Presto is needed for a much faster implementation of the FindMarkers() function
-library('devtools')
-devtools::install_github('immunogenomics/presto')
