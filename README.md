@@ -1,5 +1,5 @@
 <!--  Provide a title.         -->
-[AE_20241004_JNoonan_PMaffia_TCells](https://github.com/CirculatoryHealth/AE_20241004_JNoonan_PMaffia_TCells)<img align="right" height="200" src=images/AE_Genomics_2010.png>
+[AE_20241004_JNoonan_PMaffia_TCells](https://github.com/CirculatoryHealth/AE_20241004_JNoonan_PMaffia_TCells)<img align="right" height="200" src=images/AtheroExpress_logo.png>
 ============
 
 <!--  Provide details on the people involved in the project.         -->
@@ -116,8 +116,8 @@ references.bib                          | BibTex references                    |
 3_1_bulkRNAseq.preparation.Rmd          | Preparing bulk RNAseq analyses       | Human editable
 3_2_bulkRNAseq.exploration.Rmd          | Exploration RNAseq.                  | Human editable
 3_3_bulkRNAseq.main_analysis.Rmd        | Main RNAseq analyses                 | Human editable
-3_4_bulkRNAseq.additional_figures.Rmd   | Additional RNAseq figures            | Human editable
-4_scRNAseq.Rmd                          | Single-cell RNAseq analyses          | Human editable
+3_4_bulkRNAseq.polygenicscores_analysis.Rmd | Gene module score (GMS) analyses   | Human editable
+4_scRNAseq.Rmd                          | Single-cell RNAseq analyses + CytoGMS | Human editable
 
 <!--  You can consider adding the following to this file:                    -->
 <!--  * A citation reference for your project                                -->
@@ -149,17 +149,13 @@ This notebook used the output from `3_1_bulkRNAseq.preparation.Rmd` to explore t
 
 This is the main-analysis notebook uses the output from `3_1_bulkRNAseq.preparation.Rmd` and `3_ _2_bulkRNAseq.exploration.Rmd`. Here linear and logistic regression analyses are executed using two models, `model 1` is a 'simple' model correcting for age, sex, year-of-surgery and RNAseq experiment (AERNAS1 and AERNAS2), `model 2` is the same as `model 1` but extended with a selection of traditional risk factors. 
 
-### 3_4_bulkRNAseq.additional_figures.Rmd
+### 3_4_bulkRNAseq.polygenicscores_analysis.Rmd
 
-**[NOT USED]** Here the output from `3_3_bulkRNAseq.main_analysis.Rmd` is used to create additional informative figures that could be used for publication. 
+Compute the Gene Module Score (GMS) using a custom implementation based on `AddModuleScore` from the `Seurat` package. The GMS is computed for two gene sets: the core cytotoxicity set (`RUNX3`, `PRDM1`, `GZMB`, `CD3E`) and a variant including `CD8B`. Results are plotted against plaque instability traits (macrophage content, SMC content, IPH, lipid core) and the Plaque Vulnerability Index.
 
 ### 4_scRNAseq.Rmd
 
-Here the expression of the target gene(s) is inspected and visualized in the single-cell RNAseq dataset using output from `1_AEDB.CEA.baseline.Rmd`. 
-
-### 3_5_bulkRNAseq.polygenicscores_analysis.Rmd
-
-Compute the polygenic scores using the same approach as `AddModuleScore` from the `Seurat` package.
+The expression of the target gene(s) is inspected and visualised in the single-cell RNAseq dataset using clinical data from `1_AEDB.CEA.baseline.Rmd`. Also contains the **CytoGMS** analysis (added for the *Nature Communications* rebuttal, June 2026): `UCell::AddModuleScore_UCell` is applied to all T-cells and to CD8+ T-cells separately, and the resulting per-cell score is compared across four histology-derived plaque instability traits.
 
 
 # Reproducibility
@@ -194,12 +190,12 @@ The framework was based on the [`WORCS` package](https://osf.io/zcvbs/).
 ## Disclosures
 Dr. Sander W. van der Laan has received Roche funding for unrelated work.
 
-<a href='https://uefconnect.uef.fi/en/group/miracle/'><img src='images/UEF_Miracle_Logo-07.png' align="center" height="75" /></a> <a href='https://www.to-aition.eu'><img src='images/to_aition.png' align="center" height="75" /></a> <a href='https://www.health-holland.com'><img src='images/logo_NL_HealthHollland_Wit-Oranje_RGB.png' align="center" height="35" /></a> <a href='https://www.nextgentools.eu'><img src='images/NextGen_1_Red.png' align="center" height="35" /></a> <a href='https://www.era-cvd.eu'><img src='images/ERA_CVD_Logo_CMYK.png' align="center" height="75" /></a> <a href=''><img src='images/leducq-logo-large.png' align="center" height="75" /></a> <a href='https://www.fondationleducq.org'><img src='images/leducq-logo-small.png' align="center" height="75" /></a> <a href='https://osf.io/zcvbs/'><img src='images/worcs_icon.png' align="center" height="75" /></a> <a href='https://doi.org/10.1007/s10564-004-2304-6'><img src='images/AE_Genomics_2010.png' align="center" height="100" /></a>
+<a href='https://uefconnect.uef.fi/en/group/miracle/'><img src='images/UEF_Miracle_Logo-07.png' align="center" height="75" /></a> <a href='https://www.to-aition.eu'><img src='images/to_aition.png' align="center" height="75" /></a> <a href='https://www.health-holland.com'><img src='images/logo_NL_HealthHollland_Wit-Oranje_RGB.png' align="center" height="35" /></a> <a href='https://www.nextgentools.eu'><img src='images/NextGen_1_Red.png' align="center" height="35" /></a> <a href='https://www.era-cvd.eu'><img src='images/ERA_CVD_Logo_CMYK.png' align="center" height="75" /></a> <a href=''><img src='images/leducq-logo-large.png' align="center" height="75" /></a> <a href='https://www.fondationleducq.org'><img src='images/leducq-logo-small.png' align="center" height="75" /></a> <a href='https://osf.io/zcvbs/'><img src='images/worcs_icon.png' align="center" height="75" /></a> <a href='https://doi.org/10.1007/s10564-004-2304-6'><img src='images/AtheroExpress_logo.png' align="center" height="100" /></a>
 
 #### Changes log
     
-    _Version:_      v1.5.1</br>
-    _Last update:_  2025-05-19</br>
+    _Version:_      v1.6.0</br>
+    _Last update:_  2026-07-02</br>
     _Written by:_   Sander W. van der Laan (s.w.vanderlaan [at] gmail [dot] com).
     
     **MoSCoW To-Do List**
@@ -213,6 +209,7 @@ Dr. Sander W. van der Laan has received Roche funding for unrelated work.
     _W_
 
     **Changes log**
+    * v1.6.0 Added CytoGMS analysis to `4_scRNAseq.Rmd`: `UCell::AddModuleScore_UCell` run on all T-cells and CD8+ T-cells (CD8B > 0), compared against four plaque instability traits (macrophage content, SMC content, IPH, lipid core ≥10%). Figures saved as EPS/PDF/PNG; per-cell data tables written to `OUTPUT/`. Added UCell to `scripts/pack03.packages.R`. Updated AtheroExpress logo image. Fixed project file table (polygenicscores notebook name). For *Nature Communications* rebuttal (Noonan & Maffia, June 2026).
     * v1.5.1 Small fix to handling the NAs in the Plaque Vulnerability Index; added CD8B to the GMS.
     * v1.5.0 Major update. Added polygenic score analyses. Added additional figures for the bulk RNAseq. Added a few more details to the README.md.
     * v1.4.7 Updates to the scripts. Project specific re-organization.
@@ -243,4 +240,4 @@ Dr. Sander W. van der Laan has received Roche funding for unrelated work.
 --------------
 
 #### Creative Commons BY-NC-ND 4.0
-##### Copyright (c) 1979-2025 Sander W. van der Laan | s.w.vanderlaan [at] gmail [dot] com.
+##### Copyright (c) 1979-2026 Sander W. van der Laan | s.w.vanderlaan [at] gmail [dot] com.

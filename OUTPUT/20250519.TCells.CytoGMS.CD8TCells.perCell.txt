@@ -1,0 +1,738 @@
+cell_id	STUDY_NUMBER	CytoGMS_UCell	Macrophages.bin	SMC.bin	IPH.bin	Fat.bin_10
+4447.P1.66	4447	0.395244055068836	moderate/heavy	moderate/heavy	yes	 <10%
+4447.P1.135	4447	0.326157697121402	moderate/heavy	moderate/heavy	yes	 <10%
+4447.P1.165	4447	0.171026282853567	moderate/heavy	moderate/heavy	yes	 <10%
+4447.P1.311	4447	0.243804755944931	moderate/heavy	moderate/heavy	yes	 <10%
+4447.P1.347	4447	0.297371714643304	moderate/heavy	moderate/heavy	yes	 <10%
+4443.P2.10	4443	0.772340425531915	moderate/heavy	moderate/heavy	yes	 <10%
+4443.P2.11	4443	0.486733416770964	moderate/heavy	moderate/heavy	yes	 <10%
+4443.P2.28	4443	0.643617021276596	moderate/heavy	moderate/heavy	yes	 <10%
+4443.P2.35	4443	0.361576971214018	moderate/heavy	moderate/heavy	yes	 <10%
+4443.P2.73	4443	0.451752190237797	moderate/heavy	moderate/heavy	yes	 <10%
+4443.P2.127	4443	0.427284105131414	moderate/heavy	moderate/heavy	yes	 <10%
+4443.P2.145	4443	0.406070087609512	moderate/heavy	moderate/heavy	yes	 <10%
+4443.P2.181	4443	0.240050062578223	moderate/heavy	moderate/heavy	yes	 >10%
+4443.P2.197	4443	0.445181476846058	moderate/heavy	moderate/heavy	yes	 >10%
+4443.P2.199	4443	0.242490613266583	moderate/heavy	moderate/heavy	yes	 >10%
+4443.P2.219	4443	0.231101376720901	moderate/heavy	moderate/heavy	yes	 >10%
+4443.P2.253	4443	0.232540675844806	moderate/heavy	moderate/heavy	yes	 >10%
+4443.P2.319	4443	0.164017521902378	moderate/heavy	moderate/heavy	yes	 >10%
+4443.P2.328	4443	0.552002503128911	moderate/heavy	moderate/heavy	yes	 >10%
+4443.P2.334	4443	0.425907384230288	moderate/heavy	moderate/heavy	yes	 >10%
+4443.P2.340	4443	0.449937421777222	moderate/heavy	moderate/heavy	yes	 >10%
+4443.P2.354	4443	0.599436795994994	moderate/heavy	moderate/heavy	yes	 >10%
+4443.P2.373	4443	0.212015018773467	moderate/heavy	moderate/heavy	yes	 >10%
+4443.P1.2	4443	0.202377972465582	moderate/heavy	moderate/heavy	yes	 >10%
+4443.P1.8	4443	0.424030037546934	moderate/heavy	moderate/heavy	yes	 >10%
+4443.P1.12	4443	0.458635794743429	moderate/heavy	moderate/heavy	yes	 >10%
+4443.P1.21	4443	0.330913642052566	moderate/heavy	moderate/heavy	yes	 >10%
+4443.P1.33	4443	0.401188986232791	moderate/heavy	moderate/heavy	yes	 >10%
+4443.P1.44	4443	0.408385481852315	moderate/heavy	moderate/heavy	yes	 >10%
+4443.P1.133	4443	0.440675844806008	moderate/heavy	moderate/heavy	yes	 >10%
+4443.P1.137	4443	0.397309136420526	moderate/heavy	moderate/heavy	yes	 >10%
+4443.P1.140	4443	0.419086357947434	moderate/heavy	moderate/heavy	yes	 >10%
+4443.P1.149	4443	0.45162703379224	moderate/heavy	moderate/heavy	yes	 >10%
+4443.P1.156	4443	0.346933667083855	moderate/heavy	moderate/heavy	yes	 >10%
+4443.P1.157	4443	0.239612015018774	moderate/heavy	moderate/heavy	yes	 >10%
+4443.P1.162	4443	0.458448060075094	moderate/heavy	moderate/heavy	yes	 >10%
+4443.P1.186	4443	0.373028785982478	moderate/heavy	moderate/heavy	yes	 >10%
+4443.P1.196	4443	0.673466833541927	moderate/heavy	moderate/heavy	yes	 >10%
+4443.P1.199	4443	0.364831038798498	moderate/heavy	moderate/heavy	yes	 >10%
+4443.P1.202	4443	0.441426783479349	moderate/heavy	moderate/heavy	yes	 >10%
+4443.P1.207	4443	0.466082603254068	moderate/heavy	moderate/heavy	yes	 >10%
+4443.P1.213	4443	0.340300375469337	moderate/heavy	moderate/heavy	yes	 >10%
+4443.P1.225	4443	0.463579474342929	moderate/heavy	moderate/heavy	yes	 >10%
+4443.P1.228	4443	0.212140175219024	moderate/heavy	moderate/heavy	yes	 >10%
+4443.P1.231	4443	0.468147684605757	moderate/heavy	moderate/heavy	yes	 >10%
+4443.P1.236	4443	0.213642052565707	moderate/heavy	moderate/heavy	yes	 >10%
+4443.P1.270	4443	0.477534418022528	moderate/heavy	moderate/heavy	yes	 >10%
+4443.P1.273	4443	0.208072590738423	moderate/heavy	moderate/heavy	yes	 >10%
+4443.P1.274	4443	0.671964956195244	moderate/heavy	moderate/heavy	yes	 >10%
+4443.P1.324	4443	0.368272841051314	moderate/heavy	moderate/heavy	yes	 >10%
+4443.P1.347	4443	0.214518147684606	moderate/heavy	moderate/heavy	yes	 >10%
+4443.P1.362	4443	0.377596996245307	moderate/heavy	moderate/heavy	yes	 >10%
+4443.P1.371	4443	0.45531914893617	moderate/heavy	moderate/heavy	yes	 >10%
+4443.P3.11	4443	0.136858573216521	moderate/heavy	moderate/heavy	yes	 >10%
+4443.P3.17	4443	0.17909887359199	moderate/heavy	moderate/heavy	yes	 >10%
+4443.P3.35	4443	0.456633291614518	moderate/heavy	moderate/heavy	yes	 >10%
+4443.P3.55	4443	0.44017521902378	moderate/heavy	moderate/heavy	yes	 >10%
+4443.P3.72	4443	0.241051314142678	moderate/heavy	moderate/heavy	yes	 >10%
+4443.P3.84	4443	0.454067584480601	moderate/heavy	moderate/heavy	yes	 >10%
+4443.P3.91	4443	0.368648310387985	moderate/heavy	moderate/heavy	yes	 >10%
+4443.P3.96	4443	0.488360450563204	moderate/heavy	moderate/heavy	yes	 >10%
+4443.P3.108	4443	0.467772215269086	moderate/heavy	moderate/heavy	yes	 >10%
+4443.P3.111	4443	0.361138923654568	moderate/heavy	moderate/heavy	yes	 >10%
+4443.P3.130	4443	0.347434292866083	moderate/heavy	moderate/heavy	yes	 >10%
+4443.P3.148	4443	0.602377972465582	moderate/heavy	moderate/heavy	yes	 >10%
+4443.P3.155	4443	0.466082603254068	moderate/heavy	moderate/heavy	yes	 >10%
+4443.P3.161	4443	0.403504380475594	moderate/heavy	moderate/heavy	yes	 >10%
+4443.P3.189	4443	0.403441802252816	moderate/heavy	moderate/heavy	yes	 >10%
+4443.P3.192	4443	0.460638297872341	moderate/heavy	moderate/heavy	yes	 >10%
+4443.P3.199	4443	0.447809762202754	moderate/heavy	moderate/heavy	yes	 >10%
+4443.P3.202	4443	0.239424280350438	moderate/heavy	moderate/heavy	yes	 >10%
+4443.P3.203	4443	0.14755944931164	moderate/heavy	moderate/heavy	yes	 >10%
+4443.P3.215	4443	0.230663329161452	moderate/heavy	moderate/heavy	yes	 >10%
+4443.P3.217	4443	0.323904881101377	moderate/heavy	moderate/heavy	yes	 >10%
+4443.P3.221	4443	0.408072590738423	moderate/heavy	moderate/heavy	yes	 >10%
+4443.P3.225	4443	0.477722152690864	moderate/heavy	moderate/heavy	yes	 >10%
+4443.P3.239	4443	0.245682102628285	moderate/heavy	moderate/heavy	yes	 >10%
+4443.P3.262	4443	0.366958698372966	moderate/heavy	moderate/heavy	yes	 >10%
+4443.P3.263	4443	0.213767209011264	moderate/heavy	moderate/heavy	yes	 >10%
+4443.P3.291	4443	0.215456821026283	moderate/heavy	moderate/heavy	yes	 >10%
+4443.P3.298	4443	0.228535669586984	moderate/heavy	moderate/heavy	yes	 >10%
+4443.P3.301	4443	0.234793491864831	moderate/heavy	moderate/heavy	yes	 >10%
+4443.P3.311	4443	0.245369211514393	moderate/heavy	moderate/heavy	yes	 >10%
+4443.P3.324	4443	0.456758448060075	moderate/heavy	moderate/heavy	yes	 >10%
+4443.P3.330	4443	0.377221526908636	moderate/heavy	moderate/heavy	yes	 >10%
+4443.P3.336	4443	0.236921151439299	moderate/heavy	moderate/heavy	yes	 >10%
+4443.P3.355	4443	0.266583229036295	moderate/heavy	moderate/heavy	yes	 >10%
+4443.P3.356	4443	0.216082603254068	moderate/heavy	moderate/heavy	yes	 >10%
+4447.P3.46	4447	0.458573216520651	moderate/heavy	moderate/heavy	yes	 >10%
+4447.P3.91	4447	0.239173967459324	moderate/heavy	moderate/heavy	yes	 >10%
+4447.P3.212	4447	0.419649561952441	moderate/heavy	moderate/heavy	yes	 >10%
+4447.P3.311	4447	0.246495619524405	moderate/heavy	moderate/heavy	yes	 >10%
+4447.P2.39	4447	0.539486858573217	moderate/heavy	moderate/heavy	yes	 >10%
+4447.P2.87	4447	0.368523153942428	moderate/heavy	moderate/heavy	yes	 >10%
+4447.P2.155	4447	0.181727158948686	moderate/heavy	moderate/heavy	yes	 >10%
+4447.P2.232	4447	0.223904881101377	moderate/heavy	moderate/heavy	yes	 >10%
+4447.P2.234	4447	0.234042553191489	moderate/heavy	moderate/heavy	yes	 >10%
+4447.P2.262	4447	0.219837296620776	moderate/heavy	moderate/heavy	yes	 >10%
+4450.P3.133	4450	0.470588235294118	moderate/heavy	moderate/heavy	yes	 >10%
+4450.P3.178	4450	0.645244055068836	moderate/heavy	moderate/heavy	yes	 >10%
+4450.P3.234	4450	0.665707133917397	moderate/heavy	moderate/heavy	yes	 >10%
+4450.P3.242	4450	0.409261576971214	moderate/heavy	moderate/heavy	yes	 >10%
+4450.P3.304	4450	0.501314142678348	moderate/heavy	moderate/heavy	yes	 >10%
+4450.P2.174	4450	0.413141426783479	moderate/heavy	moderate/heavy	yes	 >10%
+4450.P2.283	4450	0.483729662077597	moderate/heavy	moderate/heavy	yes	 >10%
+4450.P2.319	4450	0.532352941176471	moderate/heavy	moderate/heavy	yes	 >10%
+4450.P1.112	4450	0.448185231539424	moderate/heavy	moderate/heavy	yes	 >10%
+4450.P1.202	4450	0.166583229036295	moderate/heavy	moderate/heavy	yes	 >10%
+4450.P1.277	4450	0.123028785982478	moderate/heavy	moderate/heavy	yes	 >10%
+4450.P1.367	4450	0.577596996245307	moderate/heavy	moderate/heavy	yes	 >10%
+4450.P1.376	4450	0.345244055068836	moderate/heavy	moderate/heavy	yes	 >10%
+4453.P3.1	4453	0.514017521902378	no/minor	no/minor	yes	 >10%
+4453.P3.28	4453	0.369524405506884	no/minor	no/minor	yes	 >10%
+4453.P3.81	4453	0.384918648310388	no/minor	no/minor	yes	 >10%
+4453.P3.86	4453	0.48116395494368	no/minor	no/minor	yes	 >10%
+4453.P3.92	4453	0.611639549436796	no/minor	no/minor	yes	 >10%
+4453.P3.94	4453	0.400125156445557	no/minor	no/minor	yes	 >10%
+4453.P3.104	4453	0.708135168961201	no/minor	no/minor	yes	 >10%
+4453.P3.106	4453	0.26433041301627	no/minor	no/minor	yes	 >10%
+4453.P3.118	4453	0.21063829787234	no/minor	no/minor	yes	 >10%
+4453.P3.177	4453	0.231414267834793	no/minor	no/minor	yes	 >10%
+4453.P3.181	4453	0.445181476846058	no/minor	no/minor	yes	 >10%
+4453.P3.299	4453	0.496871088861076	no/minor	no/minor	yes	 >10%
+4453.P3.304	4453	0.459449311639549	no/minor	no/minor	yes	 >10%
+4453.P3.324	4453	0.733854818523154	no/minor	no/minor	yes	 >10%
+4453.P3.326	4453	0.298247809762203	no/minor	no/minor	yes	 >10%
+4453.P3.332	4453	0.596182728410513	no/minor	no/minor	yes	 >10%
+4453.P3.339	4453	0.601439299123905	no/minor	no/minor	yes	 >10%
+4453.P3.348	4453	0.553128911138924	no/minor	no/minor	yes	 >10%
+4453.P2.36	4453	0.223717146433041	no/minor	no/minor	yes	 >10%
+4453.P2.41	4453	0.467834793491865	no/minor	no/minor	yes	 >10%
+4453.P2.100	4453	0.221526908635795	no/minor	no/minor	yes	 >10%
+4453.P2.105	4453	0.370212765957447	no/minor	no/minor	yes	 >10%
+4453.P2.137	4453	0.166708385481852	no/minor	no/minor	yes	 >10%
+4453.P2.138	4453	0.352565707133917	no/minor	no/minor	yes	 >10%
+4453.P2.141	4453	0.550438047559449	no/minor	no/minor	yes	 >10%
+4453.P2.152	4453	0.629286608260325	no/minor	no/minor	yes	 >10%
+4453.P2.189	4453	0.379036295369211	no/minor	no/minor	yes	 >10%
+4453.P2.196	4453	0.244430538172716	no/minor	no/minor	yes	 >10%
+4453.P2.258	4453	0.518773466833542	no/minor	no/minor	yes	 >10%
+4453.P2.291	4453	0.460826032540676	no/minor	no/minor	yes	 >10%
+4453.P2.349	4453	0.153191489361702	no/minor	no/minor	yes	 >10%
+4453.P2.362	4453	0.231664580725907	no/minor	no/minor	yes	 >10%
+4453.P1.104	4453	0.197058823529412	no/minor	no/minor	yes	 >10%
+4453.P1.175	4453	0.460450563204005	no/minor	no/minor	yes	 >10%
+4453.P1.193	4453	0.212828535669587	no/minor	no/minor	yes	 >10%
+4453.P1.199	4453	0.581351689612015	no/minor	no/minor	yes	 >10%
+4453.P1.205	4453	0.346495619524406	no/minor	no/minor	yes	 >10%
+4453.P1.215	4453	0.486357947434293	no/minor	no/minor	yes	 >10%
+4453.P1.220	4453	0.239924906132666	no/minor	no/minor	yes	 >10%
+4453.P1.224	4453	0.216583229036295	no/minor	no/minor	yes	 >10%
+4453.P1.238	4453	0.459324155193993	no/minor	no/minor	yes	 >10%
+4453.P1.293	4453	0.292991239048811	no/minor	no/minor	yes	 >10%
+4453.P1.307	4453	0.450876095118899	no/minor	no/minor	yes	 >10%
+4453.P1.309	4453	0.685294117647059	no/minor	no/minor	yes	 >10%
+4453.P1.328	4453	0.222841051314143	no/minor	no/minor	yes	 >10%
+4453.P1.343	4453	0.779724655819775	no/minor	no/minor	yes	 >10%
+4453.P1.380	4453	0.357822277847309	no/minor	no/minor	yes	 >10%
+4470.P1.6	4470	0.236545682102628	no/minor	moderate/heavy	yes	 <10%
+4470.P1.7	4470	0.446871088861076	no/minor	moderate/heavy	yes	 <10%
+4470.P1.56	4470	0.851501877346683	no/minor	moderate/heavy	yes	 <10%
+4470.P1.60	4470	0.632290362953692	no/minor	moderate/heavy	yes	 <10%
+4470.P1.71	4470	0.484730913642053	no/minor	moderate/heavy	yes	 <10%
+4470.P1.82	4470	0.296120150187735	no/minor	moderate/heavy	yes	 <10%
+4470.P1.92	4470	0.40081351689612	no/minor	moderate/heavy	yes	 <10%
+4470.P1.95	4470	0.418710888610763	no/minor	moderate/heavy	yes	 <10%
+4470.P1.117	4470	0.763829787234043	no/minor	moderate/heavy	yes	 <10%
+4470.P1.122	4470	0.108072590738423	no/minor	moderate/heavy	yes	 <10%
+4470.P1.132	4470	0.388735919899875	no/minor	moderate/heavy	yes	 <10%
+4470.P1.207	4470	0.598623279098874	no/minor	moderate/heavy	yes	 <10%
+4470.P1.216	4470	0.229286608260325	no/minor	moderate/heavy	yes	 <10%
+4470.P1.223	4470	0.37622027534418	no/minor	moderate/heavy	yes	 <10%
+4470.P1.243	4470	0.236921151439299	no/minor	moderate/heavy	yes	 <10%
+4470.P1.248	4470	0.363892365456821	no/minor	moderate/heavy	yes	 <10%
+4470.P1.262	4470	0.444305381727159	no/minor	moderate/heavy	yes	 <10%
+4470.P1.284	4470	0.435168961201502	no/minor	moderate/heavy	yes	 <10%
+4470.P1.289	4470	0.683416770963705	no/minor	moderate/heavy	yes	 <10%
+4470.P1.299	4470	0.452127659574468	no/minor	moderate/heavy	yes	 <10%
+4470.P1.302	4470	0.680663329161452	no/minor	moderate/heavy	yes	 <10%
+4470.P1.303	4470	0.461264080100125	no/minor	moderate/heavy	yes	 <10%
+4470.P1.312	4470	0.624280350438048	no/minor	moderate/heavy	yes	 <10%
+4470.P1.320	4470	0.393304130162703	no/minor	moderate/heavy	yes	 <10%
+4470.P1.325	4470	0.499499374217772	no/minor	moderate/heavy	yes	 <10%
+4470.P1.328	4470	0.339173967459324	no/minor	moderate/heavy	yes	 <10%
+4470.P1.341	4470	0.478598247809762	no/minor	moderate/heavy	yes	 <10%
+4470.P1.344	4470	0.466520650813517	no/minor	moderate/heavy	yes	 <10%
+4470.P1.347	4470	0.433854818523154	no/minor	moderate/heavy	yes	 <10%
+4470.P1.348	4470	0.482728410513141	no/minor	moderate/heavy	yes	 <10%
+4470.P1.350	4470	0.281602002503129	no/minor	moderate/heavy	yes	 <10%
+4470.P1.354	4470	0.457697121401752	no/minor	moderate/heavy	yes	 <10%
+4470.P1.378	4470	0.385106382978723	no/minor	moderate/heavy	yes	 <10%
+4470.P1.380	4470	0.207571964956195	no/minor	moderate/heavy	yes	 <10%
+4459.P1.206	4459	0.618335419274093	moderate/heavy	moderate/heavy	no	 >10%
+4459.P1.251	4459	0.674655819774718	moderate/heavy	moderate/heavy	no	 >10%
+4459.P1.345	4459	0.428535669586984	moderate/heavy	moderate/heavy	no	 >10%
+4458.P1.114	4458	0.622715894868586	moderate/heavy	moderate/heavy	no	 >10%
+4458.P1.166	4458	0.662515644555695	moderate/heavy	moderate/heavy	no	 >10%
+4455.P1.19	4455	0.443304130162703	moderate/heavy	moderate/heavy	no	 >10%
+4455.P1.79	4455	0.462953692115144	moderate/heavy	moderate/heavy	no	 >10%
+4455.P1.100	4455	0.245869837296621	moderate/heavy	moderate/heavy	no	 >10%
+4455.P1.110	4455	0.432415519399249	moderate/heavy	moderate/heavy	no	 >10%
+4455.P1.133	4455	0.231414267834793	moderate/heavy	moderate/heavy	no	 >10%
+4455.P1.161	4455	0.302252816020025	moderate/heavy	moderate/heavy	no	 >10%
+4487.P1.27	4487	0.510575719649562	moderate/heavy	moderate/heavy	yes	 >10%
+4487.P1.98	4487	0.405882352941176	moderate/heavy	no/minor	yes	 >10%
+4487.P1.106	4487	0.343804755944931	moderate/heavy	no/minor	yes	 >10%
+4487.P1.126	4487	0.202503128911139	moderate/heavy	no/minor	yes	 >10%
+4487.P1.147	4487	0.233354192740926	moderate/heavy	no/minor	yes	 >10%
+4487.P1.148	4487	0.399374217772215	moderate/heavy	no/minor	yes	 >10%
+4487.P1.149	4487	0.238548185231539	moderate/heavy	no/minor	yes	 >10%
+4487.P1.179	4487	0.199624530663329	moderate/heavy	no/minor	yes	 >10%
+4487.P1.193	4487	0.362140175219024	moderate/heavy	no/minor	yes	 >10%
+4480.P1.51	4480	0.460012515644556	moderate/heavy	moderate/heavy	no	 <10%
+4480.P1.135	4480	0.381351689612015	moderate/heavy	moderate/heavy	no	 <10%
+4480.P1.161	4480	0.167271589486859	moderate/heavy	moderate/heavy	no	 <10%
+4480.P1.168	4480	0.236232790988736	moderate/heavy	moderate/heavy	no	 <10%
+4480.P1.178	4480	0.600938673341677	moderate/heavy	moderate/heavy	no	 <10%
+4480.P1.212	4480	0.436170212765957	moderate/heavy	moderate/heavy	no	 <10%
+4480.P1.288	4480	0.655757196495619	moderate/heavy	moderate/heavy	no	 <10%
+4480.P1.292	4480	0.228911138923655	moderate/heavy	moderate/heavy	no	 <10%
+4480.P1.302	4480	0.573529411764706	moderate/heavy	moderate/heavy	yes	 >10%
+4480.P1.319	4480	0.243617021276596	moderate/heavy	moderate/heavy	yes	 >10%
+4480.P1.323	4480	0.202816020025031	moderate/heavy	moderate/heavy	yes	 >10%
+4480.P1.371	4480	0.182916145181477	moderate/heavy	moderate/heavy	yes	 >10%
+4477.P1.21	4477	0.463892365456821	moderate/heavy	no/minor	yes	 >10%
+4477.P1.68	4477	0.588798498122653	moderate/heavy	no/minor	yes	 >10%
+4477.P1.128	4477	0.400625782227785	moderate/heavy	no/minor	yes	 >10%
+4477.P1.255	4477	0.42909887359199	moderate/heavy	no/minor	yes	 >10%
+4477.P1.259	4477	0.242866082603254	moderate/heavy	no/minor	yes	 >10%
+4477.P1.264	4477	0.474405506883605	moderate/heavy	no/minor	yes	 >10%
+4448.P1.38	4448	0.243116395494368	moderate/heavy	no/minor	yes	 >10%
+4448.P1.81	4448	0.409949937421777	moderate/heavy	no/minor	yes	 >10%
+4448.P1.143	4448	0.424155193992491	moderate/heavy	no/minor	yes	 >10%
+4448.P1.249	4448	0.43279098873592	moderate/heavy	no/minor	yes	 >10%
+4448.P1.278	4448	0.35244055068836	moderate/heavy	no/minor	yes	 >10%
+4448.P1.298	4448	0.155569461827284	moderate/heavy	no/minor	yes	 >10%
+4448.P1.348	4448	0.454568210262829	moderate/heavy	no/minor	yes	 >10%
+4448.P1.351	4448	0.183979974968711	moderate/heavy	no/minor	yes	 >10%
+4448.P1.367	4448	0.230851063829787	moderate/heavy	moderate/heavy	yes	 >10%
+4448.P1.373	4448	0.320775969962453	moderate/heavy	moderate/heavy	yes	 >10%
+4486.P1.47	4486	0.448811013767209	moderate/heavy	moderate/heavy	yes	 >10%
+4486.P1.66	4486	0.212265331664581	moderate/heavy	moderate/heavy	yes	 >10%
+4486.P1.76	4486	0.21270337922403	moderate/heavy	moderate/heavy	yes	 >10%
+4486.P1.109	4486	0.409324155193993	moderate/heavy	moderate/heavy	yes	 >10%
+4486.P1.117	4486	0.623529411764706	moderate/heavy	moderate/heavy	yes	 >10%
+4486.P1.128	4486	0.348685857321652	moderate/heavy	moderate/heavy	yes	 >10%
+4486.P1.129	4486	0.171151439299124	moderate/heavy	moderate/heavy	yes	 >10%
+4486.P1.133	4486	0.414705882352941	moderate/heavy	moderate/heavy	yes	 >10%
+4486.P1.169	4486	0.435106382978723	moderate/heavy	moderate/heavy	yes	 >10%
+4486.P1.173	4486	0.3909887359199	moderate/heavy	moderate/heavy	yes	 >10%
+4486.P1.212	4486	0.614518147684606	moderate/heavy	moderate/heavy	yes	 >10%
+4486.P1.219	4486	0.239674593241552	moderate/heavy	moderate/heavy	yes	 >10%
+4486.P1.226	4486	0.391927409261577	moderate/heavy	moderate/heavy	yes	 >10%
+4486.P1.260	4486	0.233792240300375	moderate/heavy	moderate/heavy	yes	 >10%
+4486.P1.278	4486	0.40450563204005	no/minor	moderate/heavy	yes	 >10%
+4486.P1.317	4486	0.322403003754693	no/minor	moderate/heavy	yes	 >10%
+4486.P1.352	4486	0.648936170212766	no/minor	moderate/heavy	yes	 >10%
+4486.P1.355	4486	0.383354192740926	no/minor	moderate/heavy	yes	 >10%
+4486.P1.377	4486	0.425719649561952	no/minor	moderate/heavy	yes	 >10%
+4488.P1.31	4488	0.421777221526909	no/minor	moderate/heavy	yes	 >10%
+4488.P1.40	4488	0.721964956195244	no/minor	moderate/heavy	yes	 >10%
+4488.P1.111	4488	0.681602002503129	moderate/heavy	moderate/heavy	yes	 >10%
+4488.P1.134	4488	0.169837296620776	moderate/heavy	moderate/heavy	yes	 >10%
+4488.P1.147	4488	0.343053817271589	moderate/heavy	moderate/heavy	yes	 >10%
+4488.P1.171	4488	0.428973717146433	moderate/heavy	moderate/heavy	yes	 >10%
+4488.P1.180	4488	0.170150187734668	moderate/heavy	moderate/heavy	yes	 >10%
+4488.P1.192	4488	0.18072590738423	moderate/heavy	moderate/heavy	yes	 >10%
+4488.P1.196	4488	0.232415519399249	moderate/heavy	moderate/heavy	yes	 >10%
+4488.P1.201	4488	0.48811013767209	moderate/heavy	moderate/heavy	yes	 >10%
+4488.P1.269	4488	0.238610763454318	moderate/heavy	moderate/heavy	yes	 >10%
+4488.P1.295	4488	0.647622027534418	moderate/heavy	moderate/heavy	yes	 >10%
+4488.P1.312	4488	0.412015018773467	moderate/heavy	moderate/heavy	yes	 >10%
+4488.P1.341	4488	0.355944931163955	moderate/heavy	moderate/heavy	yes	 >10%
+4488.P1.377	4488	0.447997496871089	moderate/heavy	moderate/heavy	yes	 >10%
+4502.P2.38	4502	0.165519399249061	moderate/heavy	moderate/heavy	yes	 >10%
+4502.P2.40	4502	0.241113892365457	moderate/heavy	moderate/heavy	yes	 >10%
+4502.P2.60	4502	0.140926157697121	moderate/heavy	moderate/heavy	yes	 >10%
+4502.P2.92	4502	0.369461827284105	moderate/heavy	moderate/heavy	yes	 >10%
+4502.P2.93	4502	0.332853566958698	no/minor	moderate/heavy	yes	 <10%
+4502.P2.107	4502	0.26433041301627	no/minor	moderate/heavy	yes	 <10%
+4502.P2.114	4502	0.405193992490613	no/minor	moderate/heavy	yes	 <10%
+4502.P2.141	4502	0.412891113892365	no/minor	moderate/heavy	yes	 <10%
+4502.P2.161	4502	0.215519399249061	no/minor	moderate/heavy	yes	 <10%
+4502.P2.181	4502	0.561702127659574	no/minor	moderate/heavy	yes	 <10%
+4502.P2.207	4502	0.64630788485607	no/minor	moderate/heavy	yes	 <10%
+4502.P2.211	4502	0.19342928660826	no/minor	moderate/heavy	yes	 <10%
+4502.P2.236	4502	0.17747183979975	no/minor	moderate/heavy	yes	 <10%
+4502.P2.261	4502	0.550375469336671	no/minor	moderate/heavy	yes	 <10%
+4502.P2.300	4502	0.217146433041302	no/minor	moderate/heavy	yes	 <10%
+4502.P2.307	4502	0.577346683354193	no/minor	moderate/heavy	yes	 <10%
+4502.P2.328	4502	0.456946182728411	no/minor	moderate/heavy	yes	 <10%
+4502.P2.329	4502	0.231226533166458	no/minor	moderate/heavy	yes	 <10%
+4502.P2.332	4502	0.354943679599499	no/minor	moderate/heavy	yes	 <10%
+4502.P2.349	4502	0.569649561952441	no/minor	moderate/heavy	yes	 <10%
+4502.P2.372	4502	0.351376720901126	no/minor	moderate/heavy	yes	 <10%
+4502.P2.378	4502	0.43936170212766	no/minor	moderate/heavy	yes	 <10%
+4500.P1.57	4500	0.350688360450563	no/minor	moderate/heavy	yes	 <10%
+4500.P1.93	4500	0.213204005006258	no/minor	moderate/heavy	yes	 <10%
+4500.P1.192	4500	0.498748435544431	no/minor	moderate/heavy	yes	 <10%
+4500.P1.212	4500	0.403128911138924	no/minor	moderate/heavy	yes	 <10%
+4500.P1.249	4500	0.219336670838548	no/minor	moderate/heavy	yes	 <10%
+4500.P1.262	4500	0.683229036295369	no/minor	moderate/heavy	yes	 <10%
+4500.P1.283	4500	0.477221526908636	no/minor	moderate/heavy	yes	 <10%
+4501.P1.158	4501	0.467584480600751	no/minor	moderate/heavy	yes	 <10%
+4501.P1.178	4501	0.197809762202753	no/minor	moderate/heavy	yes	 <10%
+4501.P1.181	4501	0.407509386733417	no/minor	moderate/heavy	yes	 <10%
+4501.P1.183	4501	0.688610763454318	no/minor	moderate/heavy	yes	 <10%
+4501.P1.184	4501	0.403316645807259	no/minor	moderate/heavy	yes	 <10%
+4501.P1.200	4501	0.23116395494368	no/minor	moderate/heavy	yes	 <10%
+4501.P1.243	4501	0.232102628285357	no/minor	moderate/heavy	yes	 <10%
+4501.P1.289	4501	0.306758448060075	moderate/heavy	no/minor	yes	 >10%
+4501.P1.352	4501	0.453629536921152	moderate/heavy	no/minor	yes	 >10%
+4501.P1.353	4501	0.241364205256571	moderate/heavy	no/minor	yes	 >10%
+4501.P1.372	4501	0.408760951188986	moderate/heavy	no/minor	yes	 >10%
+4501.P1.373	4501	0.211138923654568	moderate/heavy	no/minor	yes	 >10%
+4541.P1.23	4541	0.208135168961202	moderate/heavy	no/minor	yes	 >10%
+4541.P1.92	4541	0.362453066332916	moderate/heavy	no/minor	yes	 >10%
+4541.P1.113	4541	0.552002503128911	moderate/heavy	no/minor	yes	 >10%
+4541.P1.122	4541	0.476971214017522	moderate/heavy	moderate/heavy	yes	 >10%
+4541.P1.160	4541	0.370337922403004	moderate/heavy	moderate/heavy	yes	 >10%
+4541.P1.185	4541	0.679662077596996	moderate/heavy	moderate/heavy	yes	 >10%
+4541.P1.207	4541	0.485607008760951	moderate/heavy	moderate/heavy	yes	 >10%
+4541.P1.239	4541	0.173967459324155	moderate/heavy	moderate/heavy	yes	 >10%
+4541.P1.248	4541	0.769962453066333	moderate/heavy	moderate/heavy	yes	 >10%
+4541.P1.252	4541	0.451439299123905	moderate/heavy	moderate/heavy	yes	 >10%
+4541.P1.263	4541	0.698435544430538	moderate/heavy	moderate/heavy	yes	 >10%
+4541.P1.266	4541	0.586295369211514	moderate/heavy	moderate/heavy	yes	 >10%
+4541.P1.280	4541	0.30982478097622	moderate/heavy	moderate/heavy	yes	 >10%
+4541.P1.287	4541	0.5729662077597	moderate/heavy	moderate/heavy	yes	 >10%
+4541.P1.292	4541	0.516458072590738	moderate/heavy	moderate/heavy	yes	 >10%
+4541.P1.299	4541	0.240237797246558	moderate/heavy	moderate/heavy	yes	 >10%
+4541.P1.311	4541	0.526533166458073	moderate/heavy	moderate/heavy	yes	 >10%
+4541.P1.318	4541	0.147684605757196	moderate/heavy	moderate/heavy	yes	 >10%
+4541.P1.322	4541	0.383354192740926	moderate/heavy	moderate/heavy	yes	 >10%
+4541.P1.332	4541	0.466958698372966	moderate/heavy	moderate/heavy	yes	 >10%
+4541.P1.345	4541	0.39837296620776	moderate/heavy	moderate/heavy	no	 <10%
+4541.P1.375	4541	0.607071339173968	moderate/heavy	moderate/heavy	no	 <10%
+4542.P1.12	4542	0.38360450563204	moderate/heavy	moderate/heavy	no	 <10%
+4542.P1.23	4542	0.468085106382979	moderate/heavy	moderate/heavy	no	 <10%
+4542.P1.30	4542	0.241927409261577	moderate/heavy	moderate/heavy	no	 <10%
+4542.P1.40	4542	0.173654568210263	moderate/heavy	moderate/heavy	no	 <10%
+4542.P1.47	4542	0.336545682102628	moderate/heavy	moderate/heavy	no	 <10%
+4542.P1.59	4542	0.435356695869837	moderate/heavy	moderate/heavy	no	 <10%
+4542.P1.69	4542	0.214080100125156	moderate/heavy	moderate/heavy	no	 <10%
+4542.P1.70	4542	0.42828535669587	moderate/heavy	moderate/heavy	no	 <10%
+4542.P1.81	4542	0.1409887359199	moderate/heavy	moderate/heavy	no	 <10%
+4542.P1.88	4542	0.16558197747184	moderate/heavy	moderate/heavy	no	 <10%
+4542.P1.96	4542	0.350187734668335	moderate/heavy	moderate/heavy	no	 <10%
+4542.P1.100	4542	0.451063829787234	no/minor	moderate/heavy	no	 >10%
+4542.P1.101	4542	0.224342928660826	no/minor	moderate/heavy	no	 >10%
+4542.P1.107	4542	0.246683354192741	moderate/heavy	moderate/heavy	no	 >10%
+4542.P1.126	4542	0.651063829787234	moderate/heavy	moderate/heavy	no	 >10%
+4542.P1.127	4542	0.237922403003755	moderate/heavy	moderate/heavy	no	 >10%
+4542.P1.140	4542	0.400938673341677	moderate/heavy	moderate/heavy	no	 >10%
+4542.P1.149	4542	0.469211514392991	moderate/heavy	moderate/heavy	no	 >10%
+4542.P1.154	4542	0.381351689612015	moderate/heavy	moderate/heavy	no	 >10%
+4542.P1.162	4542	0.430287859824781	moderate/heavy	moderate/heavy	no	 >10%
+4542.P1.167	4542	0.537984981226533	moderate/heavy	moderate/heavy	no	 >10%
+4542.P1.185	4542	0.23973717146433	moderate/heavy	moderate/heavy	no	 >10%
+4542.P1.209	4542	0.498247809762203	moderate/heavy	moderate/heavy	no	 >10%
+4542.P1.213	4542	0.402440550688361	moderate/heavy	moderate/heavy	no	 >10%
+4542.P1.217	4542	0.205569461827284	moderate/heavy	moderate/heavy	no	 >10%
+4542.P1.232	4542	0.345932415519399	moderate/heavy	moderate/heavy	no	 >10%
+4542.P1.238	4542	0.242866082603254	moderate/heavy	moderate/heavy	no	 >10%
+4542.P1.254	4542	0.392866082603254	moderate/heavy	moderate/heavy	no	 >10%
+4542.P1.255	4542	0.120337922403004	moderate/heavy	moderate/heavy	no	 >10%
+4542.P1.266	4542	0.345869837296621	moderate/heavy	moderate/heavy	no	 >10%
+4542.P1.273	4542	0.330851063829787	moderate/heavy	moderate/heavy	no	 >10%
+4542.P1.277	4542	0.294367959949938	moderate/heavy	moderate/heavy	no	 >10%
+4542.P1.294	4542	0.37909887359199	moderate/heavy	moderate/heavy	no	 >10%
+4542.P1.299	4542	0.334167709637046	moderate/heavy	moderate/heavy	no	 >10%
+4542.P1.310	4542	0.176595744680851	moderate/heavy	moderate/heavy	no	 >10%
+4542.P1.319	4542	0.363454317897372	moderate/heavy	moderate/heavy	no	 >10%
+4542.P1.327	4542	0.691364205256571	moderate/heavy	moderate/heavy	no	 >10%
+4542.P1.330	4542	0.430350438047559	moderate/heavy	moderate/heavy	no	 >10%
+4542.P1.334	4542	0.451564455569462	moderate/heavy	moderate/heavy	no	 >10%
+4542.P1.353	4542	0.203566958698373	moderate/heavy	moderate/heavy	no	 >10%
+4542.P1.363	4542	0.237734668335419	moderate/heavy	moderate/heavy	no	 >10%
+4542.P1.367	4542	0.14712140175219	moderate/heavy	moderate/heavy	no	 >10%
+4542.P1.372	4542	0.482290362953692	moderate/heavy	moderate/heavy	no	 >10%
+4542.P1.373	4542	0.46433041301627	moderate/heavy	moderate/heavy	no	 >10%
+4542.P1.379	4542	0.410513141426784	moderate/heavy	moderate/heavy	no	 >10%
+4513.P1.44	4513	0.411389236545682	moderate/heavy	moderate/heavy	no	 >10%
+4513.P1.85	4513	0.480976220275344	moderate/heavy	moderate/heavy	no	 >10%
+4513.P1.87	4513	0.208322903629537	moderate/heavy	moderate/heavy	no	 >10%
+4513.P1.93	4513	0.238360450563204	moderate/heavy	moderate/heavy	no	 >10%
+4513.P1.123	4513	0.481289111389237	no/minor	moderate/heavy	yes	 <10%
+4513.P1.163	4513	0.449874843554443	no/minor	moderate/heavy	yes	 <10%
+4513.P1.181	4513	0.392490613266583	no/minor	moderate/heavy	yes	 <10%
+4513.P1.205	4513	0.509887359198999	no/minor	moderate/heavy	yes	 <10%
+4513.P1.248	4513	0.408510638297872	no/minor	moderate/heavy	yes	 <10%
+4513.P1.250	4513	0.674280350438048	no/minor	moderate/heavy	yes	 <10%
+4513.P1.266	4513	0.451814768460576	no/minor	moderate/heavy	yes	 <10%
+4513.P1.321	4513	0.516958698372966	no/minor	moderate/heavy	yes	 <10%
+4513.P1.347	4513	0.581476846057572	no/minor	moderate/heavy	yes	 <10%
+4513.P1.371	4513	0.481101376720901	no/minor	moderate/heavy	yes	 <10%
+4535.P1.77	4535	0.607759699624531	no/minor	moderate/heavy	yes	 <10%
+4535.P1.106	4535	0.216270337922403	no/minor	moderate/heavy	yes	 <10%
+4535.P1.111	4535	0.658322903629537	no/minor	moderate/heavy	yes	 <10%
+4535.P1.136	4535	0.476157697121402	no/minor	moderate/heavy	yes	 <10%
+4535.P1.145	4535	0.423279098873592	no/minor	moderate/heavy	yes	 <10%
+4535.P1.158	4535	0.565331664580726	no/minor	moderate/heavy	yes	 <10%
+4535.P1.165	4535	0.432165206508135	no/minor	moderate/heavy	yes	 <10%
+4535.P1.174	4535	0.190550688360451	no/minor	moderate/heavy	yes	 <10%
+4535.P1.181	4535	0.609198998748436	no/minor	moderate/heavy	yes	 <10%
+4535.P1.201	4535	0.211639549436796	no/minor	moderate/heavy	yes	 <10%
+4535.P1.202	4535	0.657446808510638	no/minor	moderate/heavy	yes	 <10%
+4535.P1.234	4535	0.652503128911139	no/minor	moderate/heavy	yes	 <10%
+4535.P1.250	4535	0.627284105131414	no/minor	moderate/heavy	yes	 <10%
+4535.P1.257	4535	0.405131414267835	no/minor	moderate/heavy	yes	 <10%
+4535.P1.259	4535	0.596182728410513	no/minor	moderate/heavy	yes	 <10%
+4535.P1.277	4535	0.457697121401752	no/minor	moderate/heavy	yes	 <10%
+4535.P1.292	4535	0.400250312891114	no/minor	moderate/heavy	yes	 <10%
+4535.P1.298	4535	0.238047559449312	no/minor	moderate/heavy	yes	 <10%
+4535.P1.302	4535	0.224342928660826	no/minor	moderate/heavy	yes	 <10%
+4535.P1.308	4535	0.429724655819775	no/minor	moderate/heavy	yes	 <10%
+4535.P1.315	4535	0.48116395494368	no/minor	moderate/heavy	yes	 <10%
+4535.P1.325	4535	0.627221526908636	no/minor	moderate/heavy	yes	 <10%
+4535.P1.329	4535	0.449374217772215	no/minor	moderate/heavy	yes	 <10%
+4535.P1.341	4535	0.449561952440551	moderate/heavy	moderate/heavy	yes	 <10%
+4535.P1.351	4535	0.747371714643304	moderate/heavy	moderate/heavy	yes	 <10%
+4535.P1.353	4535	0.467021276595745	moderate/heavy	moderate/heavy	yes	 <10%
+4535.P1.363	4535	0.445244055068836	moderate/heavy	moderate/heavy	yes	 <10%
+4535.P1.365	4535	0.85081351689612	moderate/heavy	moderate/heavy	yes	 <10%
+4535.P1.367	4535	0.376470588235294	moderate/heavy	moderate/heavy	yes	 <10%
+4535.P1.369	4535	0.604881101376721	moderate/heavy	moderate/heavy	yes	 <10%
+4546.P1.5	4546	0.173466833541927	moderate/heavy	moderate/heavy	yes	 <10%
+4546.P1.13	4546	0.203504380475595	moderate/heavy	moderate/heavy	yes	 <10%
+4546.P1.43	4546	0.276345431789737	moderate/heavy	moderate/heavy	yes	 <10%
+4546.P1.46	4546	0.900375469336671	moderate/heavy	moderate/heavy	yes	 <10%
+4546.P1.55	4546	0.360450563204005	moderate/heavy	moderate/heavy	yes	 <10%
+4546.P1.62	4546	0.271088861076345	moderate/heavy	moderate/heavy	yes	 <10%
+4546.P1.80	4546	0.419461827284105	moderate/heavy	moderate/heavy	yes	 <10%
+4546.P1.105	4546	0.204255319148936	moderate/heavy	moderate/heavy	yes	 <10%
+4546.P1.110	4546	0.246120150187735	moderate/heavy	moderate/heavy	yes	 <10%
+4546.P1.113	4546	0.245807259073842	moderate/heavy	moderate/heavy	yes	 <10%
+4546.P1.122	4546	0.391864831038799	moderate/heavy	moderate/heavy	yes	 <10%
+4546.P1.125	4546	0.458510638297872	moderate/heavy	moderate/heavy	yes	 <10%
+4546.P1.135	4546	0.382415519399249	moderate/heavy	moderate/heavy	yes	 <10%
+4546.P1.142	4546	0.437922403003755	moderate/heavy	moderate/heavy	yes	 <10%
+4546.P1.175	4546	0.137984981226533	moderate/heavy	moderate/heavy	yes	 <10%
+4546.P1.178	4546	0.723904881101377	moderate/heavy	moderate/heavy	yes	 <10%
+4546.P1.202	4546	0.237046307884856	moderate/heavy	moderate/heavy	yes	 <10%
+4546.P1.206	4546	0.232478097622028	moderate/heavy	moderate/heavy	yes	 <10%
+4546.P1.220	4546	0.624280350438048	moderate/heavy	moderate/heavy	yes	 <10%
+4546.P1.229	4546	0.349249061326658	moderate/heavy	moderate/heavy	yes	 <10%
+4546.P1.234	4546	0.652252816020025	moderate/heavy	moderate/heavy	yes	 <10%
+4546.P1.239	4546	0.58485607008761	moderate/heavy	moderate/heavy	yes	 <10%
+4546.P1.240	4546	0.424405506883605	moderate/heavy	moderate/heavy	yes	 <10%
+4546.P1.246	4546	0.719649561952441	moderate/heavy	moderate/heavy	yes	 <10%
+4546.P1.251	4546	0.407759699624531	moderate/heavy	moderate/heavy	yes	 <10%
+4546.P1.267	4546	0.175093867334168	moderate/heavy	moderate/heavy	yes	 <10%
+4546.P1.279	4546	0.476783479349187	moderate/heavy	moderate/heavy	yes	 >10%
+4546.P1.295	4546	0.166458072590738	moderate/heavy	moderate/heavy	yes	 >10%
+4546.P1.306	4546	0.504443053817272	moderate/heavy	moderate/heavy	yes	 >10%
+4546.P1.324	4546	0.261451814768461	moderate/heavy	moderate/heavy	yes	 >10%
+4546.P1.335	4546	0.46433041301627	moderate/heavy	moderate/heavy	yes	 >10%
+4546.P1.365	4546	0.406320400500626	moderate/heavy	moderate/heavy	yes	 >10%
+4546.P1.366	4546	0.638423028785982	moderate/heavy	moderate/heavy	yes	 >10%
+4546.P1.369	4546	0.275969962453066	moderate/heavy	moderate/heavy	yes	 >10%
+4546.P1.373	4546	0.376595744680851	moderate/heavy	moderate/heavy	yes	 >10%
+4546.P1.375	4546	0.408573216520651	moderate/heavy	moderate/heavy	yes	 >10%
+4546.P1.376	4546	0.484918648310388	moderate/heavy	moderate/heavy	yes	 >10%
+4545.P1.16	4545	0.162390488110138	moderate/heavy	moderate/heavy	yes	 >10%
+4545.P1.22	4545	0.211264080100125	moderate/heavy	moderate/heavy	yes	 >10%
+4545.P1.24	4545	0.346558197747184	moderate/heavy	moderate/heavy	yes	 >10%
+4545.P1.25	4545	0.452252816020025	moderate/heavy	moderate/heavy	yes	 >10%
+4545.P1.34	4545	0.175657071339174	moderate/heavy	moderate/heavy	yes	 >10%
+4545.P1.47	4545	0.39342928660826	moderate/heavy	moderate/heavy	yes	 >10%
+4545.P1.56	4545	0.217834793491865	moderate/heavy	moderate/heavy	yes	 >10%
+4545.P1.63	4545	0.267959949937422	moderate/heavy	moderate/heavy	yes	 >10%
+4545.P1.81	4545	0.47747183979975	moderate/heavy	moderate/heavy	yes	 >10%
+4545.P1.82	4545	0.459136420525657	moderate/heavy	moderate/heavy	yes	 >10%
+4545.P1.86	4545	0.449061326658323	moderate/heavy	moderate/heavy	yes	 >10%
+4545.P1.96	4545	0.486545682102628	moderate/heavy	moderate/heavy	yes	 >10%
+4545.P1.100	4545	0.132978723404255	moderate/heavy	moderate/heavy	yes	 >10%
+4545.P1.106	4545	0.381226533166458	moderate/heavy	moderate/heavy	yes	 >10%
+4545.P1.113	4545	0.127784730913642	moderate/heavy	moderate/heavy	yes	 >10%
+4545.P1.131	4545	0.585857321652065	moderate/heavy	moderate/heavy	yes	 >10%
+4545.P1.150	4545	0.228660826032541	moderate/heavy	moderate/heavy	yes	 >10%
+4545.P1.152	4545	0.172841051314143	moderate/heavy	moderate/heavy	yes	 >10%
+4545.P1.153	4545	0.135356695869837	moderate/heavy	moderate/heavy	yes	 >10%
+4545.P1.157	4545	0.258948685857322	moderate/heavy	moderate/heavy	yes	 >10%
+4545.P1.190	4545	0.174655819774718	moderate/heavy	moderate/heavy	yes	 >10%
+4545.P1.208	4545	0.228785982478098	moderate/heavy	moderate/heavy	yes	 >10%
+4545.P1.211	4545	0.360951188986233	moderate/heavy	moderate/heavy	yes	 >10%
+4545.P1.219	4545	0.573216520650814	moderate/heavy	moderate/heavy	yes	 >10%
+4545.P1.220	4545	0.356695869837297	moderate/heavy	moderate/heavy	yes	 >10%
+4545.P1.239	4545	0.218210262828536	moderate/heavy	moderate/heavy	yes	 >10%
+4545.P1.255	4545	0.332916145181477	moderate/heavy	moderate/heavy	yes	 >10%
+4545.P1.267	4545	0.21846057571965	moderate/heavy	moderate/heavy	yes	 >10%
+4545.P1.280	4545	0.417146433041302	moderate/heavy	moderate/heavy	yes	 >10%
+4545.P1.286	4545	0.370588235294118	moderate/heavy	moderate/heavy	yes	 >10%
+4545.P1.307	4545	0.164267834793492	moderate/heavy	moderate/heavy	yes	 >10%
+4545.P1.309	4545	0.237672090112641	moderate/heavy	moderate/heavy	yes	 >10%
+4545.P1.322	4545	0.41476846057572	no/minor	moderate/heavy	yes	 <10%
+4545.P1.325	4545	0.488047559449312	no/minor	moderate/heavy	yes	 <10%
+4545.P1.332	4545	0.397747183979975	no/minor	moderate/heavy	yes	 <10%
+4545.P1.367	4545	0.422778473091364	no/minor	moderate/heavy	yes	 <10%
+4545.P1.373	4545	0.351063829787234	no/minor	moderate/heavy	yes	 <10%
+4545.P1.378	4545	0.200187734668335	no/minor	moderate/heavy	yes	 <10%
+4571.P1.8	4571	0.496871088861076	no/minor	moderate/heavy	yes	 <10%
+4571.P1.36	4571	0.123717146433041	no/minor	moderate/heavy	yes	 <10%
+4571.P1.38	4571	0.403504380475594	no/minor	moderate/heavy	yes	 <10%
+4571.P1.41	4571	0.271964956195244	no/minor	moderate/heavy	yes	 <10%
+4571.P1.66	4571	0.694242803504381	no/minor	moderate/heavy	yes	 <10%
+4571.P1.112	4571	0.42377972465582	no/minor	moderate/heavy	yes	 <10%
+4571.P1.141	4571	0.362140175219024	no/minor	moderate/heavy	yes	 <10%
+4571.P1.144	4571	0.523529411764706	no/minor	moderate/heavy	yes	 <10%
+4571.P1.250	4571	0.333166458072591	no/minor	moderate/heavy	yes	 <10%
+4571.P1.274	4571	0.402816020025031	no/minor	moderate/heavy	yes	 <10%
+4487.P2.43	4487	0.606883604505632	no/minor	moderate/heavy	yes	 <10%
+4487.P2.141	4487	0.146996245306633	no/minor	moderate/heavy	yes	 <10%
+4487.P2.275	4487	0.275719649561953	no/minor	moderate/heavy	yes	 <10%
+4487.P2.291	4487	0.486858573216521	no/minor	moderate/heavy	yes	 <10%
+4489.P1.73	4489	0.387484355444305	moderate/heavy	moderate/heavy	yes	 <10%
+4489.P1.85	4489	0.216645807259074	moderate/heavy	moderate/heavy	yes	 <10%
+4489.P1.106	4489	0.245744680851064	moderate/heavy	moderate/heavy	yes	 <10%
+4489.P1.121	4489	0.467709637046308	moderate/heavy	moderate/heavy	yes	 <10%
+4489.P1.135	4489	0.21188986232791	moderate/heavy	moderate/heavy	yes	 <10%
+4489.P1.161	4489	0.470775969962453	moderate/heavy	moderate/heavy	yes	 <10%
+4489.P1.190	4489	0.412578222778473	moderate/heavy	moderate/heavy	yes	 <10%
+4489.P1.191	4489	0.456445556946183	moderate/heavy	moderate/heavy	yes	 <10%
+4489.P1.198	4489	0.474843554443054	moderate/heavy	moderate/heavy	yes	 <10%
+4489.P1.203	4489	0.526282853566959	moderate/heavy	moderate/heavy	yes	 <10%
+4489.P1.223	4489	0.443742177722153	moderate/heavy	moderate/heavy	yes	 <10%
+4489.P1.232	4489	0.704130162703379	moderate/heavy	moderate/heavy	yes	 <10%
+4489.P1.247	4489	0.247684605757197	moderate/heavy	moderate/heavy	yes	 <10%
+4489.P1.251	4489	0.334543178973717	moderate/heavy	moderate/heavy	yes	 <10%
+4489.P1.261	4489	0.686107634543179	moderate/heavy	moderate/heavy	yes	 <10%
+4489.P1.263	4489	0.210826032540676	moderate/heavy	moderate/heavy	yes	 <10%
+4489.P1.311	4489	0.192803504380476	moderate/heavy	moderate/heavy	yes	 <10%
+4489.P1.312	4489	0.202252816020025	moderate/heavy	moderate/heavy	yes	 <10%
+4491.P1.28	4491	0.468523153942428	moderate/heavy	moderate/heavy	yes	 <10%
+4491.P1.64	4491	0.455006257822278	moderate/heavy	moderate/heavy	yes	 >10%
+4491.P1.99	4491	0.132165206508135	moderate/heavy	moderate/heavy	yes	 >10%
+4491.P1.122	4491	0.228473091364205	moderate/heavy	moderate/heavy	yes	 >10%
+4491.P1.125	4491	0.479474342928661	moderate/heavy	moderate/heavy	yes	 >10%
+4491.P1.139	4491	0.427409261576971	moderate/heavy	moderate/heavy	yes	 >10%
+4491.P1.155	4491	0.522403003754693	moderate/heavy	moderate/heavy	yes	 >10%
+4491.P1.157	4491	0.308886107634543	moderate/heavy	moderate/heavy	yes	 >10%
+4491.P1.160	4491	0.138986232790989	moderate/heavy	moderate/heavy	yes	 >10%
+4491.P1.168	4491	0.3590112640801	moderate/heavy	moderate/heavy	yes	 >10%
+4491.P1.181	4491	0.246933667083855	moderate/heavy	moderate/heavy	yes	 >10%
+4491.P1.202	4491	0.52171464330413	moderate/heavy	moderate/heavy	yes	 >10%
+4491.P1.219	4491	0.407947434292866	moderate/heavy	moderate/heavy	yes	 >10%
+4491.P1.230	4491	0.453066332916145	moderate/heavy	moderate/heavy	yes	 >10%
+4491.P1.242	4491	0.393554443053817	moderate/heavy	moderate/heavy	yes	 >10%
+4491.P1.244	4491	0.479849812265332	moderate/heavy	moderate/heavy	yes	 >10%
+4491.P1.264	4491	0.244743429286608	moderate/heavy	moderate/heavy	yes	 >10%
+4491.P1.270	4491	0.443304130162703	moderate/heavy	moderate/heavy	yes	 >10%
+4491.P1.271	4491	0.445932415519399	moderate/heavy	moderate/heavy	yes	 >10%
+4491.P1.285	4491	0.325594493116396	moderate/heavy	moderate/heavy	yes	 >10%
+4491.P1.286	4491	0.172027534418023	moderate/heavy	moderate/heavy	yes	 >10%
+4491.P1.302	4491	0.430788485607009	moderate/heavy	moderate/heavy	yes	 >10%
+4491.P1.311	4491	0.482853566958698	moderate/heavy	moderate/heavy	yes	 >10%
+4491.P1.325	4491	0.245369211514393	moderate/heavy	moderate/heavy	yes	 >10%
+4491.P1.337	4491	0.349499374217772	moderate/heavy	moderate/heavy	yes	 >10%
+4491.P1.346	4491	0.239424280350438	moderate/heavy	moderate/heavy	yes	 >10%
+4491.P1.356	4491	0.46558197747184	moderate/heavy	moderate/heavy	yes	 >10%
+4491.P1.368	4491	0.244430538172716	moderate/heavy	moderate/heavy	yes	 >10%
+4495.P1.72	4495	0.45206508135169	moderate/heavy	moderate/heavy	yes	 >10%
+4495.P1.99	4495	0.423279098873592	moderate/heavy	moderate/heavy	yes	 >10%
+4495.P1.109	4495	0.48035043804756	moderate/heavy	moderate/heavy	yes	 >10%
+4495.P1.115	4495	0.426157697121402	moderate/heavy	moderate/heavy	yes	 >10%
+4495.P1.125	4495	0.346558197747184	moderate/heavy	no/minor	yes	 >10%
+4495.P1.173	4495	0.360450563204005	moderate/heavy	no/minor	yes	 >10%
+4495.P1.225	4495	0.447309136420526	moderate/heavy	no/minor	yes	 >10%
+4495.P1.233	4495	0.456946182728411	moderate/heavy	no/minor	yes	 >10%
+4495.P1.242	4495	0.574655819774718	moderate/heavy	no/minor	yes	 >10%
+4495.P1.259	4495	0.363204005006258	moderate/heavy	no/minor	yes	 >10%
+4495.P1.276	4495	0.230663329161452	moderate/heavy	no/minor	yes	 >10%
+4495.P1.297	4495	0.403379224030038	moderate/heavy	no/minor	yes	 >10%
+4495.P1.318	4495	0.720650813516896	moderate/heavy	no/minor	yes	 >10%
+4495.P1.321	4495	0.453003754693367	moderate/heavy	no/minor	yes	 >10%
+4495.P1.352	4495	0.347496871088861	moderate/heavy	no/minor	yes	 >10%
+4495.P1.362	4495	0.540112640801001	moderate/heavy	no/minor	yes	 >10%
+4495.P1.375	4495	0.460200250312891	moderate/heavy	no/minor	yes	 >10%
+4496.P1.112	4496	0.444055068836045	moderate/heavy	no/minor	yes	 >10%
+4496.P1.130	4496	0.322841051314143	moderate/heavy	no/minor	yes	 >10%
+4521.P1.6	4521	0.565957446808511	moderate/heavy	no/minor	yes	 >10%
+4521.P1.23	4521	0.351251564455569	moderate/heavy	no/minor	yes	 >10%
+4521.P1.26	4521	0.169712140175219	moderate/heavy	no/minor	yes	 >10%
+4521.P1.38	4521	0.687234042553192	moderate/heavy	moderate/heavy	yes	 >10%
+4521.P1.39	4521	0.789987484355444	moderate/heavy	moderate/heavy	yes	 >10%
+4521.P1.44	4521	0.749311639549437	moderate/heavy	moderate/heavy	yes	 >10%
+4521.P1.50	4521	0.851752190237797	moderate/heavy	moderate/heavy	yes	 >10%
+4521.P1.100	4521	0.295869837296621	moderate/heavy	moderate/heavy	yes	 >10%
+4521.P1.101	4521	0.356257822277847	moderate/heavy	moderate/heavy	yes	 >10%
+4521.P1.104	4521	0.224780976220275	moderate/heavy	moderate/heavy	yes	 >10%
+4521.P1.106	4521	0.660700876095119	moderate/heavy	moderate/heavy	yes	 >10%
+4521.P1.107	4521	0.451564455569462	moderate/heavy	moderate/heavy	yes	 >10%
+4521.P1.119	4521	0.376595744680851	moderate/heavy	moderate/heavy	yes	 >10%
+4521.P1.123	4521	0.35206508135169	moderate/heavy	moderate/heavy	yes	 >10%
+4521.P1.124	4521	0.461952440550688	moderate/heavy	moderate/heavy	yes	 >10%
+4521.P1.129	4521	0.606633291614518	moderate/heavy	moderate/heavy	yes	 >10%
+4521.P1.130	4521	0.31188986232791	moderate/heavy	moderate/heavy	yes	 >10%
+4521.P1.132	4521	0.481727158948686	moderate/heavy	moderate/heavy	yes	 >10%
+4521.P1.136	4521	0.468147684605757	moderate/heavy	moderate/heavy	yes	 >10%
+4521.P1.160	4521	0.500125156445557	moderate/heavy	moderate/heavy	yes	 >10%
+4521.P1.161	4521	0.629974968710889	moderate/heavy	moderate/heavy	yes	 >10%
+4521.P1.172	4521	0.434543178973717	moderate/heavy	moderate/heavy	yes	 >10%
+4521.P1.176	4521	0.588861076345432	moderate/heavy	moderate/heavy	yes	 >10%
+4521.P1.195	4521	0.668961201501877	moderate/heavy	moderate/heavy	yes	 >10%
+4521.P1.200	4521	0.4270337922403	moderate/heavy	moderate/heavy	yes	 >10%
+4521.P1.202	4521	0.817334167709637	moderate/heavy	moderate/heavy	yes	 >10%
+4521.P1.211	4521	0.484480600750939	moderate/heavy	moderate/heavy	yes	 >10%
+4521.P1.221	4521	0.342803504380476	moderate/heavy	moderate/heavy	yes	 >10%
+4521.P1.223	4521	0.476470588235294	moderate/heavy	moderate/heavy	yes	 >10%
+4521.P1.224	4521	0.389048811013767	moderate/heavy	moderate/heavy	yes	 >10%
+4521.P1.235	4521	0.382352941176471	moderate/heavy	moderate/heavy	yes	 >10%
+4521.P1.239	4521	0.564267834793492	moderate/heavy	moderate/heavy	yes	 >10%
+4521.P1.245	4521	0.663266583229036	moderate/heavy	moderate/heavy	yes	 >10%
+4521.P1.255	4521	0.60081351689612	moderate/heavy	moderate/heavy	yes	 >10%
+4521.P1.264	4521	0.43892365456821	moderate/heavy	moderate/heavy	yes	 >10%
+4521.P1.269	4521	0.424217772215269	moderate/heavy	moderate/heavy	yes	 >10%
+4521.P1.272	4521	0.360575719649562	moderate/heavy	moderate/heavy	yes	 >10%
+4521.P1.281	4521	0.778723404255319	moderate/heavy	moderate/heavy	yes	 >10%
+4521.P1.284	4521	0.398310387984981	moderate/heavy	moderate/heavy	yes	 >10%
+4521.P1.285	4521	0.383416770963705	moderate/heavy	moderate/heavy	yes	 >10%
+4521.P1.292	4521	0.574155193992491	moderate/heavy	moderate/heavy	yes	 >10%
+4521.P1.298	4521	0.374968710888611	moderate/heavy	moderate/heavy	yes	 >10%
+4521.P1.301	4521	0.52828535669587	moderate/heavy	moderate/heavy	yes	 >10%
+4521.P1.303	4521	0.121151439299124	moderate/heavy	moderate/heavy	yes	 >10%
+4521.P1.312	4521	0.466145181476846	moderate/heavy	moderate/heavy	yes	 >10%
+4521.P1.316	4521	0.567834793491865	moderate/heavy	moderate/heavy	yes	 >10%
+4521.P1.320	4521	0.570025031289111	moderate/heavy	moderate/heavy	yes	 >10%
+4521.P1.334	4521	0.359511889862328	moderate/heavy	moderate/heavy	yes	 >10%
+4521.P1.344	4521	0.470463078848561	moderate/heavy	moderate/heavy	yes	 >10%
+4521.P1.349	4521	0.450438047559449	moderate/heavy	moderate/heavy	yes	 >10%
+4520.P1.26	4520	0.414893617021277	moderate/heavy	moderate/heavy	yes	 >10%
+4520.P1.38	4520	0.306257822277847	moderate/heavy	moderate/heavy	yes	 >10%
+4520.P1.56	4520	0.453879849812265	moderate/heavy	moderate/heavy	yes	 >10%
+4520.P1.59	4520	0.557446808510638	moderate/heavy	moderate/heavy	yes	 >10%
+4520.P1.79	4520	0.448936170212766	moderate/heavy	moderate/heavy	yes	 >10%
+4520.P1.100	4520	0.240488110137672	moderate/heavy	no/minor	no	 >10%
+4520.P1.113	4520	0.381414267834793	moderate/heavy	no/minor	no	 >10%
+4520.P1.139	4520	0.653566958698373	moderate/heavy	no/minor	no	 >10%
+4520.P1.210	4520	0.320212765957447	moderate/heavy	no/minor	no	 >10%
+4520.P1.253	4520	0.344430538172716	moderate/heavy	no/minor	no	 >10%
+4520.P1.316	4520	0.697872340425532	moderate/heavy	no/minor	no	 >10%
+4520.P1.372	4520	0.492490613266583	moderate/heavy	no/minor	no	 >10%
+4580.P1.5	4580	0.413141426783479	moderate/heavy	no/minor	no	 >10%
+4580.P1.36	4580	0.169086357947434	moderate/heavy	no/minor	no	 >10%
+4580.P1.59	4580	0.467271589486859	moderate/heavy	no/minor	no	 >10%
+4580.P1.68	4580	0.451939924906133	moderate/heavy	no/minor	no	 >10%
+4580.P1.87	4580	0.246370463078849	moderate/heavy	no/minor	no	 >10%
+4580.P1.104	4580	0.461201501877347	moderate/heavy	no/minor	no	 >10%
+4580.P1.139	4580	0.379787234042553	moderate/heavy	no/minor	no	 >10%
+4580.P1.167	4580	0.244305381727159	moderate/heavy	no/minor	no	 >10%
+4580.P1.174	4580	0.34180225281602	moderate/heavy	no/minor	no	 >10%
+4580.P1.176	4580	0.703817271589487	moderate/heavy	no/minor	no	 >10%
+4580.P1.200	4580	0.585919899874844	moderate/heavy	no/minor	no	 >10%
+4580.P1.231	4580	0.635857321652065	moderate/heavy	no/minor	no	 >10%
+4580.P1.240	4580	0.204380475594493	no/minor	no/minor	no	 <10%
+4580.P1.249	4580	0.214455569461827	no/minor	no/minor	no	 <10%
+4580.P1.262	4580	0.229599499374218	no/minor	no/minor	no	 <10%
+4580.P1.293	4580	0.336608260325407	no/minor	no/minor	no	 <10%
+4580.P1.297	4580	0.404192740926158	no/minor	no/minor	no	 <10%
+4580.P1.305	4580	0.214017521902378	no/minor	no/minor	no	 <10%
+4580.P1.316	4580	0.536232790988736	no/minor	no/minor	no	 <10%
+4580.P1.345	4580	0.64755944931164	no/minor	no/minor	no	 <10%
+4580.P1.371	4580	0.451501877346683	no/minor	no/minor	no	 <10%
+4602.P1.51	4602	0.409574468085106	no/minor	no/minor	no	 <10%
+4602.P1.135	4602	0.206195244055069				
+4602.P1.140	4602	0.181727158948686				
+4602.P1.162	4602	0.456758448060075				
+4602.P1.193	4602	0.462953692115144				
+4602.P1.196	4602	0.484918648310388				
+4602.P1.242	4602	0.233479349186483				
+4602.P1.278	4602	0.398623279098874				
+4602.P1.280	4602	0.635168961201502				
+4602.P1.281	4602	0.384042553191489				
+4602.P1.296	4602	0.362640801001252				
+4602.P1.297	4602	0.394806007509387				
+4602.P1.302	4602	0.225719649561952				
+4602.P1.326	4602	0.205944931163955				
+4602.P1.376	4602	0.411389236545682				
+4601.P1.17	4601	0.180350438047559				
+4601.P1.54	4601	0.519649561952441				
+4601.P1.65	4601	0.173529411764706				
+4601.P1.95	4601	0.69261576971214				
+4601.P1.111	4601	0.454317897371715				
+4601.P1.194	4601	0.445932415519399				
+4601.P1.219	4601	0.469524405506884				
+4500.P2.7	4500	0.475657071339174				
+4500.P2.39	4500	0.413391739674593				
+4500.P2.102	4500	0.237108886107635				
+4500.P2.108	4500	0.157571964956195				
+4500.P2.146	4500	0.39386733416771				
+4500.P2.162	4500	0.246683354192741				
+4500.P2.214	4500	0.405569461827284				
+4500.P2.226	4500	0.244367959949937				
+4500.P2.227	4500	0.595932415519399				
+4500.P2.233	4500	0.328911138923655				
+4500.P2.252	4500	0.473341677096371				
+4500.P2.361	4500	0.24630788485607				
+4500.P2.363	4500	0.213141426783479				
+4477.P2.14	4477	0.401439299123905				
+4477.P2.17	4477	0.432165206508135				
+4477.P2.24	4477	0.230976220275344				
+4477.P2.65	4477	0.220713391739675				
+4477.P2.99	4477	0.238798498122653				
+4477.P2.112	4477	0.308385481852315				
+4477.P2.115	4477	0.403629536921151				
+4477.P2.142	4477	0.430538172715895				
+4477.P2.157	4477	0.175657071339174				
+4477.P2.160	4477	0.445932415519399				
+4477.P2.188	4477	0.167271589486859				
+4477.P2.215	4477	0.137922403003755				
+4477.P2.286	4477	0.484355444305382				
+4477.P2.304	4477	0.459637046307885				
+4459.P2.53	4459	0.240550688360451				
+4459.P2.198	4459	0.479974968710889				
+4459.P2.263	4459	0.186232790988736				
+4459.P2.285	4459	0.185356695869837				
+4676.P1.3	4676	0.419399249061327				
+4676.P1.17	4676	0.741614518147685				
+4676.P1.49	4676	0.35206508135169				
+4676.P1.51	4676	0.665832290362954				
+4676.P1.143	4676	0.677221526908636				
+4676.P1.156	4676	0.246370463078849				
+4676.P1.177	4676	0.428097622027534				
+4676.P1.227	4676	0.431664580725907				
+4676.P1.236	4676	0.211827284105131				
+4676.P1.245	4676	0.491176470588235				
+4676.P1.260	4676	0.579787234042553				
+4676.P1.261	4676	0.412515644555695				
+4676.P1.264	4676	0.42090112640801				
+4676.P1.301	4676	0.665206508135169				
+4676.P1.316	4676	0.200250312891114				
+4676.P1.329	4676	0.692928660826033				
+4676.P1.335	4676	0.694117647058824				
+4676.P1.348	4676	0.202753441802253				
+4676.P1.366	4676	0.397997496871089				
+4653.P1.159	4653	0.200062578222779				
+4653.P1.302	4653	0.229599499374218				

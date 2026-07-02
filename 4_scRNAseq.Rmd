@@ -29,7 +29,7 @@ knit: worcs::cite_all
 
 # General Setup
 ```{r echo = FALSE}
-rm(list = ls())
+# rm(list = ls())
 ```
 
 ```{r LocalSystem, echo = FALSE}
@@ -44,11 +44,15 @@ source("scripts/functions.R")
 source("scripts/pack03.packages.R")
 ```
 
-```{r Setting: Colors}
-Today = format(as.Date(as.POSIXlt(Sys.time())), "%Y%m%d")
-Today.Report = format(as.Date(as.POSIXlt(Sys.time())), "%A, %B %d, %Y")
+```{r Setting_Colors}
 source("scripts/colors.R")
 ```
+
+# ```{r Setting_Date}
+# Today = format(as.Date(as.POSIXlt(Sys.time())), "%Y%m%d")
+# Today.Report = format(as.Date(as.POSIXlt(Sys.time())), "%A, %B %d, %Y")
+# 
+# ```
 
 ```{r setup_notebook, include=FALSE}
 # We recommend that you prepare your raw data for analysis in 'prepare_data.R',
@@ -415,6 +419,25 @@ Subsetting the samples of interest based on `samples_of_interest`.
 scRNAseqDataCEA39 <- subset(scRNAseqData, subset = Patient %in% samples_of_interest)
 ```
 
+
+## Re-running `SCTransform()`
+
+Since we subsetted we need to re-run `SCTransform()`.
+
+```{r}
+# Extract the SCTModel
+sct_model <- scRNAseqData@assays$SCT@SCTModel.list
+
+# Inspect the regression variables
+sct_model
+
+# Inspect the default assay
+DefaultAssay(scRNAseqDataCEA39)
+```
+
+```{r}
+scRNAseqDataCEA39 <- SCTransform(scRNAseqDataCEA39, verbose = TRUE)
+```
 
 Selecting the clinical data of interest.
 
@@ -1407,12 +1430,286 @@ fwrite(temp, file = paste0(OUT_loc, "/", Today, ".NK.DEG.Targets.txt"),
 
 
 
+# CytoGMS: Cytotoxicity Gene Module Score vs Plaque Instability
+
+This analysis provides orthogonal validation that CD8 T-cell cytotoxicity is
+increased in unstable versus stable plaque, using the AtheroExpress scRNAseq
+data. It was added for the Nature Communications rebuttal (June 2026).
+
+The CytoGMS gene set (`CD8B`, `PRDM1`, `RUNX3`, `GZMB`) is scored using
+`UCell::AddModuleScore_UCell()` (Andreatta et al., 2021), which mirrors the
+approach used in the discovery scRNA analysis (Figure 7D of the manuscript).
+The score is run independently on (1) all T-cells and (2) CD8+ T-cells (cells
+with `CD8B` raw count > 0), because the UCell baseline differs between subsets.
+Plaques are dichotomised into unstable-like vs stable-like using the same four
+histology-derived binary traits as in the bulk RNA-seq association analysis:
+macrophage content (`Macrophages.bin`), SMC content (`SMC.bin`), intraplaque
+haemorrhage (`IPH.bin`), and lipid core (`Fat.bin_10`; ≥10% vs <10%).
+
+## Gene set definition
+
+```{r CytoGMS: gene set}
+cytogms_set <- list(CytoGMS = c("CD8B", "PRDM1", "RUNX3", "GZMB"))
+```
+
+## Subset: all T-cells
+
+All T-cell communities are pooled from the 39-patient CEA subset.
+
+```{r CytoGMS: subset all T-cells}
+tcell_idents <- c("CD3+ TC I", "CD3+ TC II", "CD3+ TC III",
+                  "CD3+ TC IV", "CD3+ TC V", "CD3+ TC VI", "FOXP3+ TC")
+
+scRNAseq_TCells <- subset(scRNAseqDataCEA39, idents = tcell_idents)
+cat(paste0("Total T-cells: ", ncol(scRNAseq_TCells), "\n"))
+```
+
+## CytoGMS scoring: all T-cells
+
+```{r CytoGMS: score all T-cells}
+library(UCell)
+scRNAseq_TCells <- UCell::AddModuleScore_UCell(scRNAseq_TCells,
+                                               features = cytogms_set,
+                                               w_neg = 1, maxRank = 2000)
+cat("CytoGMS score summary (all T-cells):\n")
+summary(scRNAseq_TCells$CytoGMS_UCell)
+```
+
+## Subset: CD8+ T-cells
+
+CD8+ T-cells are identified by raw count of `CD8B` > 0 within the T-cell subset.
+
+```{r CytoGMS: subset CD8+ T-cells}
+cd8b_cells <- WhichCells(scRNAseq_TCells, expression = CD8B > 0)
+scRNAseq_CD8TCells <- subset(scRNAseq_TCells, cells = cd8b_cells)
+cat(paste0("CD8+ T-cells (CD8B > 0): ", ncol(scRNAseq_CD8TCells),
+           " of ", ncol(scRNAseq_TCells), " total T-cells (",
+           round(100 * ncol(scRNAseq_CD8TCells) / ncol(scRNAseq_TCells), 1), "%)\n"))
+```
+
+## CytoGMS scoring: CD8+ T-cells
+
+Scored independently so the UCell rank baseline reflects CD8+ cells only.
+
+```{r CytoGMS: score CD8+ T-cells}
+scRNAseq_CD8TCells <- UCell::AddModuleScore_UCell(scRNAseq_CD8TCells,
+                                                  features = cytogms_set,
+                                                  w_neg = 1, maxRank = 2000)
+cat("CytoGMS score summary (CD8+ T-cells):\n")
+summary(scRNAseq_CD8TCells$CytoGMS_UCell)
+```
+
+## Extract metadata for plotting
+
+```{r CytoGMS: extract metadata}
+library(dplyr)
+library(tibble)
+
+instab_vars <- c("STUDY_NUMBER", "CytoGMS_UCell",
+                 "Macrophages.bin", "SMC.bin", "IPH.bin", "Fat.bin_10")
+
+tcell_plot_df <- scRNAseq_TCells@meta.data %>%
+  as_tibble(rownames = "cell_id") %>%
+  dplyr::select(all_of(c("cell_id", instab_vars)))
+
+cd8_plot_df <- scRNAseq_CD8TCells@meta.data %>%
+  as_tibble(rownames = "cell_id") %>%
+  dplyr::select(all_of(c("cell_id", instab_vars)))
+
+cat("All T-cells — complete cases per trait:\n")
+sapply(c("Macrophages.bin", "SMC.bin", "IPH.bin", "Fat.bin_10"),
+       function(v) sum(!is.na(tcell_plot_df[[v]])))
+
+cat("\nCD8+ T-cells — complete cases per trait:\n")
+sapply(c("Macrophages.bin", "SMC.bin", "IPH.bin", "Fat.bin_10"),
+       function(v) sum(!is.na(cd8_plot_df[[v]])))
+```
+
+## Visualisation: all T-cells
+
+One boxplot per instability trait. Wilcoxon rank-sum test p-value shown.
+
+```{r CytoGMS: plots all T-cells, fig.width=12, fig.height=10}
+library(ggpubr)
+library(ggsci)
+
+max_y_tc <- max(tcell_plot_df$CytoGMS_UCell, na.rm = TRUE)
+
+p_tc_mac <- ggboxplot(tcell_plot_df %>% drop_na(Macrophages.bin, CytoGMS_UCell),
+                      x = "Macrophages.bin", y = "CytoGMS_UCell",
+                      add = "jitter", color = "Macrophages.bin", palette = "npg") +
+  stat_compare_means(method = "wilcox.test") +
+  labs(title = "CytoGMS vs Macrophage content",
+       x = "Macrophages (binned)", y = "CytoGMS (UCell)") +
+  theme_minimal() + theme(legend.position = "none")
+
+p_tc_smc <- ggboxplot(tcell_plot_df %>% drop_na(SMC.bin, CytoGMS_UCell),
+                      x = "SMC.bin", y = "CytoGMS_UCell",
+                      add = "jitter", color = "SMC.bin", palette = "npg") +
+  stat_compare_means(method = "wilcox.test") +
+  labs(title = "CytoGMS vs SMC content",
+       x = "SMC (binned)", y = "CytoGMS (UCell)") +
+  theme_minimal() + theme(legend.position = "none")
+
+p_tc_iph <- ggboxplot(tcell_plot_df %>% drop_na(IPH.bin, CytoGMS_UCell),
+                      x = "IPH.bin", y = "CytoGMS_UCell",
+                      add = "jitter", color = "IPH.bin", palette = "npg") +
+  stat_compare_means(method = "wilcox.test") +
+  labs(title = "CytoGMS vs Intraplaque haemorrhage",
+       x = "IPH", y = "CytoGMS (UCell)") +
+  theme_minimal() + theme(legend.position = "none")
+
+p_tc_fat <- ggboxplot(tcell_plot_df %>% drop_na(Fat.bin_10, CytoGMS_UCell),
+                      x = "Fat.bin_10", y = "CytoGMS_UCell",
+                      add = "jitter", color = "Fat.bin_10", palette = "npg") +
+  stat_compare_means(method = "wilcox.test") +
+  labs(title = "CytoGMS vs Lipid core (≥10%)",
+       x = "Lipid core", y = "CytoGMS (UCell)") +
+  theme_minimal() + theme(legend.position = "none")
+
+combined_tc <- ggarrange(p_tc_mac, p_tc_smc, p_tc_iph, p_tc_fat,
+                         ncol = 2, nrow = 2, align = "hv")
+combined_tc
+```
+
+```{r CytoGMS: save plots all T-cells}
+ggsave(filename = paste0(PLOT_loc, "/", Today, ".", PROJECTNAME, ".CytoGMS.AllTCells.instability.png"),
+       plot = combined_tc, width = 12, height = 10, dpi = 300)
+ggsave(filename = paste0(PLOT_loc, "/", Today, ".", PROJECTNAME, ".CytoGMS.AllTCells.instability.pdf"),
+       plot = combined_tc, width = 12, height = 10)
+ggsave(filename = paste0(PLOT_loc, "/", Today, ".", PROJECTNAME, ".CytoGMS.AllTCells.instability.eps"),
+       plot = combined_tc, width = 12, height = 10,
+       device = cairo_ps, fallback_resolution = 300)
+rm(p_tc_mac, p_tc_smc, p_tc_iph, p_tc_fat, combined_tc)
+```
+
+## Visualisation: CD8+ T-cells
+
+```{r CytoGMS: plots CD8+ T-cells, fig.width=12, fig.height=10}
+max_y_cd8 <- max(cd8_plot_df$CytoGMS_UCell, na.rm = TRUE)
+
+p_cd8_mac <- ggboxplot(cd8_plot_df %>% drop_na(Macrophages.bin, CytoGMS_UCell),
+                       x = "Macrophages.bin", y = "CytoGMS_UCell",
+                       add = "jitter", color = "Macrophages.bin", palette = "npg") +
+  stat_compare_means(method = "wilcox.test") +
+  labs(title = "CytoGMS vs Macrophage content (CD8+ T-cells)",
+       x = "Macrophages (binned)", y = "CytoGMS (UCell)") +
+  theme_minimal() + theme(legend.position = "none")
+
+p_cd8_smc <- ggboxplot(cd8_plot_df %>% drop_na(SMC.bin, CytoGMS_UCell),
+                       x = "SMC.bin", y = "CytoGMS_UCell",
+                       add = "jitter", color = "SMC.bin", palette = "npg") +
+  stat_compare_means(method = "wilcox.test") +
+  labs(title = "CytoGMS vs SMC content (CD8+ T-cells)",
+       x = "SMC (binned)", y = "CytoGMS (UCell)") +
+  theme_minimal() + theme(legend.position = "none")
+
+p_cd8_iph <- ggboxplot(cd8_plot_df %>% drop_na(IPH.bin, CytoGMS_UCell),
+                       x = "IPH.bin", y = "CytoGMS_UCell",
+                       add = "jitter", color = "IPH.bin", palette = "npg") +
+  stat_compare_means(method = "wilcox.test") +
+  labs(title = "CytoGMS vs Intraplaque haemorrhage (CD8+ T-cells)",
+       x = "IPH", y = "CytoGMS (UCell)") +
+  theme_minimal() + theme(legend.position = "none")
+
+p_cd8_fat <- ggboxplot(cd8_plot_df %>% drop_na(Fat.bin_10, CytoGMS_UCell),
+                       x = "Fat.bin_10", y = "CytoGMS_UCell",
+                       add = "jitter", color = "Fat.bin_10", palette = "npg") +
+  stat_compare_means(method = "wilcox.test") +
+  labs(title = "CytoGMS vs Lipid core (≥10%) (CD8+ T-cells)",
+       x = "Lipid core", y = "CytoGMS (UCell)") +
+  theme_minimal() + theme(legend.position = "none")
+
+combined_cd8 <- ggarrange(p_cd8_mac, p_cd8_smc, p_cd8_iph, p_cd8_fat,
+                          ncol = 2, nrow = 2, align = "hv")
+combined_cd8
+```
+
+```{r CytoGMS: save plots CD8+ T-cells}
+ggsave(filename = paste0(PLOT_loc, "/", Today, ".", PROJECTNAME, ".CytoGMS.CD8TCells.instability.png"),
+       plot = combined_cd8, width = 12, height = 10, dpi = 300)
+ggsave(filename = paste0(PLOT_loc, "/", Today, ".", PROJECTNAME, ".CytoGMS.CD8TCells.instability.pdf"),
+       plot = combined_cd8, width = 12, height = 10)
+ggsave(filename = paste0(PLOT_loc, "/", Today, ".", PROJECTNAME, ".CytoGMS.CD8TCells.instability.eps"),
+       plot = combined_cd8, width = 12, height = 10,
+       device = cairo_ps, fallback_resolution = 300)
+rm(p_cd8_mac, p_cd8_smc, p_cd8_iph, p_cd8_fat, combined_cd8)
+```
+
+## Individual panel figures (for figure assembly)
+
+Save each panel separately as EPS so colours can be adjusted independently.
+
+```{r CytoGMS: individual panels all T-cells}
+trait_list <- list(
+  list(var = "Macrophages.bin", label = "Macrophages (binned)", tag = "MAC"),
+  list(var = "SMC.bin",         label = "SMC (binned)",         tag = "SMC"),
+  list(var = "IPH.bin",         label = "IPH",                  tag = "IPH"),
+  list(var = "Fat.bin_10",      label = "Lipid core (≥10%)",    tag = "Fat10")
+)
+
+for (tr in trait_list) {
+  p <- ggboxplot(tcell_plot_df %>% drop_na(!!sym(tr$var), CytoGMS_UCell),
+                 x = tr$var, y = "CytoGMS_UCell",
+                 add = "jitter", color = tr$var, palette = "npg") +
+    stat_compare_means(method = "wilcox.test") +
+    labs(title = paste0("CytoGMS vs ", tr$label, "\n(all T-cells, AtheroExpress scRNA)"),
+         x = tr$label, y = "CytoGMS (UCell)") +
+    theme_minimal() + theme(legend.position = "none")
+
+  base_name <- paste0(PLOT_loc, "/", Today, ".", PROJECTNAME,
+                      ".CytoGMS.AllTCells.", tr$tag)
+  ggsave(paste0(base_name, ".png"), plot = p, width = 6, height = 5, dpi = 300)
+  ggsave(paste0(base_name, ".pdf"), plot = p, width = 6, height = 5)
+  ggsave(paste0(base_name, ".eps"), plot = p, width = 6, height = 5,
+         device = cairo_ps, fallback_resolution = 300)
+  print(p)
+}
+```
+
+```{r CytoGMS: individual panels CD8+ T-cells}
+for (tr in trait_list) {
+  p <- ggboxplot(cd8_plot_df %>% drop_na(!!sym(tr$var), CytoGMS_UCell),
+                 x = tr$var, y = "CytoGMS_UCell",
+                 add = "jitter", color = tr$var, palette = "npg") +
+    stat_compare_means(method = "wilcox.test") +
+    labs(title = paste0("CytoGMS vs ", tr$label, "\n(CD8+ T-cells, AtheroExpress scRNA)"),
+         x = tr$label, y = "CytoGMS (UCell)") +
+    theme_minimal() + theme(legend.position = "none")
+
+  base_name <- paste0(PLOT_loc, "/", Today, ".", PROJECTNAME,
+                      ".CytoGMS.CD8TCells.", tr$tag)
+  ggsave(paste0(base_name, ".png"), plot = p, width = 6, height = 5, dpi = 300)
+  ggsave(paste0(base_name, ".pdf"), plot = p, width = 6, height = 5)
+  ggsave(paste0(base_name, ".eps"), plot = p, width = 6, height = 5,
+         device = cairo_ps, fallback_resolution = 300)
+  print(p)
+}
+```
+
+## Write per-cell data tables
+
+Write the per-cell score + metadata so Jonny can verify or re-plot.
+
+```{r CytoGMS: write data tables}
+fwrite(tcell_plot_df,
+       file = paste0(OUT_loc, "/", Today, ".", PROJECTNAME, ".CytoGMS.AllTCells.perCell.txt"),
+       sep = "\t", quote = FALSE, showProgress = FALSE)
+
+fwrite(cd8_plot_df,
+       file = paste0(OUT_loc, "/", Today, ".", PROJECTNAME, ".CytoGMS.CD8TCells.perCell.txt"),
+       sep = "\t", quote = FALSE, showProgress = FALSE)
+
+cat("Per-cell data tables written.\n")
+```
+
+
 # Session information
 
 --------------------------------------------------------------------------------
 
-    Version:      v1.2.1
-    Last update:  2024-11-26
+    Version:      v1.3.0
+    Last update:  2026-07-02
     Written by:   Sander W. van der Laan (s.w.vanderlaan-2[at]umcutrecht.nl).
     Description:  Script to load single-cell RNA sequencing (scRNAseq) data, and perform quality control (QC), and initial mapping to cells.
     Minimum requirements: R version 3.5.2 (2018-12-20) -- 'Eggshell Igloo', macOS Mojave (10.14.2).
@@ -1428,7 +1725,8 @@ fwrite(temp, file = paste0(OUT_loc, "/", Today, ".NK.DEG.Targets.txt"),
     _W_
 
     **Changes log**
-    * v1.2.1 Some fixes to the subsetting of a cell community and the visualization by group of target genes. 
+    * v1.3.0 Added CytoGMS analysis (UCell::AddModuleScore_UCell) for all T-cells and CD8+ T-cells vs four plaque instability traits (MAC, SMC, IPH, Fat10). Added for Nature Communications rebuttal (June 2026).
+    * v1.2.1 Some fixes to the subsetting of a cell community and the visualization by group of target genes.
     * v1.2.0 Fixed an issue where the subset of scRNAseq was loosing cell-identities.
     * v1.1.1 Textual fixes.
     * v1.1.1 Fix writing baseline table.

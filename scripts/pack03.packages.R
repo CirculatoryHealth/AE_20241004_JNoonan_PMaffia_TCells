@@ -50,3 +50,11 @@ library('devtools')
 # devtools::install_version(package = 'Seurat', version = package_version('2.3.4'))
 install.packages.auto("Seurat")
 library("Seurat")
+
+# UCell: robust gene module scoring for single-cell data
+# Used for CytoGMS (cytotoxicity gene module score) in scRNAseq analysis
+# Ref: Andreatta et al. (2021) Comput Struct Biotechnol J, doi:10.1016/j.csbj.2021.06.020
+if (!requireNamespace("UCell", quietly = TRUE)) {
+  BiocManager::install("UCell")
+}
+library("UCell")
