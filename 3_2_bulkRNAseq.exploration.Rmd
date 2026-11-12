@@ -162,7 +162,7 @@ bulkRNA_meta_clin %<>%
   as.data.frame() %>%
   column_to_rownames("study_number_row")
 names(bulkRNA_meta_clin)[names(bulkRNA_meta_clin) == "STUDY_NUMBER"] <- "study_number"
-head(bulkRNA_meta_clin)
+# head(bulkRNA_meta_clin)
 dim(bulkRNA_meta_clin)
 
 ```
@@ -256,7 +256,7 @@ expression_data_sel <- expression_data %>%
      # filter(symbol == "APOE" | symbol == "TRIB3") %>% # filter APOE and TRIB3
      dplyr::filter(symbol %in% gene_list)
 
-head(expression_data_sel)
+# head(expression_data_sel)
 
 # tidy and subset non-selected genes
 set.seed(141619)
@@ -320,7 +320,7 @@ expression_long <- expression_long %>%
   mutate(epmajor_3years_yn = str_replace_all(epmajor.3years, c("Excluded" = "yes", "Included" = "no"))) #%>%
   # mutate(epmajor.30days_yn = str_replace_all(epmajor.30days, c("Excluded" = "yes", "Included" = "no")))
 
-head(expression_long)
+# head(expression_long)
 
 # expression_long %>%
 #   write_tsv("genes_interest_expression.txt")
@@ -865,7 +865,7 @@ cat("\n* making a SummarizedExperiment ...\n")
 cat("  > getting counts\n")
 bulkRNA_countsFilt <- as.data.frame(assay(AERNAScomboSE[targets,]))
 dim(bulkRNA_countsFilt)
-head(bulkRNA_countsFilt)
+# head(bulkRNA_countsFilt)
 
 cat("  > meta data and clinical data\n")
 # bulkRNA_meta_clin_COMMERCIAL <- subset(bulkRNA_meta_clin, select = c("study_number", basetable_vars))
@@ -873,7 +873,7 @@ bulkRNA_meta_clin_ACADEMIC <- subset(bulkRNA_meta_clin, select = c("study_number
                                                                    AERNAS_meta_data, # meta data of RNAseq experiment
                                                                    basetable_vars)) # selection of variables
 dim(bulkRNA_meta_clin_ACADEMIC)
-head(bulkRNA_meta_clin_ACADEMIC)
+# head(bulkRNA_meta_clin_ACADEMIC)
 
 cat("  > rowRanges\n")
 # bulkRNA_meta_clin_COMMERCIAL <- subset(bulkRNA_meta_clin, select = c("study_number", basetable_vars))

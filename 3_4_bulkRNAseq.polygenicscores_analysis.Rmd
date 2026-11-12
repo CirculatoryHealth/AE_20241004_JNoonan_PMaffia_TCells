@@ -126,7 +126,7 @@ We simply load the previously saved `RDS`-file and extract the clinical and RNAs
 AEDB.CEA <- readRDS(file = paste0(OUT_loc, "/",Today,".",PROJECTNAME,".AEDB.CEA.RDS"))
 # AEDB.CEA <- readRDS(file = paste0(OUT_loc, "/20250313.",PROJECTNAME,".AEDB.CEA.RDS"))
 AEDB.CEA$STUDY_NUMBER <- paste0("ae", AEDB.CEA$STUDY_NUMBER)
-head(AEDB.CEA$STUDY_NUMBER)
+# head(AEDB.CEA$STUDY_NUMBER)
 
 AERNASE <- readRDS(file = paste0(OUT_loc, "/", Today, ".AERNAScomboSEvst.CEA.1093pts.SE.after_qc.IC_academic.RDS"))
 # AERNASE <- readRDS(file = paste0(OUT_loc, "/20250313.AERNAScomboSEvst.CEA.1093pts.SE.after_qc.IC_academic.RDS"))
@@ -142,9 +142,9 @@ AERNASE.targets <- readRDS(file = paste0(OUT_loc, "/", Today, ".",TRAIT_OF_INTER
 
 AERNASE.targets.genedata <- readRDS(, file = paste0(OUT_loc, "/", Today, ".",TRAIT_OF_INTEREST,".AERNASE.targets.genedata.RDS"))
 # AERNASE.targets.genedata <- readRDS(, file = paste0(OUT_loc, "/20250313.",TRAIT_OF_INTEREST,".AERNASE.targets.genedata.RDS"))
-head(AERNASE.clin.targets$study_number)
-head(AERNASE.targets$study_number)
-head(AERNASE.targets.genedata)
+# head(AERNASE.clin.targets$study_number)
+# head(AERNASE.targets$study_number)
+# head(AERNASE.targets.genedata)
 ```
 
 
@@ -2274,7 +2274,7 @@ AERNASE.clin.targets.temp$Gender <- to_factor(AERNASE.clin.targets.temp$Gender)
 # AERNASE.clin.targets.temp$Hospital <- to_factor(AERNASE.clin.targets.temp$Hospital)
 # AERNASE.clin.targets.temp$Artery_summary <- to_factor(AERNASE.clin.targets.temp$Artery_summary)
 
-DT::datatable(AERNASE.clin.targets.temp[1:10,], caption = "Excerpt of the whole AERNAseurat_meta_cox", rownames = FALSE)
+# DT::datatable(AERNASE.clin.targets.temp[1:10,], caption = "Excerpt of the whole AERNAseurat_meta_cox", rownames = FALSE)
 
 rm(AERNASE.clin.targets.temp)
 

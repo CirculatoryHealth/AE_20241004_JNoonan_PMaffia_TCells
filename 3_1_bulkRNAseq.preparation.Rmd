@@ -135,13 +135,13 @@ aernas2_counts_raw_qc_umicorr <- fread(paste0(AERNA_loc,"/NEWRUN/raw_data_bulk/A
 Quick peek at the counts and meta-data of the RNAseq experiment.
 
 ```{r QuickPeek}
-head(aernas1_counts_raw_qc_umicorr)
+# head(aernas1_counts_raw_qc_umicorr)
 
-head(aernas1_meta)
+# head(aernas1_meta)
 ```
 
 ```{r}
-head(aernas2_counts_raw_qc_umicorr)
+# head(aernas2_counts_raw_qc_umicorr)
 
 # head(aernas2_meta)
 ```
@@ -251,7 +251,7 @@ rm(id2)
 ```{r}
 
 # first run
-head(temp)
+# head(temp)
 dim(temp)
 aernas1_counts_raw_qc_umicorr_annot <- temp %>% 
   # arrange(p.adjusted) %>% 
@@ -261,7 +261,7 @@ aernas1_counts_raw_qc_umicorr_annot <- temp %>%
   relocate(entrez, symbol, chr, start, end, strand, biotype, description, 
            .before = ae1) %>% # put everything before sample ae1
   dplyr::filter(duplicated(ENSEMBL_gene_ID) == FALSE)
-head(aernas1_counts_raw_qc_umicorr_annot)
+# head(aernas1_counts_raw_qc_umicorr_annot)
 
 id <- aernas1_counts_raw_qc_umicorr_annot$ENSEMBL_gene_ID
 id[ id %in% id[duplicated(id)] ]
@@ -272,7 +272,7 @@ id[ id %in% id[duplicated(id)] ]
 ```{r}
 
 # new run
-head(temp2)
+# head(temp2)
 dim(temp2)
 aernas2_counts_raw_qc_umicorr_annot <- temp2 %>% 
   # arrange(p.adjusted) %>% 
@@ -282,7 +282,7 @@ aernas2_counts_raw_qc_umicorr_annot <- temp2 %>%
   relocate(entrez, symbol, chr, start, end, strand, biotype, description, 
            .before = ae105) %>% # put everything before sample ae1
   dplyr::filter(duplicated(ENSEMBL_gene_ID) == FALSE)
-head(aernas2_counts_raw_qc_umicorr_annot)
+# head(aernas2_counts_raw_qc_umicorr_annot)
 
 
 id2 <- aernas2_counts_raw_qc_umicorr_annot$ENSEMBL_gene_ID
@@ -306,7 +306,7 @@ We will fix the `STUDY_NUMBER` to match the bulkRNAseq data.
 
 ```{r FixStudyNumber}
 AEDB.CEA$STUDY_NUMBER <- paste0("ae", AEDB.CEA$STUDY_NUMBER)
-head(AEDB.CEA$STUDY_NUMBER)
+# head(AEDB.CEA$STUDY_NUMBER)
 
 ```
 
@@ -329,7 +329,7 @@ AEDB.CEA.sampleList <- AEDB.CEA$STUDY_NUMBER
 aernas1_counts_raw_qc_umicorr_annotFilt <- aernas1_counts_raw_qc_umicorr_annot %>%
   drop_na(chr) %>%   # remove rows that have no information of start, end, chromosome and/or strand
   dplyr::select(1:9, one_of(sort(as.character(AEDB.CEA.sampleList)))) # select gene expression of only patients in RNA-seq AE df, sort in same order as metadata study_number
-head(aernas1_counts_raw_qc_umicorr_annotFilt)
+# head(aernas1_counts_raw_qc_umicorr_annotFilt)
 dim(aernas1_counts_raw_qc_umicorr_annotFilt)
 ```
 
@@ -339,7 +339,7 @@ dim(aernas1_counts_raw_qc_umicorr_annotFilt)
 aernas2_counts_raw_qc_umicorr_annotFilt <- aernas2_counts_raw_qc_umicorr_annot %>%
   drop_na(chr) %>%   # remove rows that have no information of start, end, chromosome and/or strand
   dplyr::select(1:9, one_of(sort(as.character(AEDB.CEA.sampleList)))) # select gene expression of only patients in RNA-seq AE df, sort in same order as metadata study_number
-head(aernas2_counts_raw_qc_umicorr_annotFilt)
+# head(aernas2_counts_raw_qc_umicorr_annotFilt)
 dim(aernas2_counts_raw_qc_umicorr_annotFilt)
 
 ```
@@ -415,7 +415,7 @@ aernas1_gene_dataframe_EnsDb <- ensembldb::select(EnsDb.Hsapiens.v86, keys = aer
                                           columns = c("ENTREZID", "SYMBOL", "GENEBIOTYPE"), keytype = "GENEID")
 colnames(aernas1_gene_dataframe_EnsDb) <- c("Ensembl", "Entrez", "HGNC", "GENEBIOTYPE")
 colnames(aernas1_gene_dataframe_EnsDb) <- paste(colnames(aernas1_gene_dataframe_EnsDb), "GRCh38p13_EnsDb86", sep = "_")
-head(aernas1_gene_dataframe_EnsDb)
+# head(aernas1_gene_dataframe_EnsDb)
 
 aernas1_bulkRNA_rowRanges$GENEBIOTYPE_EnsDb86 <- aernas1_gene_dataframe_EnsDb$GENEBIOTYPE_EnsDb86[match(aernas1_bulkRNA_rowRanges$feature_id, aernas1_gene_dataframe_EnsDb$Ensembl_EnsDb86)]
 aernas1_bulkRNA_rowRanges
@@ -470,7 +470,7 @@ aernas2_gene_dataframe_EnsDb <- ensembldb::select(EnsDb.Hsapiens.v86, keys = aer
                                           columns = c("ENTREZID", "SYMBOL", "GENEBIOTYPE"), keytype = "GENEID")
 colnames(aernas2_gene_dataframe_EnsDb) <- c("Ensembl", "Entrez", "HGNC", "GENEBIOTYPE")
 colnames(aernas2_gene_dataframe_EnsDb) <- paste(colnames(aernas2_gene_dataframe_EnsDb), "GRCh38p13_EnsDb86", sep = "_")
-head(aernas2_gene_dataframe_EnsDb)
+# head(aernas2_gene_dataframe_EnsDb)
 
 aernas2_bulkRNA_rowRanges$GENEBIOTYPE_EnsDb86 <- aernas2_gene_dataframe_EnsDb$GENEBIOTYPE_EnsDb86[match(aernas2_bulkRNA_rowRanges$feature_id, aernas2_gene_dataframe_EnsDb$Ensembl_EnsDb86)]
 aernas2_bulkRNA_rowRanges
@@ -512,7 +512,7 @@ aernas1_meta_clin %<>%
   as.data.frame() %>%
   column_to_rownames("study_number_row")
 
-head(aernas1_meta_clin)
+# head(aernas1_meta_clin)
 dim(aernas1_meta_clin)
 
 ```
@@ -542,7 +542,7 @@ aernas2_meta_clin %<>%
   as.data.frame() %>%
   column_to_rownames("study_number_row")
 
-head(aernas2_meta_clin)
+# head(aernas2_meta_clin)
 dim(aernas2_meta_clin)
 
 ```
@@ -618,8 +618,8 @@ dim(aernas1_counts_raw_qc_umicorr_annotFilt)
 dim(aernas1_counts)
 cat("\n* making a SummarizedExperiment ...\n")
 cat("  > getting counts\n")
-head(aernas1_counts_raw_qc_umicorr_annotFilt)
-head(aernas1_counts)
+# head(aernas1_counts_raw_qc_umicorr_annotFilt)
+# head(aernas1_counts)
 
 cat("  > meta data\n")
 temp_coldat <- data.frame(STUDY_NUMBER = names(aernas1_counts_raw_qc_umicorr_annotFilt[,10:631]), 
@@ -662,8 +662,8 @@ dim(aernas2_counts_raw_qc_umicorr_annotFilt)
 dim(aernas2_counts)
 cat("\n* making a SummarizedExperiment ...\n")
 cat("  > getting counts\n")
-head(aernas2_counts_raw_qc_umicorr_annotFilt)
-head(aernas2_counts)
+# head(aernas2_counts_raw_qc_umicorr_annotFilt)
+# head(aernas2_counts)
 
 cat("  > meta data\n")
 temp_coldat <- data.frame(STUDY_NUMBER = names(aernas2_counts_raw_qc_umicorr_annotFilt[,10:480]), 
@@ -743,8 +743,8 @@ dim(temp_coldat_clin)
 #### Collecting counts
 
 ```{r}
-head(aernas1_counts)
-head(aernas2_counts)
+# head(aernas1_counts)
+# head(aernas2_counts)
 ```
 
 ```{r}
@@ -773,7 +773,7 @@ rm(id)
 
 ```{r}
 cat("\nAnnotating combined data with b38.\n")
-head(combined_counts)
+# head(combined_counts)
 dim(combined_counts)
 combined_counts_annot <- combined_counts %>% 
   # arrange(p.adjusted) %>% 
@@ -783,7 +783,7 @@ combined_counts_annot <- combined_counts %>%
   relocate(entrez, symbol, chr, start, end, strand, biotype, description, 
            .before = ae1) %>% # put everything before sample ae1
   dplyr::filter(duplicated(ENSEMBL_gene_ID) == FALSE)
-head(combined_counts_annot)
+# head(combined_counts_annot)
 
 id <- combined_counts_annot$ENSEMBL_gene_ID
 id[ id %in% id[duplicated(id)] ]
@@ -820,7 +820,7 @@ combined_counts_EnsDb <- ensembldb::select(EnsDb.Hsapiens.v86, keys = combined_c
                                           columns = c("ENTREZID", "SYMBOL", "GENEBIOTYPE"), keytype = "GENEID")
 colnames(combined_counts_EnsDb) <- c("Ensembl", "Entrez", "HGNC", "GENEBIOTYPE")
 colnames(combined_counts_EnsDb) <- paste(colnames(combined_counts_EnsDb), "GRCh38p13_EnsDb86", sep = "_")
-head(combined_counts_EnsDb)
+# head(combined_counts_EnsDb)
 
 combined_counts_rowRanges$GENEBIOTYPE_EnsDb86 <- combined_counts_EnsDb$GENEBIOTYPE_EnsDb86[match(combined_counts_rowRanges$feature_id, combined_counts_EnsDb$Ensembl_EnsDb86)]
 combined_counts_rowRanges
@@ -1717,7 +1717,7 @@ We grep the meta- and clinical data from the `SummarizedExperiment`.
 
 temp_coldat_clin <- data.frame(colData(AERNAScomboSE))
 dim(temp_coldat_clin)
-head(temp_coldat_clin)
+# head(temp_coldat_clin)
 ```
 
 #### The raw data

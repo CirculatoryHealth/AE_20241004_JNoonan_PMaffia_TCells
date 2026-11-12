@@ -126,7 +126,7 @@ We simply load the previously saved `RDS`-file and extract the clinical and RNAs
 AEDB.CEA <- readRDS(file = paste0(OUT_loc, "/",Today,".",PROJECTNAME,".AEDB.CEA.RDS"))
 # AEDB.CEA <- readRDS(file = paste0(OUT_loc, "/20240531.",PROJECTNAME,".AEDB.CEA.RDS"))
 AEDB.CEA$STUDY_NUMBER <- paste0("ae", AEDB.CEA$STUDY_NUMBER)
-head(AEDB.CEA$STUDY_NUMBER)
+# head(AEDB.CEA$STUDY_NUMBER)
 
 AERNASE <- readRDS(file = paste0(OUT_loc, "/", Today, ".AERNAScomboSEvst.CEA.1093pts.SE.after_qc.IC_academic.RDS"))
 # AERNASE <- readRDS(file = paste0(OUT_loc, "/20240109.AERNAScomboSEvst.CEA.1093pts.SE.after_qc.IC_academic.RDS"))
@@ -144,7 +144,7 @@ temp <- as_tibble(t(assay(AERNASE.targets)), rownames = "study_number")
 AERNASE.clin.targets <- as.data.frame(merge(colData(AERNASE.targets), temp, by.x = "study_number", by.y = "study_number", sort = TRUE))
 rm(temp)
 dim(AERNASE.clin.targets)
-head(AERNASE.clin.targets)
+# head(AERNASE.clin.targets)
 ```
 
 
@@ -1202,7 +1202,7 @@ AERNASE.clin.targets.temp$Gender <- to_factor(AERNASE.clin.targets.temp$Gender)
 # AERNASE.clin.targets.temp$Hospital <- to_factor(AERNASE.clin.targets.temp$Hospital)
 # AERNASE.clin.targets.temp$Artery_summary <- to_factor(AERNASE.clin.targets.temp$Artery_summary)
 
-DT::datatable(AERNASE.clin.targets.temp[1:10,], caption = "Excerpt of the whole AERNASE.clin.targets.", rownames = FALSE)
+# DT::datatable(AERNASE.clin.targets.temp[1:10,], caption = "Excerpt of the whole AERNASE.clin.targets.", rownames = FALSE)
 
 rm(AERNASE.clin.targets.temp)
 

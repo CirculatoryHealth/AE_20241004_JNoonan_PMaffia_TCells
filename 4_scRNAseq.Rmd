@@ -491,7 +491,7 @@ scRNAseqDataCEA39 <- AddMetaData(scRNAseqDataCEA39, metadata = new_meta_info_df)
 scRNAseqDataCEA39@meta.data <- dplyr::rename(scRNAseqDataCEA39@meta.data, "STUDY_NUMBER" = "Patient")
 
 # Verify that the new metadata was added correctly
-head(scRNAseqDataCEA39@meta.data)
+# head(scRNAseqDataCEA39@meta.data)
 
 ```
 
