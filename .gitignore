@@ -83,3 +83,9 @@ _archived
 # *.pdf
 
 documents/
+
+# Knitted R Markdown notebooks (may contain rendered individual-level data)
+*.nb.html
+
+# AEDB data dictionary HTML
+*AEDB.dictionary.html
