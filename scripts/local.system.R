@@ -6,10 +6,10 @@
 ### MacBook Pro
 ROOT_loc = "/Users/slaan3"
 CLOUD_loc = "/Users/slaan3/Library/Mobile Documents/com~apple~CloudDocs/"
-ONEDRIVE_loc = "/Users/slaan3/Library/CloudStorage/OneDrive-UMCUtrecht/Genomics"
+ONEDRIVE_loc = "/Users/slaan3/Library/CloudStorage/OneDrive-UMCUtrecht-vdL&vSandScience-General(2)/_Genomics"
 
-# STORAGE_loc = "/Users/slaan3"
-STORAGE_loc = "/Volumes//ExtremeSSD8Tb"
+STORAGE_loc = "/Users/slaan3"
+# STORAGE_loc = "/Volumes//ExtremeSSD8Tb"
 
 ### Generic 
 LAB_loc = paste0(CLOUD_loc, "/Genomics/LabBusiness")
@@ -17,7 +17,7 @@ LAB_loc = paste0(CLOUD_loc, "/Genomics/LabBusiness")
 AEDB_loc = paste0(ONEDRIVE_loc, "/Athero-Express/AE-AAA_GS_DBs")
 
 ### Genetic and genomic data
-PLINK_loc=paste0(STORAGE_loc,"/PLINK")
+PLINK_loc=paste0(ONEDRIVE_loc,"/PLINK")
 GWAS_loc=paste0(PLINK_loc,"/_GWAS_Datasets")
 
 # genetic

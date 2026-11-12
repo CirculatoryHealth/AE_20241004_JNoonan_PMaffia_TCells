@@ -279,7 +279,7 @@ metadata <- scRNAseqData@meta.data %>% as_tibble() %>% separate(orig.ident, c("P
 scRNAseqDataMeta <- metadata %>% distinct(Patient, .keep_all = TRUE)
 
 scRNAseqDataMetaAE <- merge(scRNAseqDataMeta, AEDB.CEA, by.x = "Patient", by.y = "STUDY_NUMBER", sort = FALSE, all.x = TRUE)
-dim(scRNAseqDataMetaAE)
+# dim(scRNAseqDataMetaAE)
 
 # Replace missing data 
 # Ref: https://cran.r-project.org/web/packages/naniar/vignettes/replace-with-na.html
@@ -305,13 +305,13 @@ library(data.table)
 require(labelled)
 ae.gender <- to_factor(scRNAseqDataMetaAE$Gender)
 ae.hospital <- to_factor(scRNAseqDataMetaAE$Hospital)
-table(ae.gender, ae.hospital, dnn = c("Sex", "Hospital"), useNA = "ifany")
+# table(ae.gender, ae.hospital, dnn = c("Sex", "Hospital"), useNA = "ifany")
 
 ae.artery <- to_factor(scRNAseqDataMetaAE$Artery_summary)
-table(ae.artery, ae.gender, dnn = c("Sex", "Artery"), useNA = "ifany")
+# table(ae.artery, ae.gender, dnn = c("Sex", "Artery"), useNA = "ifany")
 
 ae.ic <- to_factor(scRNAseqDataMetaAE$informedconsent)
-table(ae.ic, ae.gender, useNA = "ifany")
+# table(ae.ic, ae.gender, useNA = "ifany")
 
 rm(ae.gender, ae.hospital, ae.artery, ae.ic)
 
@@ -404,7 +404,7 @@ List of samples to be included based on informed consent (see above).
 
 ```{r}
 samples_of_interest <- unlist(scRNAseqDataMetaAE.all$Patient)
-samples_of_interest
+# samples_of_interest
 ```
 
 Just make sure to keep the rows (`patientid`.`plateid`.`cellid`) in the data, so we will create a new column for that.
@@ -554,7 +554,13 @@ sort(table(scRNAseqDataCEA39@meta.data$SCT_snn_res.1.25))
 # table(scRNAseqDataCEA39@meta.data$SCT_snn_res.0.8, scRNAseqDataCEA39@meta.data$ID)
 
 cat("\n\nHow many cells per patient ...?")
-sort(table(scRNAseqDataCEA39@meta.data$STUDY_NUMBER))
+# Hash STUDY_NUMBER so individual IDs are not rendered in the output
+require(digest)
+study_hash <- setNames(
+  sapply(unique(scRNAseqDataCEA39@meta.data$STUDY_NUMBER), function(x) substr(digest::digest(x, algo = "md5"), 1, 8)),
+  unique(scRNAseqDataCEA39@meta.data$STUDY_NUMBER)
+)
+sort(table(study_hash[scRNAseqDataCEA39@meta.data$STUDY_NUMBER]))
 
 ```
 ```{r QualityControl Plots 1}
@@ -567,9 +573,9 @@ ggsave(paste0(PLOT_loc, "/", Today, ".UMAP.ps"), plot = last_plot())
 
 
 ```{r QualityControl Plots 2}
-barplot(prop.table(x = table(scRNAseqDataCEA39@active.ident, scRNAseqDataCEA39@meta.data$STUDY_NUMBER)),
+barplot(prop.table(x = table(scRNAseqDataCEA39@active.ident, study_hash[scRNAseqDataCEA39@meta.data$STUDY_NUMBER])),
         cex.axis = 1.0, cex.names = 0.5, las = 1,
-        col = uithof_color, xlab = "study number", legend.text = FALSE, args.legend = list(x = "bottom"))
+        col = uithof_color, xlab = "patient hash", legend.text = FALSE, args.legend = list(x = "bottom"))
 dev.copy(pdf, paste0(QC_loc, "/", Today, ".cell_ratios_per_sample.pdf"))
 dev.off()
 
@@ -1718,8 +1724,8 @@ cat("Per-cell data tables written.\n")
 
 --------------------------------------------------------------------------------
 
-    Version:      v1.3.0
-    Last update:  2026-07-02
+    Version:      v1.3.1
+    Last update:  2026-11-12
     Written by:   Sander W. van der Laan (s.w.vanderlaan-2[at]umcutrecht.nl).
     Description:  Script to load single-cell RNA sequencing (scRNAseq) data, and perform quality control (QC), and initial mapping to cells.
     Minimum requirements: R version 3.5.2 (2018-12-20) -- 'Eggshell Igloo', macOS Mojave (10.14.2).
@@ -1735,6 +1741,7 @@ cat("Per-cell data tables written.\n")
     _W_
 
     **Changes log**
+    * v1.3.1 Clean up code to remove individual level data.
     * v1.3.0 Added CytoGMS analysis (UCell::AddModuleScore_UCell) for all T-cells and CD8+ T-cells vs four plaque instability traits (MAC, SMC, IPH, Fat10). Added for Nature Communications rebuttal (June 2026).
     * v1.2.1 Some fixes to the subsetting of a cell community and the visualization by group of target genes.
     * v1.2.0 Fixed an issue where the subset of scRNAseq was loosing cell-identities.
@@ -1765,6 +1772,6 @@ save.image(paste0(PROJECT_loc, "/",Today,".",PROJECTNAME,".AESCRNA.results.RData
 ```
 
 +-----------------------------------------------------------------------------------------------------------------------------------------+
-| <sup>© 1979-2025 Sander W. van der Laan | s.w.vanderlaan[at]gmail[dot]com | [vanderlaanand.science](https://vanderlaanand.science).</sup> |
+| <sup>© 1979-2026 Sander W. van der Laan | s.w.vanderlaan[at]gmail[dot]com | [vanderlaanand.science](https://vanderlaanand.science).</sup> |
 +-----------------------------------------------------------------------------------------------------------------------------------------+
 

@@ -194,8 +194,8 @@ Dr. Sander W. van der Laan has received Roche funding for unrelated work.
 
 #### Changes log
     
-    _Version:_      v1.6.0</br>
-    _Last update:_  2026-07-02</br>
+    _Version:_      v1.6.1</br>
+    _Last update:_  2026-11-12</br>
     _Written by:_   Sander W. van der Laan (s.w.vanderlaan [at] gmail [dot] com).
     
     **MoSCoW To-Do List**
@@ -209,6 +209,7 @@ Dr. Sander W. van der Laan has received Roche funding for unrelated work.
     _W_
 
     **Changes log**
+    * v1.6.1 Cleaning of code and repository for public. 
     * v1.6.0 Added CytoGMS analysis to `4_scRNAseq.Rmd`: `UCell::AddModuleScore_UCell` run on all T-cells and CD8+ T-cells (CD8B > 0), compared against four plaque instability traits (macrophage content, SMC content, IPH, lipid core ≥10%). Figures saved as EPS/PDF/PNG; per-cell data tables written to `OUTPUT/`. Added UCell to `scripts/pack03.packages.R`. Updated AtheroExpress logo image. Fixed project file table (polygenicscores notebook name). For *Nature Communications* rebuttal (Noonan & Maffia, June 2026).
     * v1.5.1 Small fix to handling the NAs in the Plaque Vulnerability Index; added CD8B to the GMS.
     * v1.5.0 Major update. Added polygenic score analyses. Added additional figures for the bulk RNAseq. Added a few more details to the README.md.

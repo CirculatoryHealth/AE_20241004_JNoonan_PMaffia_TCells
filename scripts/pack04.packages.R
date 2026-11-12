@@ -36,13 +36,13 @@ install.packages.auto("GenomicFeatures")
 install.packages.auto("bumphunter")
 install.packages.auto("minfi")
 install.packages.auto("SummarizedExperiment")
-install.packages.auto("IlluminaHumanMethylation450kmanifest")
-install.packages.auto("IlluminaHumanMethylation450kanno.ilmn12.hg19")
-install.packages.auto("FDb.InfiniumMethylation.hg19")
-install.packages.auto("TxDb.Hsapiens.UCSC.hg19.knownGene")
-install.packages.auto("org.Hs.eg.db")
-install.packages.auto("AnnotationDbi")
-install.packages.auto("EnsDb.Hsapiens.v86")
+BiocManager::install("IlluminaHumanMethylation450kmanifest")
+BiocManager::install("IlluminaHumanMethylation450kanno.ilmn12.hg19")
+BiocManager::install("FDb.InfiniumMethylation.hg19")
+BiocManager::install("TxDb.Hsapiens.UCSC.hg19.knownGene")
+BiocManager::install("org.Hs.eg.db")
+BiocManager::install("AnnotationDbi")
+BiocManager::install("EnsDb.Hsapiens.v86") 
 
 # for plotting
 install.packages.auto("pheatmap")
@@ -51,7 +51,7 @@ install.packages.auto("forestplot")
 
 # for meta-analysis
 install.packages.auto("meta")
-install.packages.auto("bacon")
+# install.packages.auto("bacon")
 
 # The actual DNAmArray package
 cat("\n* DNAmArray package...\n")

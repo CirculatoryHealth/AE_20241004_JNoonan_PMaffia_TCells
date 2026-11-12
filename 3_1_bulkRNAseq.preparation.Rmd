@@ -324,7 +324,7 @@ AEDB.CEA.sampleList <- AEDB.CEA$STUDY_NUMBER
 ```
 
 ### AERNAS1
-```{r}
+```{r warning=FALSE}
 # match up with meta data of RNAseq experiment
 aernas1_counts_raw_qc_umicorr_annotFilt <- aernas1_counts_raw_qc_umicorr_annot %>%
   drop_na(chr) %>%   # remove rows that have no information of start, end, chromosome and/or strand
@@ -334,7 +334,7 @@ dim(aernas1_counts_raw_qc_umicorr_annotFilt)
 ```
 
 ### AERNAS2
-```{r}
+```{r warning=FALSE}
 # match up with meta data of RNAseq experiment
 aernas2_counts_raw_qc_umicorr_annotFilt <- aernas2_counts_raw_qc_umicorr_annot %>%
   drop_na(chr) %>%   # remove rows that have no information of start, end, chromosome and/or strand
@@ -752,7 +752,7 @@ aernas1_counts$ENSEMBL_gene_ID <- row.names(aernas1_counts)
 aernas2_counts$ENSEMBL_gene_ID <- row.names(aernas2_counts)
 combined_counts <- merge(aernas1_counts, aernas2_counts, by.x = "ENSEMBL_gene_ID", by.y = "ENSEMBL_gene_ID", sort = FALSE, all.x = TRUE)
 dim(combined_counts)
-head(combined_counts)
+# head(combined_counts)
 ```
 
 #### Annotating combined data
@@ -1213,8 +1213,8 @@ ft <- flextable(AERNAScomboSEClinData.CEA.tableOne) %>%
   theme_vanilla() %>%
   autofit() %>%
   set_table_properties(layout = "autofit") %>%
-  font(fontname = "Calibri", part = "all") %>%  # Set font to Calibri
-  fontsize(size = 9, part = "all")  # Set font size to 9
+  flextable::font(fontname = "Calibri", part = "all") %>%  # Set font to Calibri
+  flextable::fontsize(size = 9, part = "all")  # Set font size to 9
 
 # Save to Word
 doc <- read_docx()
@@ -2044,8 +2044,8 @@ saveRDS(AERNAScomboSEvst, file = paste0(OUT_loc, "/", Today, ".AERNAScomboSEvst.
 
 --------------------------------------------------------------------------------
 
-    Version:      v1.2.1
-    Last update:  2025-03-12
+    Version:      v1.2.2
+    Last update:  2026-11-12
     Written by:   Sander W. van der Laan (s.w.vanderlaan-2[at]umcutrecht.nl).
     Description:  Script to load bulk RNA sequencing data, and perform gene expression analyses, and visualisations.
     Minimum requirements: R version 3.5.2 (2018-12-20) -- 'Eggshell Igloo', macOS Mojave (10.14.2).
@@ -2061,6 +2061,7 @@ saveRDS(AERNAScomboSEvst, file = paste0(OUT_loc, "/", Today, ".AERNAScomboSEvst.
     _W_
 
     **Changes log**
+    * v1.2.2 Clean up code to remove individual level data.
     * v1.2.1 Update to target list.
     * v1.2.0 Major overhaul to prepare bulkRNAseq with new data. 
     * v1.1.1 Fixed baseline table writing. Additional versions of saved data. Added example to 'melt' data using `mia`.
@@ -2099,5 +2100,5 @@ save.image(paste0(PROJECT_loc, "/",Today,".",PROJECTNAME,".bulkRNAseq.preparatio
 ```
 
 +-----------------------------------------------------------------------------------------------------------------------------------------+
-| <sup>© 1979-2025 Sander W. van der Laan | s.w.vanderlaan[at]gmail[dot]com | [vanderlaanand.science](https://vanderlaanand.science).</sup> |
+| <sup>© 1979-2026 Sander W. van der Laan | s.w.vanderlaan[at]gmail[dot]com | [vanderlaanand.science](https://vanderlaanand.science).</sup> |
 +-----------------------------------------------------------------------------------------------------------------------------------------+

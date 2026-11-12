@@ -960,8 +960,8 @@ ggpubr::gghistogram(as.tibble(t(subset(assay(AERNAScomboSE_target), AERNAScomboS
 
 --------------------------------------------------------------------------------
 
-    Version:      v1.0.2
-    Last update:  2025-05-19
+    Version:      v1.0.3
+    Last update:  2026-11-12
     Written by:   Sander W. van der Laan (s.w.vanderlaan-2[at]umcutrecht.nl).
     Description:  Script to load bulk RNA sequencing data, and perform gene expression analyses, and visualisations.
     Minimum requirements: R version 3.5.2 (2018-12-20) -- 'Eggshell Igloo', macOS Mojave (10.14.2).
@@ -977,6 +977,7 @@ ggpubr::gghistogram(as.tibble(t(subset(assay(AERNAScomboSE_target), AERNAScomboS
     _W_
 
     **Changes log**
+    * v1.0.3 Clean up code to remove individual level data.
     * v1.0.2 Small fix to Plaque Vulnerability Index (add NAs); add CD8B as target gene.
     * v1.0.1 Update to the heatmap. 
     * v1.0.0 Inital version. Re-arranged to explore the subset of data. 
@@ -994,5 +995,5 @@ save.image(paste0(PROJECT_loc, "/",Today,".",PROJECTNAME,".bulkRNAseq.exploratio
 ```
 
 +-----------------------------------------------------------------------------------------------------------------------------------------+
-| <sup>© 1979-2025 Sander W. van der Laan | s.w.vanderlaan[at]gmail[dot]com | [vanderlaanand.science](https://vanderlaanand.science).</sup> |
+| <sup>© 1979-2026 Sander W. van der Laan | s.w.vanderlaan[at]gmail[dot]com | [vanderlaanand.science](https://vanderlaanand.science).</sup> |
 +-----------------------------------------------------------------------------------------------------------------------------------------+

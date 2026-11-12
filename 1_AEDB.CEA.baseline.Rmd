@@ -101,12 +101,12 @@ library(openxlsx)
 # update list
 gene_list <- read.xlsx(paste0(TARGET_loc, "/targets.xlsx"), sheet = "Genes")
 
-variant_list <- read.xlsx(paste0(TARGET_loc, "/targets.xlsx"), sheet = "Variants")
+# variant_list <- read.xlsx(paste0(TARGET_loc, "/targets.xlsx"), sheet = "Variants")
 # credset_list <- read.xlsx(paste0(TARGET_loc, "/Variants.xlsx"), sheet = "CredibleSet")
 
 DT::datatable(gene_list)
 
-DT::datatable(variant_list)
+# DT::datatable(variant_list)
 # DT::datatable(credset_list)
 
 ```
@@ -139,31 +139,11 @@ AEDB <- haven::read_sav(paste0(AEDB_loc, "/AEdata20241219.sav"))
 #        dateTimeAs = "ISO", showProgress = TRUE, verbose = TRUE)
 # warnings()
 
-AEDB[1:10, 1:10]
+# AEDB[1:10, 1:10]
 dim(AEDB)
 
 ```
 
-
-
-## Examine AEDB
-
-We can examine the contents of the Athero-Express Biobank dataset to know what each variable is called, what class
-(type) it has, and what the variable description is.
-
-There is an excellent post on this: <https://www.r-bloggers.com/working-with-spss-labels-in-r/>.
-
-```{r AEDB: describe}
-# AEDB %>% sjPlot::view_df(show.type = TRUE,
-#                          show.frq = TRUE,
-#                          show.prc = TRUE,
-#                          show.na = TRUE,
-#                          max.len = TRUE,
-#                          wrap.labels = 20,
-#                          verbose = FALSE,
-#                          use.viewer = FALSE,
-#                          file = paste0(OUT_loc, "/", Today, ".AEDB.dictionary.html"))
-```
 
 ## Fixing and creating variables
 
@@ -1040,7 +1020,7 @@ AEDB$Artery_summary <- to_factor(AEDB$Artery_summary)
 
 ```{r}
 AEDB$informedconsent <- to_factor(AEDB$informedconsent)
-DT::datatable(as.data.frame(table(AEDB$informedconsent)))
+# DT::datatable(as.data.frame(table(AEDB$informedconsent)))
 # levels(AEDB$informedconsent)
 # these should ALWAYS be excluded
 # informedconsent != "missing" &
@@ -1091,7 +1071,7 @@ DT::datatable(as.data.frame(table(AEDB$informedconsent)))
 # informedconsent != "second informed concents: yes, no commercial business" &
 # informedconsent != "yes, no medical info, no commercial business, health treatment when possible" &
 ic <- as.data.frame(table(AEDB$informedconsent))
-DT::datatable(ic)
+# DT::datatable(ic)
 rm(ic)
 ```
 
@@ -1290,8 +1270,8 @@ saveRDS(AEDB, file = paste0(OUT_loc, "/",Today,".",PROJECTNAME,".AEDB.raw.RDS"))
 
 ------------------------------------------------------------------------------------------------------------------------
 
-    Version:      v1.3.2
-    Last update:  2025-05-19
+    Version:      v1.3.3
+    Last update:  2026-11-12
     Written by:   Sander W. van der Laan (s.w.vanderlaan[at]gmail[dot]com).
     Description:  Script to get some Athero-Express Biobank Study baseline characteristics in the whole cohort and the CEA subset.
     Minimum requirements: R version 3.4.3 (2017-06-30) -- 'Single Candle', Mac OS X El Capitan
@@ -1307,6 +1287,7 @@ saveRDS(AEDB, file = paste0(OUT_loc, "/",Today,".",PROJECTNAME,".AEDB.raw.RDS"))
     _W_
 
     **Changes log**
+    * v1.3.3 Clean up code to remove individual level data.
     * v1.3.2 Small fix to the plaque vulnerability index. 
     * v1.3.1 Small update to the AEDB.
     * v1.3.0 Major update to the AEDB.
@@ -1331,5 +1312,5 @@ save.image(paste0(PROJECT_loc, "/",Today,".",PROJECTNAME,".AEDB.CEA.baseline.RDa
 ```
 
 +-----------------------------------------------------------------------------------------------------------------------------------------+
-| <sup>© 1979-2025 Sander W. van der Laan | s.w.vanderlaan[at]gmail[dot]com | [vanderlaanand.science](https://vanderlaanand.science).</sup> |
+| <sup>© 1979-2026 Sander W. van der Laan | s.w.vanderlaan[at]gmail[dot]com | [vanderlaanand.science](https://vanderlaanand.science).</sup> |
 +-----------------------------------------------------------------------------------------------------------------------------------------+

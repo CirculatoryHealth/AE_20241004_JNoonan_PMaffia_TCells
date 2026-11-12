@@ -646,8 +646,8 @@ Here we use the inverse-rank normalized data - visually this is more normally di
 #### Quantitative plaque traits
 
 ```{r}
-detach("package:EnsDb.Hsapiens.v86", unload = TRUE)
-detach("package:ensembldb", unload = TRUE)
+# detach("package:EnsDb.Hsapiens.v86", unload = TRUE)
+# detach("package:ensembldb", unload = TRUE)
 
 ```
 
@@ -1737,8 +1737,8 @@ saveRDS(AERNASE.targets.genedata, file = paste0(OUT_loc, "/", Today, ".",TRAIT_O
 
 --------------------------------------------------------------------------------
 
-    Version:      v1.2.4
-    Last update:  2025-03-31
+    Version:      v1.2.5
+    Last update:  2026-11-12
     Written by:   Sander W. van der Laan (s.w.vanderlaan-2[at]umcutrecht.nl).
     Description:  Script to analyse targets from the Ather-Express Biobank Study.
     Minimum requirements: R version 3.5.2 (2018-12-20) -- 'Eggshell Igloo', macOS Mojave (10.14.2).
@@ -1754,6 +1754,7 @@ saveRDS(AERNASE.targets.genedata, file = paste0(OUT_loc, "/", Today, ".",TRAIT_O
     _W_
 
     **Changes log**
+    * v1.2.5 Clean up code to remove individual level data.
     * v1.2.4 Added additional outcomes (stroke, coronary, cvd-death) in the Cox regression.
     * v1.2.3 Updates to the list of genes. Re-organization efficient for the paper. 
     * v1.2.2 Textual fixes.
@@ -1775,6 +1776,6 @@ save.image(paste0(PROJECT_loc, "/",Today,".",PROJECTNAME,".bulkRNAseq.main_analy
 ```
 
 +-----------------------------------------------------------------------------------------------------------------------------------------+
-| <sup>© 1979-2024 Sander W. van der Laan | s.w.vanderlaan[at]gmail[dot]com | [vanderlaanand.science](https://vanderlaanand.science).</sup> |
+| <sup>© 1979-2026 Sander W. van der Laan | s.w.vanderlaan[at]gmail[dot]com | [vanderlaanand.science](https://vanderlaanand.science).</sup> |
 +-----------------------------------------------------------------------------------------------------------------------------------------+
 

@@ -2618,8 +2618,8 @@ rm(TEMP.DF, target_of_interest, fit, cox, coxplot, COX.results, COX.results.TEMP
 
 --------------------------------------------------------------------------------
 
-    Version:      v1.3.3
-    Last update:  2025-05-26
+    Version:      v1.3.4
+    Last update:  2026-11-12
     Written by:   Sander W. van der Laan (s.w.vanderlaan-2[at]umcutrecht.nl).
     Description:  Script to analyse targets from the Ather-Express Biobank Study.
     Minimum requirements: R version 3.5.2 (2018-12-20) -- 'Eggshell Igloo', macOS Mojave (10.14.2).
@@ -2635,6 +2635,7 @@ rm(TEMP.DF, target_of_interest, fit, cox, coxplot, COX.results, COX.results.TEMP
     _W_
 
     **Changes log**
+    * v1.3.4 Clean up code to remove individual level data.
     * v1.3.3 Added RDS output fo the Cox-regression objects.
     * v1.3.2 Added small fixes to the handling of NA in PVI; added GMS with CD8B.
     * v1.3.1 Added additional outcomes for the Cox-regression.
@@ -2656,6 +2657,6 @@ save.image(paste0(PROJECT_loc, "/",Today,".",PROJECTNAME,".bulkRNAseq.polygenics
 ```
 
 +-----------------------------------------------------------------------------------------------------------------------------------------+
-| <sup>© 1979-2025 Sander W. van der Laan | s.w.vanderlaan[at]gmail[dot]com | [vanderlaanand.science](https://vanderlaanand.science).</sup> |
+| <sup>© 1979-2026 Sander W. van der Laan | s.w.vanderlaan[at]gmail[dot]com | [vanderlaanand.science](https://vanderlaanand.science).</sup> |
 +-----------------------------------------------------------------------------------------------------------------------------------------+
 
