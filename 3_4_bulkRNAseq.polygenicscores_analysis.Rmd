@@ -164,6 +164,12 @@ rowRanges(AERNASE.targets)
 
 # Weighted and unweighted polygenic score
 
+> **NOTE: This section is NOT used in the manuscript.** It was an earlier exploratory approach (variance-weighted and unweighted polygenic scores) superseded by the Gene Module Score (GMS/CD8^CytoGSS^) approach used in the paper. Retained for reproducibility.
+
+```{r NOT-USED: polygenic-score-section-start, include=FALSE}
+knitr::opts_chunk$set(eval = FALSE)
+```
+
 Here we create a polygenic score consisting of the variance weighted averages of the target genes. We added _CD8B_ to the target list too.
 
 
@@ -494,6 +500,10 @@ ggsave(filename = paste0(PLOT_loc, "/", Today, ".", PROJECTNAME, ".polygenicscor
        plot = combined_plot, width = 12, height = 10)
 
 rm(p1, p2, p3, p4, combined_plot)  # Remove temporary objects
+```
+
+```{r NOT-USED: polygenic-score-section-end, include=FALSE}
+knitr::opts_chunk$set(eval = TRUE)
 ```
 
 
@@ -2022,6 +2032,12 @@ for (TARGET_GENE in gene_module_list) {
 
 ## B. Cross-sectional analysis symptoms
 
+> **NOTE: This section is NOT used in the manuscript.** Symptomatic vs. asymptomatic analysis was not reported in the paper; the manuscript focuses on histological plaque instability traits (macrophages, SMC, IPH, lipid) and longitudinal outcomes. Retained for completeness.
+
+```{r NOT-USED: 3_4-symptoms-section-start, include=FALSE}
+knitr::opts_chunk$set(eval = FALSE)
+```
+
 We will perform a cross-sectional analysis between plaque `r TRAIT_OF_INTEREST` expression levels and the 'clinical status' of the plaque in terms of presence of patients' symptoms (symptomatic vs. asymptomatic). The symptoms of interest are:
 
 - stroke
@@ -2182,6 +2198,10 @@ write.xlsx(GLM.results,
 cat("Removing intermediate files...\n")
 rm(TRAIT, currentDF, GLM.results, GLM.results.TEMP, fit, model_step)
 
+```
+
+```{r NOT-USED: 3_4-symptoms-section-end, include=FALSE}
+knitr::opts_chunk$set(eval = TRUE)
 ```
 
 

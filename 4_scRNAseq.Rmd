@@ -717,6 +717,12 @@ ggsave(paste0(PLOT_loc, "/", Today, ".DotPlot.Targets.Grouped.pdf"), plot = p1_g
 
 #### Plotting gender
 
+> **NOTE: This section is NOT used in the manuscript.** Gender-stratified dotplots were exploratory and not reported. Retained for completeness.
+
+```{r NOT-USED: gender-dotplots-start, include=FALSE}
+knitr::opts_chunk$set(eval = FALSE)
+```
+
 We should also plot these data stratified by gender smooth muscle cells.
 
 ##### Create subsets
@@ -796,6 +802,10 @@ ggsave(paste0(PLOT_loc, "/", Today, ".DotPlot.Targets.ColocGrouped.TCellonly.Gen
 # ggsave(paste0(PLOT_loc, "/", Today, ".DotPlot.Targets.ColocGrouped.TCellonly.Gender.ps"), plot = combined_plot_cells)
 # ggsave(paste0(PLOT_loc, "/", Today, ".DotPlot.Targets.ColocGrouped.TCellonly.Gender.pdf"), plot = combined_plot_cells)
 
+```
+
+```{r NOT-USED: gender-dotplots-end, include=FALSE}
+knitr::opts_chunk$set(eval = TRUE)
 ```
 
 ```{r Visualisation: Targets Feature Plots, message=FALSE, warning=FALSE}

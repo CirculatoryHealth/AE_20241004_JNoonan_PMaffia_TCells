@@ -2,6 +2,9 @@
 .*
 !.gitignore
 
+# Claude Code project settings
+.claude/
+
 # History files
 .Rhistory
 .Rapp.history

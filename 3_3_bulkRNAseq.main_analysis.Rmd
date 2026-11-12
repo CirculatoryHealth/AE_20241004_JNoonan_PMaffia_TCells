@@ -957,6 +957,12 @@ rm(TRAIT, trait, currentDF, GLM.results, GLM.results.TEMP, fit, model_step)
 
 ## B. Cross-sectional analysis symptoms
 
+> **NOTE: This section is NOT used in the manuscript.** Symptomatic vs. asymptomatic analysis was not reported in the paper; the manuscript focuses on histological plaque instability traits and longitudinal outcomes. Retained for completeness.
+
+```{r NOT-USED: 3_3-symptoms-section-start, include=FALSE}
+knitr::opts_chunk$set(eval = FALSE)
+```
+
 We will perform a cross-sectional analysis between plaque `r TRAIT_OF_INTEREST` expression levels and the 'clinical status' of the plaque in terms of presence of patients' symptoms (symptomatic vs. asymptomatic). The symptoms of interest are:
 
 - stroke
@@ -1117,8 +1123,18 @@ rm(TRAIT, currentDF, GLM.results, GLM.results.TEMP, fit, model_step)
 
 ```
 
+```{r NOT-USED: 3_3-symptoms-section-end, include=FALSE}
+knitr::opts_chunk$set(eval = TRUE)
+```
+
 
 ## C. Longitudinal analysis secondary clinical outcome
+
+> **NOTE: This section is NOT used in the manuscript.** Cox regression for individual marker genes (GZMB, PRDM1, RUNX3) was not reported; the manuscript uses the combined CD8^CytoGSS^ (GMS) Cox analysis from `3_4_bulkRNAseq.polygenicscores_analysis.Rmd` (Fig. 7h&i). Retained for completeness.
+
+```{r NOT-USED: 3_3-cox-section-start, include=FALSE}
+knitr::opts_chunk$set(eval = FALSE)
+```
 
 For the longitudinal analyses of plaque `r TRAIT_OF_INTEREST` expression levels and secondary cardiovascular events over a three-year follow-up period. 
 
@@ -1700,6 +1716,11 @@ pdf(paste0(PLOT_loc, "/", Today, ".cross_biomarker_correlations.advanced.pdf"))
   p1
 dev.off()
 ```
+
+```{r NOT-USED: 3_3-cox-section-end, include=FALSE}
+knitr::opts_chunk$set(eval = TRUE)
+```
+
 # Saving datasets
 
 For the purpose of downstream analyses we save the `AEDB.CEA` object, and the RNAseq objects.
